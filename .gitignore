@@ -1,16 +1,24 @@
-# Prerequisites
-*.d
+# MPlab-X project folder
+**/*.X/**
+
+# netbeans project folder
+nbproject/private/
+nbproject/**
+build/
+nbbuild/
+dist/
+nbdist/
+nbactions.xml
+.nb-gradle/
+
+# Compiled files
+*.
 
 # Object files
 *.o
 *.ko
 *.obj
 *.elf
-
-# Linker output
-*.ilk
-*.map
-*.exp
 
 # Precompiled Headers
 *.gch
@@ -38,15 +46,3 @@
 
 # Debug files
 *.dSYM/
-*.su
-*.idb
-*.pdb
-
-# Kernel Module Compile Results
-*.mod*
-*.cmd
-.tmp_versions/
-modules.order
-Module.symvers
-Mkfile.old
-dkms.conf
