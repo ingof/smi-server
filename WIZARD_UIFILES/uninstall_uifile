@@ -1,0 +1,11 @@
+[{
+	"step_title": "Uninstall SMI-Monitor",
+	"items": [{
+		"type": "multiselect",
+		"desc": "Do you want to remove SMI-monitor's configuration folder?",
+		"subitems": [{
+			"key": "pkgwizard_remove_config",
+			"desc": Remove SMI-Monitor's shared folder
+		}]
+	}]
+}]

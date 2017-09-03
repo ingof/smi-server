@@ -1,0 +1,15 @@
+{
+	".url" {
+		"net.thefischer.SMI-monitor":
+			"type": "url",
+			"allUsers": true,
+			"title": "SMI-Monitor",
+			"desc": "SMI-Monitor",
+			"icon": "SMI-Monitor_{0}.png",
+			"protocol": "http",
+			"url": "/",
+			"port": "8086"
+		}
+	}
+}
+

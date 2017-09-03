@@ -1,0 +1,23 @@
+#!/bin/bash
+# Copyright (C) 2000-2016 Synology Inc. All rights reserved.
+
+case ${MakeClean} in
+	[Yy][Ee][Ss])
+		make clean
+		;;
+esac
+
+# You can use CC CFLAGS LD LDFLAGS CXX CXXFLAGS AR RANLIB READELF STRIP here
+#echo "${CC} ${CFLAGS} monitor/crc.c -o crc"
+#${CC} ${CFLAGS} monitor/crc.c -o crc
+#all:	monitor/hex-monitor.c monitor/swb-serial.c monitor/smi-serial.c monitor/smi-monitor.c monitor/crc.c comandline/smi.c
+${CC} ${CFLAGS} -o smi comandline/smi.c
+${CC} ${CFLAGS} -o hex-monitor monitor/hex-monitor.c
+${CC} ${CFLAGS} -o smi-monitor monitor/swb-serial.c monitor/smi-serial.c monitor/smi-monitor.c
+${CC} ${CFLAGS} -o crc monitor/crc.c
+${CC} ${CFLAGS} -o prog monitor/prog.c
+
+
+# Or you can use Makefile to genarate executable.
+#echo "make ${MAKE_FLAGS}"
+#make ${MAKE_FLAGS}
