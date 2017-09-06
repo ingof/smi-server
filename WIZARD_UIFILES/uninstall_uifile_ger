@@ -1,9 +1,11 @@
 [{
 	"step_title": "Uninstall SMI-Monitor",
-	"items": [{
+	"items":
+	[{
 		"type": "multiselect",
-		"desc": "Möchten sie dem Konfigurationsordner des SMI-monitor's entfernen?",
-		"subitems": [{
+		"desc": "Möchten sie den Konfigurationsordner des SMI-monitor's entfernen?",
+		"subitems":
+		[{
 			"key": "pkgwizard_remove_config",
 			"desc": "SMI-Monitor's geteilten Ordner löschen"
 		}]

@@ -1,15 +1,14 @@
 {
-	".url" {
-		"net.thefischer.SMI-monitor":
+	".url"
+	{
+		"net.thefischer.smi-server":
 			"type": "url",
 			"allUsers": true,
-			"title": "SMI-Monitor",
-			"desc": "SMI-Monitor",
-			"icon": "SMI-Monitor_{0}.png",
+			"title": "SMI-Server",
+			"desc": "SMI-Server",
+			"icon": "PACKAGE_ICON{0}.png",
 			"protocol": "http",
 			"url": "/",
 			"port": "8086"
-		}
 	}
 }
-

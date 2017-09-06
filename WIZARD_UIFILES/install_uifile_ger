@@ -1,12 +1,13 @@
 [{
-	"step_title": "Install SMI-Monitor",
-	"items": [{
+	"step_title": "Install SMI-Server",
+	"items":
+	[{
 		"type": "textfield",
-		"desc": "Bitte den SMI-Monitor Port auswählen. Ohne Eingabe ist die Voreinstellung 8080.",
-		"subitems": [{
-			"key": "pkgwizard_smi_monitor_port",
+		"desc": "Bitte den Port des Webserver für den SMI-Server auswählen. Ohne Eingabe ist die Voreinstellung 8086.",
+		"subitems":
+		[{
+			"key": "pkgwizard_smi_server_port",
 			"desc": "Webserver port"
 		}]
 	}]
 }]
-

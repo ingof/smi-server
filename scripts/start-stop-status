@@ -5,20 +5,20 @@ case $1 in
 		insmod /lib/modules/usbserial.ko
 		insmod /lib/modules/ftdi_sio.ko
 		### Start this package.
-		crc "Start"
-#		echo "FTDI-USB Treiber wurden geladen." > $SYNOPKG_TEMP_LOGFILE 
+		smi-server "Start"
+#		echo "FTDI-USB Treiber wurden geladen." > $SYNOPKG_TEMP_LOGFILE
 		exit 0
 	;;
 	stop)
 #		rmmod fdti_sio
 #		rmmod usbserial
 		### Stop this package.
-		crc "Stop"
+		smi-server "Stop"
 #		echo "FTDI-SUB Treiber wurden entladen." > $SYNOPKG_TEMP_LOGFILE
 	;;
 	status)
 		### Check package alive.
-		if [ -h "/usr/bin/prog" ]; then
+		if [ -h "/usr/local/bin/smi-server" ]; then
 			exit 0
 		else
 			exit 1

@@ -4,8 +4,6 @@
 ### Actions after package installed.
 ### ex. create database, create symbolic link...
 
-ln -sf $SYNOPKG_PKGDEST/usr/bin/smi-monitor /usr/bin/
-ln -sf $SYNOPKG_PKGDEST/usr/bin/crc /usr/bin/
-ln -sf $SYNOPKG_PKGDEST/usr/bin/prog /usr/bin/
+ln -sf $SYNOPKG_PKGDEST/usr/local/bin/smi-server /usr/local/bin/
 
 exit 0
