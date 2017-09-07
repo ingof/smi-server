@@ -6,11 +6,13 @@
 #include <termios.h>		/* POSIX terminal control definitions */
 #include <stdlib.h>			/* converting functions */
 #include <sys/ioctl.h>		/* ioctl() */
-#include "smi-monitor.h"	/* own funcions */
 #include <sys/types.h>		/* ?? */
 #include <sys/stat.h>		/* ?? */
 #include <sys/time.h>		/* ?? */
 #include <linux/serial.h>	/* custom divisor */
+
+#include "typesdef.h"	/* own funcions */
+#include "smi-server.h"	/* own funcions */
 
 /* web server */
 #include<netinet/in.h>

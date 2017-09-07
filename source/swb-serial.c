@@ -4,8 +4,8 @@
 #include <sys/ioctl.h>		/* ioctl() */
 #include <linux/serial.h>	/* custom divisor */
 
-#include "types.h"				/* type definitions */
-#include "swb-serial.h"			/* own functions */
+#include "typesdef.h"		/* own type definitions */
+#include "swb-serial.h"		/* own functions */
 
 /* creates SWB crc16 */
 unint16_t  createSwbCrc(unsigned char *buffer, int size) {

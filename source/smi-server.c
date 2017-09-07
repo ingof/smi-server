@@ -12,7 +12,7 @@
 //#include <sys/time.h>		/* ?? */
 //#include <linux/serial.h>	/* custom divisor */
 
-#include "types.h"			/* type definitions */
+#include "typesdef.h"			/* type definitions */
 #include "swb-serial.h"		/* swb-bus functions */
 #include "smi-serial.h"		/* swb-bus functions */
 
