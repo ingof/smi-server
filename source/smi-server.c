@@ -99,9 +99,9 @@ int main(void) {
 		   sleep(5);
 		   syslog(LOG_SYSLOG, "25 sconds.\n");
 		   sleep(5);
-		   syslog(LOG_SYSLOG, "30 sconds.\n");
+		   syslog(LOG_SYSLOG, "30 sconds, exiting\n");
 		   sleep(1);
-		   syslog(LOG_SYSLOG, "exiting.\n");
+		   syslog(LOG_SYSLOG, "bye.\n");
 		}
    exit(EXIT_SUCCESS);
 }
