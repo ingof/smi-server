@@ -12,7 +12,7 @@ source /pkgscripts/include/pkg_util.sh
 create_inner_tarball() {
 #create_package_tgz(){
   local inner_tarball_dir=/tmp/_inner_tarball
-  local binary_dir=$inner_tarball_dir/usr/local/bin
+  local binary_dir=$inner_tarball_dir/usr/bin
 
   ### clear destination directory
   rm -rf $inner_tarball_dir && mkdir -p $inner_tarball_dir

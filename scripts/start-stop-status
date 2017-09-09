@@ -19,7 +19,7 @@ case $1 in
 	;;
 	status)
 		### Check package alive.
-		if [ -h "/usr/local/bin/smi-server" ]; then
+		if [ -h "/usr/bin/smi-server" ]; then
 			exit 0
 		else
 			exit 1

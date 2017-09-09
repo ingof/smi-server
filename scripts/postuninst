@@ -4,6 +4,6 @@
 ### Actions after package uninstalled.
 ### ex. remove garbage files.
 
-rm -f /usr/local/bin/smi-server
+rm -f /usr/bin/smi-server
 
 exit 0
