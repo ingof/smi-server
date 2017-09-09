@@ -15,6 +15,7 @@ case $1 in
 		### Stop this package.
 		smi-server "Stop"
 #		echo "FTDI-SUB Treiber wurden entladen." > $SYNOPKG_TEMP_LOGFILE
+		exit 0
 	;;
 	status)
 		### Check package alive.
@@ -25,7 +26,8 @@ case $1 in
 		fi
 	;;
 	killall)
-        ;;
+		exit 0
+    ;;
 	log)
 		exit 0
 	;;

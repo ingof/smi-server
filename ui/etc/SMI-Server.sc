@@ -1,4 +1,4 @@
-[SMI-Monitor]
+[SMI-Server]
 tittle="SMI-Server"
 desc="SMI-Server"
 port_forward_"yes"
