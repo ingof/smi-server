@@ -16,8 +16,8 @@ $(EXEC): $(OBJS)
 	$(CC) $(CFLAGS) $(OBJS) -o $@ $(LDFLAGS)
 
 install: $(EXEC)
-	mkdir -p $(DESTDIR)/usr/local/bin/
-	install $< $(DESTDIR)/usr/local/bin/
+	mkdir -p $(DESTDIR)/usr/bin/
+	install $< $(DESTDIR)/usr/bin/
 
 clean:
 	rm -rf *.o $(EXEC)
