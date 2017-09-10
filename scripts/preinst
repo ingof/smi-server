@@ -3,5 +3,5 @@
 ### This script will be execute when package installed and upgraded.
 ### Actions before package installed.
 ### ex. check environment.
-echo ${pkgwizard_smi_server_port} >> /var/packages/preport
+
 exit 0
