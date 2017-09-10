@@ -5,5 +5,6 @@
 ### ex. create database, create symbolic link...
 
 ln -sf $SYNOPKG_PKGDEST/usr/bin/smi-server /usr/bin/
+ln -sf $SYNOPKG_PKGDEST/smi-server /var/packages/smi-server
 
 exit 0
