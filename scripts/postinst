@@ -5,7 +5,7 @@
 ### ex. create database, create symbolic link...
 
 ln -sf $SYNOPKG_PKGDEST/usr/bin/smi-server /usr/bin/
-ln -sf $SYNOPKG_PKGDEST/smi-server.sc /var/packages/smi-server/smi-server.sc
+cp $SYNOPKG_PKGDEST/smi-server.sc /var/packages/smi-server/smi-server.sc
 sudo echo ",\"port-config\":{\"protocol-file\":\"smi-server.sc\"}" >> /var/packages/smi-server/conf/resource
 sudo /usr/syno/sbin/synopkghelper update smi-server port-config
 
