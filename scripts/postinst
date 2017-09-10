@@ -5,8 +5,16 @@
 ### ex. create database, create symbolic link...
 
 ln -sf $SYNOPKG_PKGDEST/usr/bin/smi-server /usr/bin/
-cp $SYNOPKG_PKGDEST/smi-server.sc /usr/local/etc/services.d/
-echo ${pkgwizard_smi_server_port} >> /var/packages/smi-server/port
+echo "[smi-server]" >>$SYNOPKG_PKGDEST/smi-server.sc.new
+"title=\"SMI-Server\"" >>$SYNOPKG_PKGDEST/smi-server.sc.new
+"desc=\"SMI-Server\"" >>$SYNOPKG_PKGDEST/smi-server.sc.new
+"port_forward=\"no\"" >>$SYNOPKG_PKGDEST/smi-server.sc.new
+"dst.ports=\"${pkgwizard_smi_server_port}/tcp\"" >>$SYNOPKG_PKGDEST/smi-server.sc.new
+
+# cp $SYNOPKG_PKGDEST/smi-server.sc /usr/local/etc/services.d/
+cp $SYNOPKG_PKGDEST/smi-server.sc.new /usr/local/etc/services.d/smi-server.sc
+
+echo ${pkgwizard_smi_server_port} >> /var/packages/smi-server/port      # config file ?!
 echo ",\"port-config\":{\"protocol-file\":\"smi-server.sc\"}" >> /var/packages/smi-server/conf/resource
 /usr/syno/sbin/synopkghelper update smi-server port-config
 
