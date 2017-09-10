@@ -6,7 +6,7 @@
 
 ln -sf $SYNOPKG_PKGDEST/usr/bin/smi-server /usr/bin/
 cp $SYNOPKG_PKGDEST/smi-server.sc /usr/local/etc/services.d/
-echo "{{pkgwizard_smi_server_port}}" >> /var/packages/smi-server/port
+echo {{pkgwizard_smi_server_port}} >> /var/packages/smi-server/port
 echo ",\"port-config\":{\"protocol-file\":\"smi-server.sc\"}" >> /var/packages/smi-server/conf/resource
 /usr/syno/sbin/synopkghelper update smi-server port-config
 
