@@ -5,5 +5,6 @@
 ### ex. remove garbage files.
 
 rm -f /usr/bin/smi-server
+cp $SYNOPKG_PKGDEST/smi-server.sc /usr/local/etc/services.d/smi-server.sc
 
 exit 0
