@@ -15,7 +15,7 @@ create_inner_tarball() {
   local binary_dir=$inner_tarball_dir/usr/bin
 
   ### clear destination directory
-  rm -rf $inner_tarball_dir && mkdir -p $inner_tarball_dir
+  rm -rf $inner_tarball_dir && mkdir -p $inner_tarball_dir/conf/
 
   ### install needed file into PKG_DIR
   mkdir -p $binary_dir
