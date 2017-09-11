@@ -10,12 +10,23 @@ echo "title=\"SMI-Server\"" >>$SYNOPKG_PKGDEST/smi-server.sc.new
 echo "desc=\"SMI-Server\"" >>$SYNOPKG_PKGDEST/smi-server.sc.new
 echo "port_forward=\"no\"" >>$SYNOPKG_PKGDEST/smi-server.sc.new
 echo "dst.ports=\"${pkgwizard_smi_server_port}/tcp\"" >>$SYNOPKG_PKGDEST/smi-server.sc.new
-
-# copy and rename services-configuration-file
+#### copy and rename services-configuration-file
 cp $SYNOPKG_PKGDEST/smi-server.sc.new /usr/local/etc/services.d/smi-server.sc
 
 echo ${pkgwizard_smi_server_port} >> /var/packages/smi-server/port      # config file ?!
-echo ",\"port-config\":{\"protocol-file\":\"smi-server.sc\"}" >> /var/packages/smi-server/conf/resource
+
+### add port config to resource file
+echo "," >> /var/packages/smi-server/conf/resource
+echo "\"port-config\":{" >> /var/packages/smi-server/conf/resource
+echo "\"protocol-file\":\"smi-server.sc\"" >> /var/packages/smi-server/conf/resource
+echo "}" >> /var/packages/smi-server/conf/resource
+
+### add syslog infos to resource file
+echo "," >> /var/packages/smi-server/conf/resource
+echo "\"syslog-config\":{" >> /var/packages/smi-server/conf/resource
+echo "\"patterndb-relpath\":\"smi-server.conf\"" >> /var/packages/smi-server/conf/resource
+# echo ",\"logrotate-relpath\":\"etc/logrotate.conf\""
+echo "}" >> /var/packages/smi-server/conf/resource
 /usr/syno/sbin/synopkghelper update smi-server port-config
 
 exit 0

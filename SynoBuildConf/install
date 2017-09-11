@@ -21,6 +21,7 @@ create_inner_tarball() {
   mkdir -p $binary_dir
 	cp -av smi-server $binary_dir
     cp -av ui/etc/smi-server.sc $inner_tarball_dir
+    cp -av ui/etc/smi-server.conf $inner_tarball_dir
 
   make install DESTDIR="$inner_tarball_dir"
 

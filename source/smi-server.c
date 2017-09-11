@@ -38,70 +38,66 @@
 
 int main(void) {
 
-		/* Our process ID and Session ID */
-		pid_t pid, sid;
-		syslog(LOG_SYSLOG, "\nSMI server daemon:\n\n");
-		/* Fork off the parent process */
-		pid = fork();
-		if (pid < 0) {
-				exit(EXIT_FAILURE);
-		}
-		syslog(LOG_SYSLOG, "forked.\n");
-		/* If we got a good PID, then
-		   we can exit the parent process. */
-		if (pid > 0) {
-				exit(EXIT_SUCCESS);
-		}
-		syslog(LOG_SYSLOG, "PID checked.\n");
+	/* my process ID and Session ID */
+	pid_t pid, sid;
+	openlog(argv[0], LOG_PID | LOG_NDELAY, LOG_LOCAL0);
 
-		/* Change the file mode mask */
-		umask(0);
-		syslog(LOG_SYSLOG, "umasked.\n");
+	syslog(LOG_INFO|LOG_LOCAL3, "SMI server daemon starting");
+	/* fork of the parent process */
+	pid = fork();
+	if (pid < 0) {
+			exit(EXIT_FAILURE);
+	}
+	syslog(LOG_INFO, "forked.");
+	/* exit parent if got good PID */
+	if (pid > 0) {
+			exit(EXIT_SUCCESS);
+	}
+	syslog(LOG_INFO, "PID checked.");
 
-		/* Open any logs here */
+	/* change file mode mask */
+	umask(0);
+	syslog(LOG_INFO, "umasked.");
 
-		/* Create a new SID for the child process */
-		sid = setsid();
-		if (sid < 0) {
-				/* Log the failure */
-				exit(EXIT_FAILURE);
-		}
-		syslog(LOG_SYSLOG, "SID created.\n");
+	/* Open any logs here */
+
+	/* create new SID for the child process */
+	sid = setsid();
+	if (sid < 0) {
+			/* Log the failure */
+			exit(EXIT_FAILURE);
+	}
+	syslog(LOG_INFO, "SID created.");
+
+	/* change current working directory */
+	if ((chdir("/")) < 0) {
+			/* Log the failure */
+			exit(EXIT_FAILURE);
+	}
+	syslog(LOG_INFO, "Dir changed.");
+
+	/* close the standard file descriptors */
+	close(STDIN_FILENO);
+	close(STDOUT_FILENO);
+	close(STDERR_FILENO);
+
+	/* Daemon-specific initialization goes here */
 
 
+	/* Do some task here ... */
+	// logging to 'regular' facility LOCAL0
+	sleep(5);
+	syslog(LOG_INFO, "log at info to local0");
+	sleep(1);
+	syslog(LOG_WARNING, "log at warn to local0");
+	sleep(12);
+	syslog(LOG_ERR,  "log at error to local0");
 
-		/* Change the current working directory */
-		if ((chdir("/")) < 0) {
-				/* Log the failure */
-				exit(EXIT_FAILURE);
-		}
-		syslog(LOG_SYSLOG, "Dir changed.\n");
+	// logging to 'special' facility LOCAL3
+	sleep(1);
+	syslog(LOG_INFO|LOG_LOCAL3, "special log message to local3");
 
-		/* Close out the standard file descriptors */
-		close(STDIN_FILENO);
-		close(STDOUT_FILENO);
-		close(STDERR_FILENO);
-
-		/* Daemon-specific initialization goes here */
-
-		/* The Big Loop */
-		syslog(LOG_SYSLOG, "loop.\n");
-		while (1) {
-		   /* Do some task here ... */
-		   sleep(5);
-		   syslog(LOG_SYSLOG, "5 sconds.\n");
-		   sleep(5);
-		   syslog(LOG_SYSLOG, "10 sconds.\n");
-		   sleep(5);
-		   syslog(LOG_SYSLOG, "15 sconds.\n");
-		   sleep(5);
-		   syslog(LOG_SYSLOG, "20 sconds.\n");
-		   sleep(5);
-		   syslog(LOG_SYSLOG, "25 sconds.\n");
-		   sleep(5);
-		   syslog(LOG_SYSLOG, "30 sconds, exiting\n");
-		   sleep(1);
-		   syslog(LOG_SYSLOG, "bye.\n");
-		}
-   exit(EXIT_SUCCESS);
+	// close "regular" log
+	closelog();
+	exit(EXIT_SUCCESS);
 }
