@@ -36,7 +36,7 @@
 #include <syslog.h>			/* syslog */
 #include <stdio.h>			/* syslog */
 
-int main(void) {
+int main(int argc, char *argv[]) {
 
 	/* my process ID and Session ID */
 	pid_t pid, sid;
