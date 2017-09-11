@@ -5,13 +5,14 @@
 ### ex. create database, create symbolic link...
 
 ln -sf $SYNOPKG_PKGDEST/usr/bin/smi-server /usr/bin/
-echo "[smi-server]" >>$SYNOPKG_PKGDEST/smi-server.sc.new
-echo "title=\"SMI-Server\"" >>$SYNOPKG_PKGDEST/smi-server.sc.new
-echo "desc=\"SMI-Server\"" >>$SYNOPKG_PKGDEST/smi-server.sc.new
-echo "port_forward=\"no\"" >>$SYNOPKG_PKGDEST/smi-server.sc.new
-echo "dst.ports=\"${pkgwizard_smi_server_port}/tcp\"" >>$SYNOPKG_PKGDEST/smi-server.sc.new
-#### copy and rename services-configuration-file
-cp $SYNOPKG_PKGDEST/smi-server.sc.new /usr/local/etc/services.d/smi-server.sc
+echo "[smi-server]" >>$SYNOPKG_PKGDEST/conf/smi-server.sc
+echo "title=\"SMI-Server\"" >>$SYNOPKG_PKGDEST/conf/smi-server.sc
+echo "desc=\"SMI-Server\"" >>$SYNOPKG_PKGDEST/conf/smi-server.sc
+echo "port_forward=\"no\"" >>$SYNOPKG_PKGDEST/conf/smi-server.sc
+echo "dst.ports=\"${pkgwizard_smi_server_port}/tcp\"" >>$SYNOPKG_PKGDEST/conf/smi-server.sc
+#### copy configuration files
+cp $SYNOPKG_PKGDEST/conf/smi-server.sc /usr/local/etc/services.d/smi-server.sc
+cp $SYNOPKG_PKGDEST/conf/smi-server.conf /usr/local/etc/syslog-ng/patterndb.d/smi-server.conf
 
 echo ${pkgwizard_smi_server_port} >> /var/packages/smi-server/port      # config file ?!
 
