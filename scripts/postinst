@@ -17,11 +17,11 @@ echo ${pkgwizard_smi_server_port} >> /var/packages/smi-server/port      # config
 
 ### add port config to resource file
 echo ",\"port-config\":{" >> /var/packages/smi-server/conf/resource
-echo "\"protocol-file\":\"smi-server.sc\"}" >> /var/packages/smi-server/conf/resource
+echo "\"protocol-file\":\"conf/smi-server.sc\"}" >> /var/packages/smi-server/conf/resource
 
 ### add syslog infos to resource file
 echo ",\"syslog-config\":{" >> /var/packages/smi-server/conf/resource
-echo "\"patterndb-relpath\":\"smi-server.conf\"}" >> /var/packages/smi-server/conf/resource
+echo "\"patterndb-relpath\":\"conf/smi-server.conf\"}" >> /var/packages/smi-server/conf/resource
 
 /usr/syno/sbin/synopkghelper update smi-server port-config
 
