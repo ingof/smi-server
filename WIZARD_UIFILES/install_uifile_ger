@@ -3,7 +3,8 @@
 	"items":
 	[{
 		"type": "textfield",
-		"desc": "Bitte den Port des Webserver für den SMI-Server auswählen. Ohne Eingabe ist die Voreinstellung 8086.",
+		"defaultVaule": "8086",
+		"desc": "Bitte den Port des Webserver für den SMI-Server auswählen.",
 		"subitems":
 		[{
 			"key": "pkgwizard_smi_server_port",

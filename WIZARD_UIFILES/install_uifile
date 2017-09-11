@@ -3,7 +3,8 @@
 	"items":
 	[{
 		"type": "textfield",
-		"desc": "Please select Port of the SMI-monitor. The default value if left blank is 8086.",
+		"defaultVaule": "8086",
+		"desc": "Please select Port of the SMI-monitor.",
 		"subitems":
 		[{
 			"key": "pkgwizard_smi_server_port",
