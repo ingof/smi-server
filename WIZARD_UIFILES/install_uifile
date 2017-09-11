@@ -3,7 +3,7 @@
 	"items":
 	[{
 		"type": "textfield",
-		"defaultVaule": "8086",
+		"defaultValue": "8086",
 		"desc": "Please select Port of the SMI-monitor.",
 		"subitems":
 		[{

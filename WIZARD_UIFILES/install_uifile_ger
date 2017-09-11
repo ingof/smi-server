@@ -3,7 +3,7 @@
 	"items":
 	[{
 		"type": "textfield",
-		"defaultVaule": "8086",
+		"defaultValue": "8086",
 		"desc": "Bitte den Port des Webserver für den SMI-Server auswählen.",
 		"subitems":
 		[{
