@@ -4,6 +4,7 @@
 	[{
 		"type": "textfield",
 		"defaultValue": "8086",
+		"emptyText": "webserver port",
 		"desc": "Please select Port of the SMI-monitor.",
 		"subitems":
 		[{
