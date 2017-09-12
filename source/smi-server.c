@@ -86,15 +86,15 @@ int main(int argc, char *argv[]) {
 
 	/* Do some task here ... */
 	// logging to 'regular' facility LOCAL0
-	sleep(5);
+	sleep(3);
 	syslog(LOG_INFO, "log at info to local0");
-	sleep(1);
+	sleep(3);
 	syslog(LOG_WARNING, "log at warn to local0");
-	sleep(12);
+	sleep(3);
 	syslog(LOG_ERR,  "log at error to local0");
 
 	// logging to 'special' facility LOCAL3
-	sleep(1);
+	sleep(3);
 	syslog(LOG_INFO|LOG_LOCAL3, "special log message to local3");
 
 	// close "regular" log

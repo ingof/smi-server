@@ -20,7 +20,7 @@ create_inner_tarball() {
   ### install needed file into PKG_DIR
   mkdir -p $binary_dir
 	cp -av smi-server $binary_dir
-    cp -av ui/etc/smi-server.sc.old $inner_tarball_dir/conf/
+    # cp -av ui/etc/smi-server.sc.old $inner_tarball_dir/conf/
     cp -av ui/etc/smi-server.conf $inner_tarball_dir/conf/
 
   make install DESTDIR="$inner_tarball_dir"
