@@ -1,9 +1,9 @@
-/* smi-monitor.h */
-#ifndef SMI_MONITOR_H
-#define SMI_MONITOR_H
+/* smi-server.h */
+#ifndef SMI_SERVER_H
+#define SMI_SERVER_H
 
 
 /* functions */
 
 
-#endif /* smi-monitor.h */
+#endif /* smi-server.h */

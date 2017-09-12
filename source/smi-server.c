@@ -40,64 +40,65 @@ int main(int argc, char *argv[]) {
 
 	/* my process ID and Session ID */
 	pid_t pid, sid;
-	openlog(argv[0], LOG_PID | LOG_NDELAY, LOG_LOCAL0);
 
-	syslog(LOG_INFO|LOG_LOCAL3, "SMI server daemon starting");
+	openlog(argv[0], LOG_PID | LOG_NDELAY, LOG_LOCAL0);
+	syslog(LOG_INFO, "INFO: SMI server starting");
+
 	/* fork of the parent process */
 	pid = fork();
 	if (pid < 0) {
-			exit(EXIT_FAILURE);
+		exit(EXIT_FAILURE);
+		syslog(LOG_ERR,  "ERROR: fork failed");
 	}
-	syslog(LOG_INFO, "forked.");
 	/* exit parent if got good PID */
 	if (pid > 0) {
-			exit(EXIT_SUCCESS);
+		exit(EXIT_SUCCESS);
+		syslog(LOG_ERR,  "ERROR: getPID failed");
 	}
-	syslog(LOG_INFO, "PID checked.");
 
-	/* change file mode mask */
 	umask(0);
-	syslog(LOG_INFO, "umasked.");
 
 	/* Open any logs here */
 
 	/* create new SID for the child process */
 	sid = setsid();
 	if (sid < 0) {
-			/* Log the failure */
-			exit(EXIT_FAILURE);
+		/* Log the failure */
+		syslog(LOG_ERR,  "ERROR: creation of new SID failed");
+		exit(EXIT_FAILURE);
 	}
-	syslog(LOG_INFO, "SID created.");
 
 	/* change current working directory */
 	if ((chdir("/")) < 0) {
-			/* Log the failure */
-			exit(EXIT_FAILURE);
+		/* Log the failure */
+		syslog(LOG_ERR,  "ERROR: changing current working directory failed");
+		exit(EXIT_FAILURE);
 	}
-	syslog(LOG_INFO, "Dir changed.");
 
 	/* close the standard file descriptors */
 	close(STDIN_FILENO);
 	close(STDOUT_FILENO);
 	close(STDERR_FILENO);
+	syslog(LOG_INFO, "INFO: server damonized and start working");
 
 	/* Daemon-specific initialization goes here */
 
 
 	/* Do some task here ... */
-	// logging to 'regular' facility LOCAL0
-	sleep(3);
-	syslog(LOG_INFO, "log at info to local0");
-	sleep(3);
-	syslog(LOG_WARNING, "log at warn to local0");
-	sleep(3);
-	syslog(LOG_ERR,  "log at error to local0");
-
-	// logging to 'special' facility LOCAL3
-	sleep(3);
-	syslog(LOG_INFO|LOG_LOCAL3, "special log message to local3");
+	// // logging to 'regular' facility LOCAL0
+	// sleep(3);
+	// syslog(LOG_INFO, "log at info to local0");
+	// sleep(3);
+	// syslog(LOG_WARNING, "log at warn to local0");
+	// sleep(3);
+	// syslog(LOG_ERR,  "log at error to local0");
+	//
+	// // logging to 'special' facility LOCAL3
+	// sleep(3);
+	// syslog(LOG_INFO|LOG_LOCAL3, "special log message to local3");
 
 	// close "regular" log
 	closelog();
+	syslog(LOG_INFO, "INFO: SMI-server closed");
 	exit(EXIT_SUCCESS);
 }
