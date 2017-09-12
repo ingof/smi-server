@@ -25,7 +25,7 @@ echo ${pkgwizard_smi_server_port} >> /var/packages/smi-server/port      # config
 echo -n ",\"port-config\":{" >> /var/packages/smi-server/conf/resource
 echo -n "\"protocol-file\":\"conf/smi-server.sc\"}" >> /var/packages/smi-server/conf/resource
 
-### add syslog infos to resource file
+### add syslog config to resource file
 echo -n ",\"syslog-config\":{" >> /var/packages/smi-server/conf/resource
 echo -n "\"patterndb-relpath\":\"conf/smi-server.conf\"}" >> /var/packages/smi-server/conf/resource
 

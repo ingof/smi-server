@@ -4,7 +4,7 @@
 ### Use PKG_DIR as working directory.
 PKG_DIR=/tmp/_test_spk
 rm -rf $PKG_DIR
-mkdir -p $PKG_DIR
+mkdir -p $PKG_DIR/ui/
 
 ### get spk packing functions
 source /pkgscripts/include/pkg_util.sh
@@ -41,8 +41,9 @@ create_spk(){
   mkdir -p $wizards_dir
   cp -av WIZARD_UIFILES/* $wizards_dir
 
-  ### Copy package icon
-  cp -av ui/PACKAGE_ICON*.PNG $PKG_DIR
+  ### Copy package ui files
+  cp -av ui/PACKAGE_ICON*.PNG $PKG_DIR/ui/
+  cp -av ui/config $PKG_DIR/ui/
 
   ### Generate INFO file
   ./INFO.sh > INFO
