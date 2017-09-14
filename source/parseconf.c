@@ -12,15 +12,15 @@ int main()
    FILE * fp;
 
    fp = fopen ("smi-server.conf", "w+");
-   fputs("global=1", fp);
-   fputs("# comment", fp);
-   fputs("", fp);
-   fputs("[Person]", fp);
-   fputs(" name=Max", fp);
-   fputs(" surname=Mustermann", fp);
-   fputs("[car]", fp);
-   fputs(" name=Ferrari", fp);
-   fputs(" model=F40", fp);
+   fputs("global=1\n", fp);
+   fputs("# comment\n", fp);
+   fputs("\n", fp);
+   fputs("[Person]\n", fp);
+   fputs(" name=Max\n", fp);
+   fputs(" surname=Mustermann\n", fp);
+   fputs("[car]\n", fp);
+   fputs(" name=Ferrari\n", fp);
+   fputs(" model=F40\", fp);
 
    rewind(fp);
 
