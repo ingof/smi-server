@@ -24,15 +24,15 @@ int main()
 
    rewind(fp);
 
-//   fscanf(fp, "%s = %s", str1, str2);
+   fscanf(fp, "%s = %s", str1, str2);
    printf("Read String1 |%s|\n", str1 );
    printf("Read String2 |%s|\n\n", str2 );
 
-//   fscanf(fp, "%s = %s", str1, str2);
+  fscanf(fp, "%s = %s", str1, str2);
    printf("Read String1 |%s|\n", str1 );
    printf("Read String2 |%s|\n\n", str2 );
 
-//   fscanf(fp, "%s = %s", str1, str2);
+  fscanf(fp, "%s = %s", str1, str2);
    printf("Read String1 |%s|\n", str1 );
    printf("Read String2 |%s|\n\n", str2 );
 
