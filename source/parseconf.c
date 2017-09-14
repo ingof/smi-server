@@ -11,7 +11,7 @@ int main()
    int year;
    FILE * fp;
 
-   fp = fopen ("smi-server.conf", "w+");
+   fp = fopen ("smi-server.conf\n", "w+");
    fputs("global=1\n", fp);
    fputs("# comment\n", fp);
    fputs("\n", fp);
@@ -20,7 +20,7 @@ int main()
    fputs(" surname=Mustermann\n", fp);
    fputs("[car]\n", fp);
    fputs(" name=Ferrari\n", fp);
-   fputs(" model=F40\", fp);
+   fputs(" model=F40\n", fp);
 
    rewind(fp);
 
