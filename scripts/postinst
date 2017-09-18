@@ -32,19 +32,19 @@ echo -n "\"patterndb-relpath\":\"conf/smi-server.conf\"}" >> /var/packages/smi-s
 ### add data-share
 echo -n ",\"data-share\":{" >> /var/packages/smi-server/conf/resource
 echo -n "\"shares\":[{" >> /var/packages/smi-server/conf/resource
-echo -n "\"name\":\"SMI-Server\"," >> /var/packages/smi-server/conf/resource
+echo -n "\"name\":\"SmiServer\"," >> /var/packages/smi-server/conf/resource
 echo -n "\"permission\":{" >> /var/packages/smi-server/conf/resource
 echo -n "\"rw\":[\"admin\"]" >> /var/packages/smi-server/conf/resource
 echo -n "}" >> /var/packages/smi-server/conf/resource
 echo -n "}]" >> /var/packages/smi-server/conf/resource
 echo -n "}" >> /var/packages/smi-server/conf/resource
 
-echo "$SYNOPKG_PKGDEST_VOL/SMI" >> /var/packages/smi-server/conf/share
-echo "${SYNOPKG_PKGDEST_VOL}/SMI" >> /var/packages/smi-server/conf/share
-echo $SYNOPKG_PKGDEST_VOL >> /var/packages/smi-server/conf/share
-echo ${SYNOPKG_PKGDEST_VOL} >> /var/packages/smi-server/conf/share
-sudo /usr/syno/sbin/synoshare --add "SMI" "SMI-Server shared folder" "/volume1/SMI" "" "admin" "" 1 ""
-echo "--------------------------------" >> /var/packages/smi-server/conf/share
+# echo "$SYNOPKG_PKGDEST_VOL/SMI" >> /var/packages/smi-server/conf/share
+# echo "${SYNOPKG_PKGDEST_VOL}/SMI" >> /var/packages/smi-server/conf/share
+# echo $SYNOPKG_PKGDEST_VOL >> /var/packages/smi-server/conf/share
+# echo ${SYNOPKG_PKGDEST_VOL} >> /var/packages/smi-server/conf/share
+sudo /usr/syno/sbin/synoshare --add "SmiPost" "SMI-Server shared folder" "$SYNOPKG_PKGDEST_VOL/SmiPost" "" "root, admin" "" 1 ""
+# echo "--------------------------------" >> /var/packages/smi-server/conf/share
 
 
 ### activate new configuration files

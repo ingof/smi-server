@@ -13,7 +13,7 @@
 # echo "${SYNOPKG_PKGDEST_VOL}/SMI" >> /var/packages/smi-server/conf/share
 # echo $SYNOPKG_PKGDEST_VOL >> /var/packages/smi-server/conf/share
 # echo ${SYNOPKG_PKGDEST_VOL} >> /var/packages/smi-server/conf/share
-# sudo /usr/syno/sbin/synoshare --add "SMI" "SMI-Server shared folder" "/volume1/SMI" "" "admin" "" 1 ""
+sudo /usr/syno/sbin/synoshare --add "SmiPre" "SMI-Server shared folder" "/volume1/SmiPre" "" "admin" "" 1 ""
 # echo "--------------------------------" >> /var/packages/smi-server/conf/share
 # if [ $? != 0 ]; then
 # 	echo "${illegal_share_name}" >> $SYNOPKG_TEMP_LOGFILE
