@@ -9,10 +9,11 @@
 #synoshare {--add} sharename share_desc share_path user_list_na user_list_rw user_list_ro share_browsable adv_privilege
 #synoshare --add "SMI" "Freigabe des SMI-Server" "/volume1/SMI" "" "root, admin" "" 1 ""
 synoshare --add "SMI" "SMI-Server shared folder" "$SYNOPKG_PKGDEST_VOL/SMI" "" "root, admin" "" 1 ""
-echo "$SYNOPKG_PKGDEST_VOL/SMI" >> /volume1/public/share1
-echo "${SYNOPKG_PKGDEST_VOL}/SMI" >> /volume1/public/share1
-echo $SYNOPKG_PKGDEST_VOL >> /volume1/public/share1
-echo ${SYNOPKG_PKGDEST_VOL} >> /volume1/public/share1
+echo "$SYNOPKG_PKGDEST_VOL/SMI" >> /var/packages/smi-server/conf/share
+echo "${SYNOPKG_PKGDEST_VOL}/SMI" >> /var/packages/smi-server/conf/share
+echo $SYNOPKG_PKGDEST_VOL >> /var/packages/smi-server/conf/share
+echo ${SYNOPKG_PKGDEST_VOL} >> /var/packages/smi-server/conf/share
+echo "--------------------------------" >> /var/packages/smi-server/conf/share
 if [ $? != 0 ]; then
 	echo "${illegal_share_name}" >> $SYNOPKG_TEMP_LOGFILE
 	exit 1
