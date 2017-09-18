@@ -30,20 +30,20 @@ echo -n ",\"syslog-config\":{" >> /var/packages/smi-server/conf/resource
 echo -n "\"patterndb-relpath\":\"conf/smi-server.conf\"}" >> /var/packages/smi-server/conf/resource
 
 ### add data-share
-echo -n ",\"data-share\": {" >> /var/packages/smi-server/conf/resource
-echo -n "\"shares\": [{" >> /var/packages/smi-server/conf/resource
-echo -n "\"name\": \"SMI\"," >> /var/packages/smi-server/conf/resource
-echo -n "\"permission\": {" >> /var/packages/smi-server/conf/resource
-echo -n "\"rw\": [\"root\", \"admin\"]" >> /var/packages/smi-server/conf/resource
+echo -n ",\"data-share\":{" >> /var/packages/smi-server/conf/resource
+echo -n "\"shares\":[{" >> /var/packages/smi-server/conf/resource
+echo -n "\"name\":\"SMI-Server\"," >> /var/packages/smi-server/conf/resource
+echo -n "\"permission\":{" >> /var/packages/smi-server/conf/resource
+echo -n "\"rw\":[\"admin\"]" >> /var/packages/smi-server/conf/resource
 echo -n "}" >> /var/packages/smi-server/conf/resource
 echo -n "}]" >> /var/packages/smi-server/conf/resource
 echo -n "}" >> /var/packages/smi-server/conf/resource
 
-echo "--------------------------------" >> /var/packages/smi-server/conf/share
 echo "$SYNOPKG_PKGDEST_VOL/SMI" >> /var/packages/smi-server/conf/share
 echo "${SYNOPKG_PKGDEST_VOL}/SMI" >> /var/packages/smi-server/conf/share
 echo $SYNOPKG_PKGDEST_VOL >> /var/packages/smi-server/conf/share
 echo ${SYNOPKG_PKGDEST_VOL} >> /var/packages/smi-server/conf/share
+sudo /usr/syno/sbin/synoshare --add "SMI" "SMI-Server shared folder" "/volume1/SMI" "" "admin" "" 1 ""
 echo "--------------------------------" >> /var/packages/smi-server/conf/share
 
 
