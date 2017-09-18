@@ -43,6 +43,8 @@ int main(int argc, char *argv[]) {
 
 	openlog(argv[0], LOG_PID | LOG_NDELAY, LOG_LOCAL0);
 	syslog(LOG_INFO, "INFO: SMI server starting");
+	syslog(LOG_INFO, argv[0]);
+	syslog(LOG_INFO, argv[1]);
 
 	/* fork of the parent process */
 	pid = fork();
