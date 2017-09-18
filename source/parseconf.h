@@ -4,6 +4,7 @@
 
 
 /* functions */
-
+int parseConfFile(void);
+int parseConfLine(char* line);
 
 #endif /* parseconf.h */
