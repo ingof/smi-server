@@ -16,7 +16,7 @@ echo "dst.ports=\"${pkgwizard_smi_server_port}/tcp\"" >>$SYNOPKG_PKGDEST/conf/sm
 
 #### copy configuration files
 cp $SYNOPKG_PKGDEST/conf/smi-server.sc /usr/local/etc/services.d/smi-server.sc
-cp $SYNOPKG_PKGDEST/conf/smi-server.conf /usr/local/etc/syslog-ng/patterndb.d/smi-server.conf
+cp $SYNOPKG_PKGDEST/conf/smi-server.conf.patterndb /usr/local/etc/syslog-ng/patterndb.d/smi-server.conf
 
 ### create poor config file
 echo ${pkgwizard_smi_server_port} >> /var/packages/smi-server/port      # config file ?!
