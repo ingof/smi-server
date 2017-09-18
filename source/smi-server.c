@@ -81,6 +81,8 @@ int main(int argc, char *argv[]) {
 	close(STDERR_FILENO);
 	syslog(LOG_INFO, "INFO: server damonized and start working");
 
+	syslog(LOG_INFO, "INFO: argument1="+argv[1]);
+
 	/* Daemon-specific initialization goes here */
 
 

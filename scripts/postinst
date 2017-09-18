@@ -14,9 +14,13 @@ echo "desc=\"SMI-Server\"" >>$SYNOPKG_PKGDEST/conf/smi-server.sc
 echo "port_forward=\"no\"" >>$SYNOPKG_PKGDEST/conf/smi-server.sc
 echo "dst.ports=\"${pkgwizard_smi_server_port}/tcp\"" >>$SYNOPKG_PKGDEST/conf/smi-server.sc
 
-#### copy configuration files
+#### copy paket configuration files
 cp $SYNOPKG_PKGDEST/conf/smi-server.sc /usr/local/etc/services.d/smi-server.sc
 cp $SYNOPKG_PKGDEST/conf/smi-server.conf.patterndb /usr/local/etc/syslog-ng/patterndb.d/smi-server.conf
+
+### copy server configuration
+sudo /usr/syno/sbin/synoshare --add "SMI" "SMI-Server shared folder" "$SYNOPKG_PKGDEST_VOL/SMI" "" "root, admin" "" 1 ""
+cp $SYNOPKG_PKGDEST/conf/smi-server.conf. /usr/local/etc/syslog-ng/patterndb.d/smi-server.conf.template
 
 ### create poor config file
 echo ${pkgwizard_smi_server_port} >> /var/packages/smi-server/port      # config file ?!
@@ -43,7 +47,6 @@ echo -n "}" >> /var/packages/smi-server/conf/resource
 # echo "${SYNOPKG_PKGDEST_VOL}/SMI" >> /var/packages/smi-server/conf/share
 # echo $SYNOPKG_PKGDEST_VOL >> /var/packages/smi-server/conf/share
 # echo ${SYNOPKG_PKGDEST_VOL} >> /var/packages/smi-server/conf/share
-sudo /usr/syno/sbin/synoshare --add "SmiPost" "SMI-Server shared folder" "$SYNOPKG_PKGDEST_VOL/SmiPost" "" "root, admin" "" 1 ""
 # echo "--------------------------------" >> /var/packages/smi-server/conf/share
 
 
