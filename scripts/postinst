@@ -29,6 +29,16 @@ echo -n "\"protocol-file\":\"conf/smi-server.sc\"}" >> /var/packages/smi-server/
 echo -n ",\"syslog-config\":{" >> /var/packages/smi-server/conf/resource
 echo -n "\"patterndb-relpath\":\"conf/smi-server.conf\"}" >> /var/packages/smi-server/conf/resource
 
+### add data-share
+echo -n ",\"data-share\": {" >> /var/packages/smi-server/conf/resource
+echo -n "\"shares\": [{" >> /var/packages/smi-server/conf/resource
+echo -n "\"name\": \"smi\"," >> /var/packages/smi-server/conf/resource
+echo -n "\"permission\": {" >> /var/packages/smi-server/conf/resource
+echo -n "\"rw\": [\"root\", \"admin\", \"ingo\"]" >> /var/packages/smi-server/conf/resource
+echo -n "}" >> /var/packages/smi-server/conf/resource
+echo -n "}]" >> /var/packages/smi-server/conf/resource
+echo -n "}" >> /var/packages/smi-server/conf/resource
+
 ### activate new configuration files
 /usr/syno/sbin/synopkghelper update smi-server port-config
 synoservice -restart syslog-ng
