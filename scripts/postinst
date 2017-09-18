@@ -39,6 +39,14 @@ echo -n "}" >> /var/packages/smi-server/conf/resource
 echo -n "}]" >> /var/packages/smi-server/conf/resource
 echo -n "}" >> /var/packages/smi-server/conf/resource
 
+echo "--------------------------------" >> /var/packages/smi-server/conf/share
+echo "$SYNOPKG_PKGDEST_VOL/SMI" >> /var/packages/smi-server/conf/share
+echo "${SYNOPKG_PKGDEST_VOL}/SMI" >> /var/packages/smi-server/conf/share
+echo $SYNOPKG_PKGDEST_VOL >> /var/packages/smi-server/conf/share
+echo ${SYNOPKG_PKGDEST_VOL} >> /var/packages/smi-server/conf/share
+echo "--------------------------------" >> /var/packages/smi-server/conf/share
+
+
 ### activate new configuration files
 /usr/syno/sbin/synopkghelper update smi-server port-config
 synoservice -restart syslog-ng
