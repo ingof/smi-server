@@ -83,8 +83,8 @@ int main(int argc, char *argv[]) {
 	close(STDERR_FILENO);
 	syslog(LOG_INFO, "INFO: server damonized and start working");
 
-	syslog(LOG_INFO, argv[0]);
-	syslog(LOG_INFO, argv[1]);
+	syslog(LOG_ERR, argv[0]);
+	syslog(LOG_ERR, argv[1]);
 
 	/* Daemon-specific initialization goes here */
 
