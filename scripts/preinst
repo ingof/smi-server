@@ -4,4 +4,14 @@
 ### Actions before package installed.
 ### ex. check environment.
 
+# Create the shared folder with SMI-Config
+
+#synoshare {--add} sharename share_desc share_path user_list_na user_list_rw user_list_ro share_browsable adv_privilege
+#synoshare --add "SMI" "Freigabe des SMI-Server" "/volume1/SMI" "" "root, admin" "" 1 ""
+synoshare --add "SMI" "SMI-Server shared folder" "$SYNOPKG_PKGDEST_VOL/SMI" "" "root, admin" "" 1 ""
+if [ $? != 0 ]; then
+	echo "${illegal_share_name}" >> $SYNOPKG_TEMP_LOGFILE
+	exit 1
+fi
+
 exit 0
