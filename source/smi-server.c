@@ -81,7 +81,8 @@ int main(int argc, char *argv[]) {
 	close(STDERR_FILENO);
 	syslog(LOG_INFO, "INFO: server damonized and start working");
 
-	syslog(LOG_INFO, "INFO: argument1=".append(argv[1]));
+	syslog(LOG_INFO, "INFO: argv[0]=".append(argv[0]));
+	syslog(LOG_INFO, "INFO: argv[1]=".append(argv[1]));
 
 	/* Daemon-specific initialization goes here */
 
