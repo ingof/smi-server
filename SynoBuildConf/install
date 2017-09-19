@@ -24,6 +24,7 @@ create_inner_tarball() {
     cp -av conf/smi-server.conf.patterndb $inner_tarball_dir/conf/
     cp -av conf/smi-server.conf $inner_tarball_dir/conf/
 
+  # copy image and confug for UI
   mkdir -p $inner_tarball_dir/ui/
   cp -av ui/PACKAGE_ICON*.PNG $inner_tarball_dir/ui/
   cp -av ui/config $inner_tarball_dir/ui/
