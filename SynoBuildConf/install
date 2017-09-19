@@ -25,6 +25,9 @@ create_inner_tarball() {
     cp -av conf/smi-server.conf $inner_tarball_dir/conf/
 
   mkdir -p $inner_tarball_dir/ui/
+  cp -av ui/PACKAGE_ICON*.PNG $inner_tarball_dir/ui/
+  cp -av ui/config $inner_tarball_dir/ui/
+
 
   make install DESTDIR="$inner_tarball_dir"
 
@@ -44,9 +47,9 @@ create_spk(){
   mkdir -p $wizards_dir
   cp -av WIZARD_UIFILES/* $wizards_dir
 
-  ### Copy package ui files
-  cp -av ui/PACKAGE_ICON*.PNG $PKG_DIR
-  cp -av ui/config $PKG_DIR/ui/
+  # ### Copy package ui files
+  # cp -av ui/PACKAGE_ICON*.PNG $PKG_DIR
+  # cp -av ui/config $PKG_DIR/ui/
 
   ### Generate INFO file
   ./INFO.sh > INFO

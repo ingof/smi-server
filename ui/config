@@ -9,6 +9,6 @@
 			"icon": "PACKAGE_ICON{0}.png",
 			"protocol": "http",
 			"url": "/",
-			"port": "8086"
+			"port": "8088"
 	}
 }
