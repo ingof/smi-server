@@ -8,7 +8,7 @@
 			"desc": "SMI-Server",
 			"icon": "PACKAGE_ICON{0}.png",
 			"protocol": "http",
-			"url": "/",
+			"url": "\/index.html",
 			"port": "8088"
 	}
 }
