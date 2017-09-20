@@ -20,7 +20,7 @@ create_inner_tarball() {
   ### install needed file into PKG_DIR
   mkdir -p $binary_dir
 	cp -av smi-server $binary_dir
-    # cp -av conf/smi-server.sc.old $inner_tarball_dir/conf/
+    cp -av conf/smi-server.sc $inner_tarball_dir/conf/
     cp -av conf/smi-server.conf.patterndb $inner_tarball_dir/conf/
     cp -av conf/smi-server.conf $inner_tarball_dir/conf/
 
@@ -49,9 +49,9 @@ create_spk(){
   mkdir -p $wizards_dir
   cp -av WIZARD_UIFILES/* $wizards_dir
 
-  # ### Copy package ui files
-  # cp -av ui/PACKAGE_ICON*.PNG $PKG_DIR
-  # cp -av ui/config $PKG_DIR/ui/
+  ### Copy package ui files
+  cp -av ui/PACKAGE_ICON*.PNG $PKG_DIR
+  cp -av ui/config $PKG_DIR/ui/
 
   ### Generate INFO file
   ./INFO.sh > INFO
