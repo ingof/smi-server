@@ -36,8 +36,10 @@ postinst ()
 
     synoshare --get SMI
     if [ $? != 0 ]; then
+        echo "$(date) $line Share does not exist. ->> creating share now. (code: $?)" >> /volume1/public/InstallLog.txt
         /usr/syno/sbin/synoshare --add "SMI" "SMI-Server shared folder" "$SYNOPKG_PKGDEST_VOL/SMI" "" "root, admin" "" 1 ""
         if [ $? == 0 ]; then
+            echo "$(date) $line Share successfullcreated! (code $?)" >> /volume1/public/InstallLog.txt
             echo "share has been created" >> $SYNOPKG_TEMP_LOGFILE
         fi
     fi
