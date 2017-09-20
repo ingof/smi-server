@@ -112,7 +112,7 @@ int main(int argc, char *argv[]) {
 	// syslog(LOG_INFO|LOG_LOCAL3, "special log message to local3");
 
 	// close "regular" log
-	syslog(LOG_INFO, "INFO: SMI-server closing");
+	syslog(LOG_INFO, "INFO: SMI-Server closing");
 	closelog();
 	exit(EXIT_SUCCESS);
 }

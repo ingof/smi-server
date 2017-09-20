@@ -3,7 +3,7 @@
 source /pkgscripts/include/pkg_util.sh
 
 package="smi-server"
-displayname="SMI-server"
+displayname="SMI-Server"
 version="0.0.1"
 beta="yes"
 os_min_ver=""
