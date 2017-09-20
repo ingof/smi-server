@@ -34,11 +34,11 @@ postinst ()
     ### copy server configuration
 
 
-    synoshare --get SMI >> /volume1/public/InstallLog.txt
+    sudo synoshare --get SMI >> /volume1/public/InstallLog.txt
     check_return=$?
     if [ $check_return -ne 0 ]; then
         echo "$(date) $line Share does not exist. ->> creating share now. (code: $check_return)" >> /volume1/public/InstallLog.txt
-        /usr/syno/sbin/synoshare --add "SMI" "SMI-Server shared folder" "$SYNOPKG_PKGDEST_VOL/SMI" "" "root, admin" "" 1 "" >> /volume1/public/InstallLog.txt
+        sudo synoshare --add "SMI" "SMI-Server shared folder" "$SYNOPKG_PKGDEST_VOL/SMI" "" "root, admin" "" 1 "" >> /volume1/public/InstallLog.txt
         create_return=$?
         if [ $create_return -eq 0 ]; then
             echo "$(date) $line Share successfull created! (code: $check_return|$create_return)" >> /volume1/public/InstallLog.txt
