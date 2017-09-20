@@ -91,13 +91,11 @@ int main(int argc, char *argv[]) {
 
     if(getcwd(puffer,sizeof(puffer)) == NULL) {
     //    fprintf(stderr, "Fehler bei getcwd ...\n");
+		syslog(LOG_INFO, "can not get PWD!");
+		// return EXIT_FAILURE;
+   } else {
 	   syslog(LOG_INFO, "following Entry is PWD:");
 	   syslog(LOG_INFO, puffer);
-       return EXIT_FAILURE;
-   } else {
-	   syslog(LOG_INFO, "can not get PWD!");
-	   
-
    }
 
 	/* Do some task here ... */
