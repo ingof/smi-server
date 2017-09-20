@@ -35,6 +35,7 @@
 #include<unistd.h>			/* web server */
 #include <syslog.h>			/* syslog */
 #include <stdio.h>			/* syslog */
+#include <unistd.h>         /* getpwd() */
 
 int main(int argc, char *argv[]) {
 
@@ -93,7 +94,11 @@ int main(int argc, char *argv[]) {
 	   syslog(LOG_INFO, "following Entry is PWD:");
 	   syslog(LOG_INFO, puffer);
        return EXIT_FAILURE;
-    }
+   } else {
+	   syslog(LOG_INFO, "can not get PWD!");
+	   
+
+   }
 
 	/* Do some task here ... */
 	// // logging to 'regular' facility LOCAL0
