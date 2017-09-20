@@ -94,7 +94,7 @@ int main(int argc, char *argv[]) {
 	   syslog(LOG_INFO, puffer);
        return EXIT_FAILURE;
     }
-    syslo
+
 	/* Do some task here ... */
 	// // logging to 'regular' facility LOCAL0
 	// sleep(3);
@@ -109,7 +109,7 @@ int main(int argc, char *argv[]) {
 	// syslog(LOG_INFO|LOG_LOCAL3, "special log message to local3");
 
 	// close "regular" log
+	syslog(LOG_INFO, "INFO: SMI-server closing");
 	closelog();
-	syslog(LOG_INFO, "INFO: SMI-server closed");
 	exit(EXIT_SUCCESS);
 }
