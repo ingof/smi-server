@@ -32,7 +32,7 @@ postinst ()
     cp $SYNOPKG_PKGDEST/conf/smi-server.conf.patterndb /usr/local/etc/syslog-ng/patterndb.d/
 
     ### copy server configuration
-    sudo /usr/syno/sbin/synoshare --add "SMI" "SMI-Server shared folder" "$SYNOPKG_PKGDEST_VOL/SMI" "" "root, admin" "" 1 ""
+    # sudo /usr/syno/sbin/synoshare --add "SMI" "SMI-Server shared folder" "$SYNOPKG_PKGDEST_VOL/SMI" "" "root, admin" "" 1 ""
     cp $SYNOPKG_PKGDEST/conf/smi-server.conf /$SYNOPKG_PKGDEST_VOL/SMI/smi-server.conf.template
 
     ### create poor config file
