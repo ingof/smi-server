@@ -66,12 +66,14 @@ postinst ()
     ### activate new configuration files
     /usr/syno/sbin/synopkghelper update smi-server port-config
     synoservice -restart syslog-ng
+
     exit 0
 }
 
 preuninst ()
 {
     echo "$(date) $line PREUNINST()" >> /volume1/public/InstallLog.txt
+
     exit 0
 }
 
@@ -80,15 +82,18 @@ postuninst ()
     echo "$(date) $line POSTUNINST()" >> /volume1/public/InstallLog.txt
     rm -f /usr/bin/smi-server
     rm -f /usr/local/etc/services.d/smi-server.sc
+
     exit 0
 }
 
 preupgrade ()
 {
+    echo "$(date) $line PREUPGRADE()" >> /volume1/public/InstallLog.txt
     exit 0
 }
 
 postupgrade ()
 {
+    echo "$(date) $line POSTUPGRADE()" >> /volume1/public/InstallLog.txt
     exit 0
 }
