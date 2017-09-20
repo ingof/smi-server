@@ -86,7 +86,15 @@ int main(int argc, char *argv[]) {
 
 	/* Daemon-specific initialization goes here */
 
+	char puffer[200];
 
+    if(getcwd(puffer,sizeof(puffer)) == NULL) {
+    //    fprintf(stderr, "Fehler bei getcwd ...\n");
+	   syslog(LOG_INFO, "following Entry is PWD:");
+	   syslog(LOG_INFO, puffer);
+       return EXIT_FAILURE;
+    }
+    syslo
 	/* Do some task here ... */
 	// // logging to 'regular' facility LOCAL0
 	// sleep(3);
