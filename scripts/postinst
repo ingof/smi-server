@@ -1,57 +1,62 @@
 #!/bin/sh
 
+PATH=/bin:/usr/bin
+. `dirname $0`/installer
+`basename $0` > $SYNOPKG_TEMP_LOGFILE
+
+
 ### This script will be executed when package installed and upgraded.
 ### Actions after package installed.
 ### ex. create database, create symbolic link...
-
-### create link for executable
-ln -sf $SYNOPKG_PKGDEST/usr/bin/smi-server /usr/bin/
-
-### create service configuration file
-echo "[smi-server]" >>$SYNOPKG_PKGDEST/conf/smi-server.sc
-echo "title=\"SMI-Server\"" >>$SYNOPKG_PKGDEST/conf/smi-server.sc
-echo "desc=\"SMI-Server\"" >>$SYNOPKG_PKGDEST/conf/smi-server.sc
-echo "port_forward=\"no\"" >>$SYNOPKG_PKGDEST/conf/smi-server.sc
-echo "dst.ports=\"${pkgwizard_smi_server_port}/tcp\"" >>$SYNOPKG_PKGDEST/conf/smi-server.sc
-
-#### copy paket configuration files
-cp $SYNOPKG_PKGDEST/conf/smi-server.sc /usr/local/etc/services.d/smi-server.sc
-cp $SYNOPKG_PKGDEST/conf/smi-server.conf.patterndb /usr/local/etc/syslog-ng/patterndb.d/
-
-### copy server configuration
-sudo /usr/syno/sbin/synoshare --add "SMI" "SMI-Server shared folder" "$SYNOPKG_PKGDEST_VOL/SMI" "" "root, admin" "" 1 ""
-cp $SYNOPKG_PKGDEST/conf/smi-server.conf /$SYNOPKG_PKGDEST_VOL/SMI/smi-server.conf.template
-
-### create poor config file
-echo ${pkgwizard_smi_server_port} >> /var/packages/smi-server/port      # config file ?!
-
-### add port config to resource file
-echo -n ",\"port-config\":{" >> /var/packages/smi-server/conf/resource
-echo -n "\"protocol-file\":\"conf/smi-server.sc\"}" >> /var/packages/smi-server/conf/resource
-
-### add syslog config to resource file
-echo -n ",\"syslog-config\":{" >> /var/packages/smi-server/conf/resource
-echo -n "\"patterndb-relpath\":\"conf/smi-server.conf\"}" >> /var/packages/smi-server/conf/resource
-
-### add data-share
-echo -n ",\"data-share\":{" >> /var/packages/smi-server/conf/resource
-echo -n "\"shares\":[{" >> /var/packages/smi-server/conf/resource
-echo -n "\"name\":\"SmiServer\"," >> /var/packages/smi-server/conf/resource
-echo -n "\"permission\":{" >> /var/packages/smi-server/conf/resource
-echo -n "\"rw\":[\"admin\"]" >> /var/packages/smi-server/conf/resource
-echo -n "}" >> /var/packages/smi-server/conf/resource
-echo -n "}]" >> /var/packages/smi-server/conf/resource
-echo -n "}" >> /var/packages/smi-server/conf/resource
-
-# echo "$SYNOPKG_PKGDEST_VOL/SMI" >> /var/packages/smi-server/conf/share
-# echo "${SYNOPKG_PKGDEST_VOL}/SMI" >> /var/packages/smi-server/conf/share
-# echo $SYNOPKG_PKGDEST_VOL >> /var/packages/smi-server/conf/share
-# echo ${SYNOPKG_PKGDEST_VOL} >> /var/packages/smi-server/conf/share
-# echo "--------------------------------" >> /var/packages/smi-server/conf/share
-
-
-### activate new configuration files
-/usr/syno/sbin/synopkghelper update smi-server port-config
-synoservice -restart syslog-ng
-
-exit 0
+#
+# ### create link for executable
+# ln -sf $SYNOPKG_PKGDEST/usr/bin/smi-server /usr/bin/
+#
+# ### create service configuration file
+# echo "[smi-server]" >>$SYNOPKG_PKGDEST/conf/smi-server.sc
+# echo "title=\"SMI-Server\"" >>$SYNOPKG_PKGDEST/conf/smi-server.sc
+# echo "desc=\"SMI-Server\"" >>$SYNOPKG_PKGDEST/conf/smi-server.sc
+# echo "port_forward=\"no\"" >>$SYNOPKG_PKGDEST/conf/smi-server.sc
+# echo "dst.ports=\"${pkgwizard_smi_server_port}/tcp\"" >>$SYNOPKG_PKGDEST/conf/smi-server.sc
+#
+# #### copy paket configuration files
+# cp $SYNOPKG_PKGDEST/conf/smi-server.sc /usr/local/etc/services.d/smi-server.sc
+# cp $SYNOPKG_PKGDEST/conf/smi-server.conf.patterndb /usr/local/etc/syslog-ng/patterndb.d/
+#
+# ### copy server configuration
+# sudo /usr/syno/sbin/synoshare --add "SMI" "SMI-Server shared folder" "$SYNOPKG_PKGDEST_VOL/SMI" "" "root, admin" "" 1 ""
+# cp $SYNOPKG_PKGDEST/conf/smi-server.conf /$SYNOPKG_PKGDEST_VOL/SMI/smi-server.conf.template
+#
+# ### create poor config file
+# echo ${pkgwizard_smi_server_port} >> /var/packages/smi-server/port      # config file ?!
+#
+# ### add port config to resource file
+# echo -n ",\"port-config\":{" >> /var/packages/smi-server/conf/resource
+# echo -n "\"protocol-file\":\"conf/smi-server.sc\"}" >> /var/packages/smi-server/conf/resource
+#
+# ### add syslog config to resource file
+# echo -n ",\"syslog-config\":{" >> /var/packages/smi-server/conf/resource
+# echo -n "\"patterndb-relpath\":\"conf/smi-server.conf\"}" >> /var/packages/smi-server/conf/resource
+#
+# ### add data-share
+# echo -n ",\"data-share\":{" >> /var/packages/smi-server/conf/resource
+# echo -n "\"shares\":[{" >> /var/packages/smi-server/conf/resource
+# echo -n "\"name\":\"SmiServer\"," >> /var/packages/smi-server/conf/resource
+# echo -n "\"permission\":{" >> /var/packages/smi-server/conf/resource
+# echo -n "\"rw\":[\"admin\"]" >> /var/packages/smi-server/conf/resource
+# echo -n "}" >> /var/packages/smi-server/conf/resource
+# echo -n "}]" >> /var/packages/smi-server/conf/resource
+# echo -n "}" >> /var/packages/smi-server/conf/resource
+#
+# # echo "$SYNOPKG_PKGDEST_VOL/SMI" >> /var/packages/smi-server/conf/share
+# # echo "${SYNOPKG_PKGDEST_VOL}/SMI" >> /var/packages/smi-server/conf/share
+# # echo $SYNOPKG_PKGDEST_VOL >> /var/packages/smi-server/conf/share
+# # echo ${SYNOPKG_PKGDEST_VOL} >> /var/packages/smi-server/conf/share
+# # echo "--------------------------------" >> /var/packages/smi-server/conf/share
+#
+#
+# ### activate new configuration files
+# /usr/syno/sbin/synopkghelper update smi-server port-config
+# synoservice -restart syslog-ng
+#
+# exit 0

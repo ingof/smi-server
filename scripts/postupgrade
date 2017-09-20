@@ -1,7 +1,10 @@
 #!/bin/sh
+PATH=/bin:/usr/bin
+. `dirname $0`/installer
+`basename $0` > $SYNOPKG_TEMP_LOGFILE
 
 ### This script will be executed ONLY at package upgraded.
 ### Actions after package upgraded.
 ### ex. restore user settings.
 
-exit 0
+# exit 0

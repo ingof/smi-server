@@ -1,7 +1,10 @@
 #!/bin/sh
+PATH=/bin:/usr/bin
+. `dirname $0`/installer
+`basename $0` > $SYNOPKG_TEMP_LOGFILE
 
 ### This script will be executed when package uninstalled and upgraded.
 ### Actions before package uninstalled
 ### ex. backup package data.
-
-exit 0
+#
+# exit 0
