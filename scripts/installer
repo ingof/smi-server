@@ -10,26 +10,26 @@ RUNAS="root"
 
 preinst ()
 {
-    echo "$(date) $line PREINST()" >> /volume1/public/InstallLog.txt
+    echo "$(date) $line PREINST()" >> $SYNOPKG_PKGDEST_VOL/public/InstallLog.txt
     exit 0
 }
 
 postinst ()
 {
-    echo "$(date) $line POSTINST()" >> /volume1/public/InstallLog.txt
+    echo "$(date) $line POSTINST()" >> $SYNOPKG_PKGDEST_VOL/public/InstallLog.txt
     ### create link for executable
     ln -sf $SYNOPKG_PKGDEST/usr/bin/smi-server /usr/bin/
 
     ### create service configuration file
-    echo "[smi-server]" >>$SYNOPKG_PKGDEST/conf/smi-server.sc
-    echo "title=\"SMI-Server\"" >>$SYNOPKG_PKGDEST/conf/smi-server.sc
-    echo "desc=\"SMI-Server\"" >>$SYNOPKG_PKGDEST/conf/smi-server.sc
-    echo "port_forward=\"no\"" >>$SYNOPKG_PKGDEST/conf/smi-server.sc
-    echo "dst.ports=\"${pkgwizard_smi_server_port}/tcp\"" >>$SYNOPKG_PKGDEST/conf/smi-server.sc
+    echo "[smi-server]" >>$SYNOPKG_PKGDEST/etc/smi-server.sc
+    echo "title=\"SMI-Server\"" >>$SYNOPKG_PKGDEST/etc/smi-server.sc
+    echo "desc=\"SMI-Server\"" >>$SYNOPKG_PKGDEST/etc/smi-server.sc
+    echo "port_forward=\"no\"" >>$SYNOPKG_PKGDEST/etc/smi-server.sc
+    echo "dst.ports=\"${pkgwizard_smi_server_port}/tcp\"" >>$SYNOPKG_PKGDEST/etc/smi-server.sc
 
     #### copy paket configuration files
-    cp $SYNOPKG_PKGDEST/conf/smi-server.sc /usr/local/etc/services.d/smi-server.sc
-    cp $SYNOPKG_PKGDEST/conf/smi-server.conf.patterndb /usr/local/etc/syslog-ng/patterndb.d/
+    cp $SYNOPKG_PKGDEST/etc/smi-server.sc /usr/local/etc/services.d/smi-server.sc
+    cp $SYNOPKG_PKGDEST/etc/smi-server.conf.patterndb /usr/local/etc/syslog-ng/patterndb.d/
 
     ### copy server configuration
 
@@ -51,18 +51,19 @@ postinst ()
 #
 #    fi
 
-    cp $SYNOPKG_PKGDEST/conf/smi-server.conf /$SYNOPKG_PKGDEST_VOL/SMI/smi-server.conf.template
+    sudo ln -sf $SYNOPKG_PKGDEST_VOL/SMI/ $SYNOPKG_PKGDEST/share
+    cp $SYNOPKG_PKGDEST/etc/smi-server.conf $SYNOPKG_PKGDEST_VOL/SMI/smi-server.conf.template
 
     ### create poor config file
     echo ${pkgwizard_smi_server_port} >> /var/packages/smi-server/port      # config file ?!
 
     ### add port config to resource file
     echo -n ",\"port-config\":{" >> /var/packages/smi-server/conf/resource
-    echo -n "\"protocol-file\":\"conf/smi-server.sc\"}" >> /var/packages/smi-server/conf/resource
+    echo -n "\"protocol-file\":\"etc/smi-server.sc\"}" >> /var/packages/smi-server/conf/resource
 
     ### add syslog config to resource file
     echo -n ",\"syslog-config\":{" >> /var/packages/smi-server/conf/resource
-    echo -n "\"patterndb-relpath\":\"conf/smi-server.conf\"}" >> /var/packages/smi-server/conf/resource
+    echo -n "\"patterndb-relpath\":\"etc/smi-server.conf\"}" >> /var/packages/smi-server/conf/resource
 
     ### add data-share
     echo -n ",\"data-share\":{" >> /var/packages/smi-server/conf/resource
