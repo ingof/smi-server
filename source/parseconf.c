@@ -15,36 +15,24 @@ int tmp;
 
 int main() {
 
-//   fp = fopen ("smi-server.conf\n", "w+");
-//   fputs("global=1\n", fp);
-// //  fputs("# comment\n", fp);
-//   fputs("MaxMuster@mail.de\n", fp);
-//   fputs("[Person]\n", fp);
-//   fputs("mail=Max.Mustermann@mail.de\n", fp);
-//   //fputs("mail =Max.Mustermann@mail.de\n", fp);
-//   //fputs("mail= Max.Mustermann@mail.de\n", fp);
-//   //fputs("mail = Max.Mustermann@mail.de\n", fp);
-//   fputs("name=Max\n", fp);
-//   fputs(" surname=Mustermann\n", fp);
-//   fputs("[car]\n", fp);
-//   fputs(" name=Ferrari\n", fp);
-//   fputs("model=F40\n", fp);
-  // rewind(fp);
-//   system("clear");
-//   puts("\n\n");
  tmp=parseConfFile();
  return(0);
 }
 
-int parseConfFile(void) {
-  fp = fopen ("smi-server.conf\n", "r");
-  while((fscanf(fp,"%s\n",line)) != EOF) {
-   tmp=parseConfLine(&line);
-  }
-  printf("\tline: |%s|",line);
-  fclose(fp);
-  return 0;
-}
+    int parseConfFile(void) {
+    fp = fopen ("/var/packages/smi-server/target/share/smi-server.conf\n", "r");
+    if (fp == NULL) {
+        syslog(LOG_ERR, "ERROR: Could not open configuration file");
+        return 1;
+    } else {
+        while((fscanf(fp,"%s\n",line)) != EOF) {
+            tmp=parseConfLine(&line);
+        }
+    }
+    printf("\tline: |%s|",line);
+    fclose(fp);
+    return 0;
+    }
 
 int parseConfLine(char* line) {
   char* remark;// initialisieren und ersten Abschnitt erstellen
@@ -56,7 +44,6 @@ int parseConfLine(char* line) {
   if (strchr(line,(int)'#')) {
   // remark-line cut line at "#" char
     remark=strchr(line, 35); //35="#"
-    // printf("\n\t |%s| ([#] at %s)\n",line,remark);
     if ( remark != NULL ) {
       return 0;
     }
