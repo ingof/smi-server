@@ -51,14 +51,14 @@ int parseConfLine(char* line) {
       if ((strchr(line, (int) '[')!=NULL)&&(strchr(line,(int)']')!=NULL)) {
         char tmpLine[40]="\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0";
         strncpy(tmpLine, (strchr(line, (int)'[')+1), ((strchr(line,(int)']')-strchr(line, (int) '[')-1)) );
-        syslog(LOG_DEBUG, "\tSection : %s", tmpLine);
+        syslog(LOG_DEBUG, "\tSection : \t|%s|", tmpLine);
       }
 
       // get values
       if (strchr(line,(int)'=')) {
         ptr = strtok(line, "=");
         ptr2 = strtok(NULL, "=");
-        syslog(LOG_DEBUG, "\t  Value : \"%s\" : \"%s\"", ptr, ptr2);
+        syslog(LOG_DEBUG, "\t  Value : \"%s\"\t:\t\"%s\"", ptr, ptr2);
       }
   }
 
