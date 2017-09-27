@@ -10,7 +10,7 @@ char name[40], value[40];
 char line[80];
 // int year;
 FILE * fp;
-char *ptr;
+char *ptr, *ptr2;
 int tmp;
 
 // int main() {
@@ -54,21 +54,21 @@ int parseConfLine(char* line) {
   if ((strchr(line, (int) '[')!=NULL)&&(strchr(line,(int)']')!=NULL)) {
     char tmpLine[40]="\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0";
     strncpy(tmpLine, (strchr(line, (int)'[')+1), ((strchr(line,(int)']')-strchr(line, (int) '[')-1)) );
-    syslog(LOG_DEBUG, "Bereich:\n\t%s\n\n", tmpLine);
+    syslog(LOG_DEBUG, "\tSection: %s\n", tmpLine);
     }
 
   // get values
   if (strchr(line,(int)'=')) {
-    syslog(LOG_DEBUG, "Wert:\n");
+    // syslog(LOG_DEBUG, "Value  :");
     ptr = strtok(line, "=");
-    if (line[0]!=35) {
-      while(ptr != NULL) {
+    ptr2 = strtok(NULL, "=");
+    // if (line[0]!=35) {
+    //   while(ptr != NULL) {
       // naechsten Abschnitt erstellen
-      syslog(LOG_DEBUG, "\t> %s\n", ptr);
-      ptr = strtok(NULL, "=");
-      }
-      printf("\n");
-    }
+      syslog(LOG_DEBUG, "\tValue  : \"%s\" : \"%s \"", ptr);
+    //   ptr2 = strtok(NULL, "=");
+    //   }
+    // }
   }
 
   // Get values
