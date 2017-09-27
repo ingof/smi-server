@@ -28,7 +28,7 @@ int parseConfFile(void) {
     } else {
         syslog(LOG_DEBUG, "DEBUG: parsing config file: %s", configFile);
         while((fscanf(fp,"%s\n",line)) != EOF) {
-            tmp=parseConfLine(&line);
+            tmp=parseConfLine(line);
         }
     }
     syslog(LOG_DEBUG, "\tline: |%s|",line);
@@ -37,9 +37,8 @@ int parseConfFile(void) {
 }
 
 int parseConfLine(char* line) {
-  char* remark;// initialisieren und ersten Abschnitt erstellen
-
-  // remark-line cut line at "#" char
+    char* remark;// initialisieren und ersten Abschnitt erstellen
+    // remark-line cut line at "#" char
     if (strchr(line,(int)'#')) {
         remark=strchr(line, 35); //35="#"
         if ( remark != NULL ) {
@@ -61,5 +60,6 @@ int parseConfLine(char* line) {
             }
             exit(EXIT_SUCCESS);
          }
-  exit(EXIT_SUCCESS);
+     }
+     exit(EXIT_SUCCESS);
 }
