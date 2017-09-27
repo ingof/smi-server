@@ -22,9 +22,9 @@
 #include <string.h>
 
 #include "typesdef.h"		/* type definitions */
+#include "parseconf.h"		/* config parser */
 #include "swb-serial.h"		/* swb-bus functions */
 #include "smi-serial.h"		/* swb-bus functions */
-#include "parseconf.h"		/* config parser */
 #include "smi-server.h"		/* own funcions */
 
 
