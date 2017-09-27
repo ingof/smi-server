@@ -42,20 +42,19 @@ int main(int argc, char *argv[]) {
 	/* my process ID and Session ID */
 	pid_t pid, sid;
 
-	openlog(argv[0], LOG_PID | LOG_NDELAY, LOG_LOCAL0);
-	syslog(LOG_INFO, "INFO: SMI server starting");
-	syslog(LOG_INFO, argv[1]);
+	openlog(argv[0], LOG_PID | LOG_NDELAY, LOG_LOCAL7);
+	syslog(LOG_INFO, "INFO: SMI server starting (%s)", argv[1]);
 
 	/* fork of the parent process */
 	pid = fork();
 	if (pid < 0) {
 		exit(EXIT_FAILURE);
-		syslog(LOG_ERR,  "ERROR: fork failed");
+		syslog(LOG_ERR,  "ERROR: fork failed [%m]");
 	}
 	/* exit parent if got good PID */
 	if (pid > 0) {
 		exit(EXIT_SUCCESS);
-		syslog(LOG_ERR,  "ERROR: getPID failed");
+		syslog(LOG_ERR,  "ERROR: getPID failed [%m]");
 	}
 
 	umask(0);
@@ -66,14 +65,14 @@ int main(int argc, char *argv[]) {
 	sid = setsid();
 	if (sid < 0) {
 		/* Log the failure */
-		syslog(LOG_ERR,  "ERROR: creation of new SID failed");
+		syslog(LOG_ERR,  "ERROR: creation of new SID failed [%m]");
 		exit(EXIT_FAILURE);
 	}
 
 	/* change current working directory */
 	if ((chdir("/")) < 0) {
 		/* Log the failure */
-		syslog(LOG_ERR,  "ERROR: changing current working directory failed");
+		syslog(LOG_ERR,  "ERROR: changing current working directory failed [%m]");
 		exit(EXIT_FAILURE);
 	}
 
@@ -91,12 +90,26 @@ int main(int argc, char *argv[]) {
 
     if(getcwd(puffer,sizeof(puffer)) == NULL) {
     //    fprintf(stderr, "Fehler bei getcwd ...\n");
-		syslog(LOG_INFO, "can not get PWD!");
+		syslog(LOG_INFO, "can not get PWD! [%m]");
 		// return EXIT_FAILURE;
    } else {
-	   syslog(LOG_INFO, "following Entry is PWD:");
-	   syslog(LOG_INFO, puffer);
+	   syslog(LOG_INFO, "the actual working directory: %", puffer);
    }
+
+
+   syslog(LOG_DEBUG, " ---------------------------------------------------");
+   syslog(LOG_DEBUG, "|  only for debugging the syslog-ng configuration   |");
+   syslog(LOG_DEBUG, " ---------------------------------------------------");
+   syslog(LOG_EMERG, "EMERG  : A panic condition. This is normally broadcast to all users.");
+   syslog(LOG_ALERT, "ALERT  : A condition that should be corrected immediately, such as a corrupted system database.");
+   syslog(LOG_CRIT, "CRIT   : Critical conditions, e.g., hard device errors.");
+   syslog(LOG_ERR, "ERR    : Errors.");
+   syslog(LOG_WARNING, "WARNING: Warning messages.");
+   syslog(LOG_NOTICE, "NOTICE : Conditions that are not error conditions, but should possibly be handled specially.");
+   syslog(LOG_INFO, "INFO   : Informational messages.");
+   syslog(LOG_DEBUG, "DEBUG  : Messages that contain information normally of use only when debugging a program.");
+   syslog(LOG_DEBUG, " ---------------------------------------------------");
+   
 
 	/* Do some task here ... */
 	// // logging to 'regular' facility LOCAL0
