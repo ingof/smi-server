@@ -18,8 +18,8 @@ log {
     destination(d_smi_normal);
 };
 
-log {
-    source(src);
-    filter(f_smi_error);
-    destination(d_smi_error);
-};
+#log {
+#    source(src);
+#    filter(f_smi_error);
+#    destination(d_smi_error);
+#};
