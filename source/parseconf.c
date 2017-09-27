@@ -54,7 +54,7 @@ int parseConfLine(char* line) {
   if ((strchr(line, (int) '[')!=NULL)&&(strchr(line,(int)']')!=NULL)) {
     char tmpLine[40]="\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0";
     strncpy(tmpLine, (strchr(line, (int)'[')+1), ((strchr(line,(int)']')-strchr(line, (int) '[')-1)) );
-    syslog(LOG_DEBUG, "\tSection: %s\n", tmpLine);
+    syslog(LOG_DEBUG, "\tSection : %s\n", tmpLine);
     }
 
   // get values
@@ -65,7 +65,7 @@ int parseConfLine(char* line) {
     // if (line[0]!=35) {
     //   while(ptr != NULL) {
       // naechsten Abschnitt erstellen
-      syslog(LOG_DEBUG, "\tValue  : \"%s\" : \"%s \"", ptr);
+      syslog(LOG_DEBUG, "\t  Value : \"%s\" : \"%s \"", ptr, ptr2);
     //   ptr2 = strtok(NULL, "=");
     //   }
     // }
