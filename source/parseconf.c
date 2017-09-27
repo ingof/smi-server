@@ -43,6 +43,7 @@ int parseConfLine(char* line) {
     if (strchr(line,(int)'#')) {
         remark=strchr(line, 35); //35="#"
         if ( remark != NULL ) {
+            syslog(LOG_DEBUG, "DEBUG: skip comment (%d)", remark);
             return 0;
         }
     } else {
@@ -51,14 +52,14 @@ int parseConfLine(char* line) {
       if ((strchr(line, (int) '[')!=NULL)&&(strchr(line,(int)']')!=NULL)) {
         char tmpLine[40]="\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0";
         strncpy(tmpLine, (strchr(line, (int)'[')+1), ((strchr(line,(int)']')-strchr(line, (int) '[')-1)) );
-        syslog(LOG_DEBUG, "\tSection : \t|%s|", tmpLine);
+        syslog(LOG_DEBUG, "DEBUG: Section: \t|%s|", tmpLine);
       }
 
       // get values
       if (strchr(line,(int)'=')) {
         ptr = strtok(line, "=");
         ptr2 = strtok(NULL, "=");
-        syslog(LOG_DEBUG, "\t  Value : \"%s\"\t:\t\"%s\"", ptr, ptr2);
+        syslog(LOG_DEBUG, "DEBUG:  Value: \"%s\" is set to \"%s\"", ptr, ptr2);
       }
   }
 
