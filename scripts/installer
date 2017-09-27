@@ -29,7 +29,7 @@ postinst ()
 
     #### copy paket configuration files
     cp $SYNOPKG_PKGDEST/etc/smi-server.sc /usr/local/etc/services.d/smi-server.sc
-    cp $SYNOPKG_PKGDEST/etc/smi-server.conf.patterndb /usr/local/etc/syslog-ng/patterndb.d/
+    cp $SYNOPKG_PKGDEST/etc/smi-server.conf.patterndb /usr/local/etc/syslog-ng/patterndb.d/smi-server.conf
 
     ### copy server configuration
 

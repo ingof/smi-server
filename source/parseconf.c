@@ -19,20 +19,22 @@ int main() {
  return(0);
 }
 
-    int parseConfFile(void) {
-    fp = fopen ("/var/packages/smi-server/target/share/smi-server.conf\n", "r");
+int parseConfFile(void) {
+    char configFile[80]="/var/packages/smi-server/target/share/smi-server.conf";
+    fp = fopen (configFile, "r");
     if (fp == NULL) {
         syslog(LOG_ERR, "ERROR: Could not open configuration file");
         return 1;
     } else {
+        syslog(LOG_DEBUG, "DEBUG: parsing config file: %s", configFile);
         while((fscanf(fp,"%s\n",line)) != EOF) {
             tmp=parseConfLine(&line);
         }
     }
-    printf("\tline: |%s|",line);
+    syslog(LOG_DEBUG, "\tline: |%s|",line);
     fclose(fp);
     return 0;
-    }
+}
 
 int parseConfLine(char* line) {
   char* remark;// initialisieren und ersten Abschnitt erstellen
@@ -52,17 +54,17 @@ int parseConfLine(char* line) {
   if ((strchr(line, (int) '[')!=NULL)&&(strchr(line,(int)']')!=NULL)) {
     char tmpLine[40]="\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0";
     strncpy(tmpLine, (strchr(line, (int)'[')+1), ((strchr(line,(int)']')-strchr(line, (int) '[')-1)) );
-    printf ("Bereich:\n\t%s\n\n", tmpLine);
+    syslog(LOG_DEBUG, "Bereich:\n\t%s\n\n", tmpLine);
     }
 
   // get values
   if (strchr(line,(int)'=')) {
-    printf ("Wert:\n");
+    syslog(LOG_DEBUG, "Wert:\n");
     ptr = strtok(line, "=");
     if (line[0]!=35) {
       while(ptr != NULL) {
       // naechsten Abschnitt erstellen
-      printf("\t> %s\n", ptr);
+      syslog(LOG_DEBUG, "\t> %s\n", ptr);
       ptr = strtok(NULL, "=");
       }
       printf("\n");

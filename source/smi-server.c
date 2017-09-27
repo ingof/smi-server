@@ -21,10 +21,10 @@
 #include <syslog.h>
 #include <string.h>
 
-#include "typesdef.h"			/* type definitions */
+#include "typesdef.h"		/* type definitions */
 #include "swb-serial.h"		/* swb-bus functions */
 #include "smi-serial.h"		/* swb-bus functions */
-
+#include "parseconf.h"		/* config parser */
 #include "smi-server.h"		/* own funcions */
 
 
@@ -35,7 +35,7 @@
 #include<unistd.h>			/* web server */
 #include <syslog.h>			/* syslog */
 #include <stdio.h>			/* syslog */
-#include <unistd.h>         /* getpwd() */
+#include <unistd.h>			/* getpwd() */
 
 int main(int argc, char *argv[]) {
 
@@ -43,7 +43,7 @@ int main(int argc, char *argv[]) {
 	pid_t pid, sid;
 
 	openlog(argv[0], LOG_PID | LOG_NDELAY, LOG_LOCAL7);
-	syslog(LOG_INFO, "INFO: SMI server starting (%s)", argv[1]);
+	syslog(LOG_DEBUG, "DEBUG: SMI server starting (%s)", argv[1]);
 
 	/* fork of the parent process */
 	pid = fork();
@@ -80,52 +80,39 @@ int main(int argc, char *argv[]) {
 	close(STDIN_FILENO);
 	close(STDOUT_FILENO);
 	close(STDERR_FILENO);
-	syslog(LOG_INFO, "INFO: server damonized and start working");
+	syslog(LOG_DEBUG, "DEBUG: server damonized and start working");
 
-	syslog(LOG_ERR, "Testfehler");
 
 	/* Daemon-specific initialization goes here */
 
 	char puffer[200];
 
-    if(getcwd(puffer,sizeof(puffer)) == NULL) {
-    //    fprintf(stderr, "Fehler bei getcwd ...\n");
-		syslog(LOG_INFO, "can not get PWD! [%m]");
+	if(getcwd(puffer,sizeof(puffer)) == NULL) {
+		//    fprintf(stderr, "Fehler bei getcwd ...\n");
+		syslog(LOG_ERR, "ERROR: can not get PWD! [%m]");
 		// return EXIT_FAILURE;
-   } else {
-	   syslog(LOG_INFO, "the actual working directory: %", puffer);
-   }
+	} else {
+		syslog(LOG_DEBUG, "DEBUG: the actual working directory: %s", puffer);
+	}
+
+	int tmp;
+	tmp=parseConfFile();
 
 
-   syslog(LOG_DEBUG, " ---------------------------------------------------");
-   syslog(LOG_DEBUG, "|  only for debugging the syslog-ng configuration   |");
-   syslog(LOG_DEBUG, " ---------------------------------------------------");
-   syslog(LOG_EMERG, "EMERG  : A panic condition. This is normally broadcast to all users.");
-   syslog(LOG_ALERT, "ALERT  : A condition that should be corrected immediately, such as a corrupted system database.");
-   syslog(LOG_CRIT, "CRIT   : Critical conditions, e.g., hard device errors.");
-   syslog(LOG_ERR, "ERR    : Errors.");
-   syslog(LOG_WARNING, "WARNING: Warning messages.");
-   syslog(LOG_NOTICE, "NOTICE : Conditions that are not error conditions, but should possibly be handled specially.");
-   syslog(LOG_INFO, "INFO   : Informational messages.");
-   syslog(LOG_DEBUG, "DEBUG  : Messages that contain information normally of use only when debugging a program.");
-   syslog(LOG_DEBUG, " ---------------------------------------------------");
-   
+	syslog(LOG_EMERG,   "EMERG  : A panic condition. This is normally broadcast to all users.");
+	syslog(LOG_ALERT,   "ALERT  : A condition that should be corrected immediately, such as a corrupted system database.");
+	syslog(LOG_CRIT,    "CRIT   : Critical conditions, e.g., hard device errors.");
+	syslog(LOG_ERR,     "ERR    : Errors.");
+	syslog(LOG_WARNING, "WARNING: Warning messages.");
+	syslog(LOG_NOTICE,  "NOTICE : Conditions that are not error conditions, but should possibly be handled specially.");
+	syslog(LOG_INFO,    "INFO   : Informational messages.");
+	syslog(LOG_DEBUG,   "DEBUG  : Messages that contain information normally of use only when debugging a program.");
+
 
 	/* Do some task here ... */
-	// // logging to 'regular' facility LOCAL0
-	// sleep(3);
-	// syslog(LOG_INFO, "log at info to local0");
-	// sleep(3);
-	// syslog(LOG_WARNING, "log at warn to local0");
-	// sleep(3);
-	// syslog(LOG_ERR,  "log at error to local0");
-	//
-	// // logging to 'special' facility LOCAL3
-	// sleep(3);
-	// syslog(LOG_INFO|LOG_LOCAL3, "special log message to local3");
 
-	// close "regular" log
-	syslog(LOG_INFO, "INFO: SMI-Server closing");
+
+	syslog(LOG_DEBUG, "DEBUG: SMI-Server closing");
 	closelog();
 	exit(EXIT_SUCCESS);
 }
