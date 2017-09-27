@@ -13,11 +13,11 @@ FILE * fp;
 char *ptr;
 int tmp;
 
-int main() {
-
- tmp=parseConfFile();
- return(0);
-}
+// int main() {
+//
+//  tmp=parseConfFile();
+//  return(0);
+// }
 
 int parseConfFile(void) {
     char configFile[80]="/var/packages/smi-server/target/share/smi-server.conf";
