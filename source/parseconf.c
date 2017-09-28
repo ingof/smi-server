@@ -49,7 +49,7 @@ int parseConfLine(char* line) {
         // skip comments
         // line[(remark-1)]="\0";
         syslog(LOG_DEBUG, "DEBUG: skip comment (%d) |%s|", remark, line);
-        // exit(EXIT_FAILURE);
+        return(EXIT_FAILURE);
     }
     // } else {
 
