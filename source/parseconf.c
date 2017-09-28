@@ -78,36 +78,14 @@ int setValue(char* name, char* value) {
     sectionName = strtok(name, ":");
     sectionNumber = strtok(NULL, ":");
 
-    switch (sectionName) {
-        case "interface":
-            setInterface(name, value);
-            break;
-
-        case "switch:0":
-        case "switch:1":
-        case "switch:2":
-        case "switch:3":
-        case "switch:4":
-        case "switch:5":
-        case "switch:6":
-        case "switch:7":
-            setSwitch(name, value);
-            break;
-
-        case "drive:0":
-        case "drive:1":
-        case "drive:2":
-        case "drive:3":
-        case "drive:4":
-        case "drive:5":
-        case "drive:6":
-        case "drive:7":
-            setDrive(name, value);
-            break;
-
-        default:
-            syslog(LOG_NOTICE, "NOTICE: unknown section: \"%s\"#\"%s\"", sectionName, sectionNumber);
-            break;
+    if (sectionName=="interface") {
+        setInterface(name, value);
+    } else if (sectionName=="switch") {
+        setSwitch(name, value);
+    } else if (sectionName=="drive") {
+        setDrive(name, value);
+    } else {
+        syslog(LOG_NOTICE, "NOTICE: unknown section: \"%s\"#\"%s\"", sectionName, sectionNumber);
     }
     return(EXIT_SUCCESS);
 }
