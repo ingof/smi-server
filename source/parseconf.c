@@ -133,7 +133,6 @@ int setDrive(char* name, char* value) {
         syslog(LOG_DEBUG,"DEBUG: . . . . . .");
     }
     if (confSectionNumber==NULL) {
-        confSectionNumber="0";
         syslog(LOG_DEBUG,"DEBUG: * N U L L *");
     }
 
