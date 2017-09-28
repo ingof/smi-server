@@ -59,7 +59,7 @@ int parseConfLine(char* line) {
     if (strchr(line,(int)'=')) {
         ptr = strtok(line, "=");
         ptr2 = strtok(NULL, "=");
-        setValue(ptr, ptr2);
+        tmp=setValue(ptr, ptr2);
         // syslog(LOG_DEBUG, "DEBUG:  Value: \"%s\" is set to \"%s", ptr, ptr2);
         return(EXIT_SUCCESS);
     }
@@ -78,14 +78,14 @@ int setValue(char* name, char* value) {
     sectionName = strtok(name, ":");
     sectionNumber = strtok(NULL, ":");
 
-    if (sectionName=="interface") {
+    if (confSection=="interface") {
         setInterface(name, value);
-    } else if (sectionName=="switch") {
+    } else if (confSection=="switch") {
         setSwitch(name, value);
-    } else if (sectionName=="drive") {
+    } else if (confSection=="drive") {
         setDrive(name, value);
     } else {
-        syslog(LOG_NOTICE, "NOTICE: unknown section: \"%s\"#\"%s\"", sectionName, sectionNumber);
+        syslog(LOG_NOTICE, "NOTICE: unknown section: \"%s#%s\"", sectionName, sectionNumber);
     }
     return(EXIT_SUCCESS);
 }
@@ -109,7 +109,7 @@ int setSwitch(char* name, char* value) {
     tmpName = strtok(name, ":");
     tmpNumber = strtok(NULL, ":");
 
-    syslog(LOG_NOTICE, "DEBUG: s.%s[%s]", tmpName, tmpNumber);
+    syslog(LOG_DEBUG, "DEBUG: s.%s[%s]", tmpName, tmpNumber);
 
     return(EXIT_SUCCESS);
 };
@@ -120,7 +120,7 @@ int setDrive(char* name, char* value) {
     tmpName = strtok(name, ":");
     tmpNumber = strtok(NULL, ":");
 
-    syslog(LOG_NOTICE, "DEBUG: d.%s[%s]", tmpName, tmpNumber);
+    syslog(LOG_DEBUG, "DEBUG: d.%s[%s]", tmpName, tmpNumber);
 
     return(EXIT_SUCCESS);
 };
