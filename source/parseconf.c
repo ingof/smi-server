@@ -40,11 +40,9 @@ int parseConfFile(void) {
 }
 
 int parseConfLine(char* line) {
-    // int remark;
-    // // remark-line cut line at "#" char
-    // remark = ;
+
+    // skip comments
     if ( strchr(line,(int)'#') != NULL ) {
-        // skip comments
         ptr = strtok(line, "#");
     }
 
@@ -54,15 +52,16 @@ int parseConfLine(char* line) {
         strncpy(tmpLine, (strchr(line, (int)'[')+1), ((strchr(line,(int)']')-strchr(line, (int) '[')-1)) );
         tmp=setSection(tmpLine);
         // syslog(LOG_DEBUG, "DEBUG: Section: \t|%s|", tmpLine);
-        return(EXIT_SUCCESS);
+        // return(EXIT_SUCCESS);
     }
+
     // get values
     if (strchr(line,(int)'=')) {
         ptr = strtok(line, "=");
         ptr2 = strtok(NULL, "=");
         tmp=setValue(ptr, ptr2);
         // syslog(LOG_DEBUG, "DEBUG:  Value: \"%s\" is set to \"%s", ptr, ptr2);
-        return(EXIT_SUCCESS);
+        // return(EXIT_SUCCESS);
     }
     return(EXIT_SUCCESS);
 }
