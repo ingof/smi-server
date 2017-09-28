@@ -67,7 +67,7 @@ int parseConfLine(char* line) {
 }
 
 int setSection(char* section) {
-    strncpy(confSection,section,sectionMaxChar)
+    strncpy(confSection,section,sectionMaxChar);
     return(EXIT_SUCCESS);
 }
 
