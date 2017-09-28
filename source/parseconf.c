@@ -75,17 +75,17 @@ int setValue(char* name, char* value) {
     syslog(LOG_DEBUG,"DEBUG: %4d: Section: %s,\tName: %s,\tValue: %s",lineCnt, confSection, name, value);
     char* sectionName;
     char* sectionNumber;
-    sectionName = strtok(name, ":");
+    sectionName = strtok(confSection, ":");
     sectionNumber = strtok(NULL, ":");
 
-    if (confSection=="interface") {
+    if (sectionName=="interface") {
         setInterface(name, value);
-    } else if (confSection=="switch") {
+    } else if (sectionName=="switch") {
         setSwitch(name, value);
-    } else if (confSection=="drive") {
+    } else if (sectionName=="drive") {
         setDrive(name, value);
     } else {
-        syslog(LOG_NOTICE, "NOTICE: unknown section:%s ,\"%s#%s\"",confSection, sectionName, sectionNumber);
+        syslog(LOG_NOTICE, "NOTICE: unknown section: \"%s#%s\" , value:, \"%s#%s\"",sectionName, sectionNumber, sectionName, sectionNumber);
     }
     return(EXIT_SUCCESS);
 }
