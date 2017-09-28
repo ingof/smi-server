@@ -43,7 +43,7 @@ int parseConfLine(char* line) {
 
     // skip comments
     if ( strchr(line,(int)'#') != NULL ) {
-        ptr = strtok(line, "#");
+        line = strtok(line, "#");
     }
 
     // get sections
