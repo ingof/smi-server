@@ -43,7 +43,7 @@ int parseConfLine(char* line) {
     // int remark;
     // // remark-line cut line at "#" char
     // remark = ;
-    if ( (int) strchr(line,(int)'#') != NULL ) {
+    if ( strchr(line,(int)'#') != NULL ) {
         // skip comments
         ptr = strtok(line, "#");
     }
