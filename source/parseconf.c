@@ -45,8 +45,7 @@ int parseConfLine(char* line) {
     remark=strchr(line,(int)'#');
     if ( remark != NULL ) {
         // skip comments
-        syslog(LOG_DEBUG, "DEBUG: skip comment (%d) |%s|", remark, line);
-        line[remark]="\0";
+        // line[(remark-1)]="\0";
         syslog(LOG_DEBUG, "DEBUG: skip comment (%d) |%s|", remark, line);
         // exit(EXIT_FAILURE);
     }
