@@ -83,11 +83,25 @@ int setValue(char* name, char* value) {
             setInterface(name, value);
             break;
 
-        case "switch:0","switch:1","switch:2","switch:3","switch:4","switch:5","switch:6","switch:7" :
+        case "switch:0":
+        case "switch:1":
+        case "switch:2":
+        case "switch:3":
+        case "switch:4":
+        case "switch:5":
+        case "switch:6":
+        case "switch:7":
             setSwitch(name, value);
             break;
 
-        case "drive:0","drive:1","drive:2","drive:3","drive:4","drive:5","drive:6","drive:7" :
+        case "drive:0":
+        case "drive:1":
+        case "drive:2":
+        case "drive:3":
+        case "drive:4":
+        case "drive:5":
+        case "drive:6":
+        case "drive:7":
             setDrive(name, value);
             break;
 
