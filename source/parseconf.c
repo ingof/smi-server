@@ -131,6 +131,9 @@ int setDrive(char* name, char* value) {
     if (tmpNumber==NULL) {
         syslog(LOG_DEBUG,"DEBUG: * N U L L *");
     }
+    if (tmpNumber==NULL) {
+        syslog(LOG_DEBUG,"DEBUG: . . . . . .");
+    }
 
 
     syslog(LOG_DEBUG, "DEBUG: d%s.%s[%s] = %s", confSectionNumber, tmpName, tmpNumber, value);
