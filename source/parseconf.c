@@ -46,10 +46,10 @@ int parseConfLine(char* line) {
     if ( remark != NULL ) {
         // TODO only ignore comments an not the whole line
         // skip comments
-        syslog(LOG_DEBUG,"DEBUG: remark=%3d", remark);
+        // syslog(LOG_DEBUG,"DEBUG: remark=%3d", remark);
         ptr = strtok(line, "#");
-        syslog(LOG_DEBUG,"DEBUG: |%s|->|%s|", line, ptr);
-        return(EXIT_SUCCESS);
+        // syslog(LOG_DEBUG,"DEBUG: |%s|->|%s|", line, ptr);
+        // return(EXIT_SUCCESS);
     }
     // get sections
     if ((strchr(line, (int) '[')!=NULL)&&(strchr(line,(int)']')!=NULL)) {
