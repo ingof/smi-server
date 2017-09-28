@@ -73,9 +73,7 @@ int setSection(char* section) {
     char* sectionNumber;
     sectionName = strtok(section, ":");
     sectionNumber = strtok(NULL, ":");
-    if (sectionNumber== NULL) {
-        strncpy(sectionNumber,"0",20);
-    }
+    // TODO handle section without number
     syslog(LOG_DEBUG,"DEBUG2: setSection: \"%s\" %s#%s",section ,sectionName, sectionNumber);
     strncpy(confSectionName,sectionName,sectionMaxChar);
     strncpy(confSectionNumber,sectionNumber,sectionMaxChar);
@@ -106,7 +104,7 @@ int setInterface(char* name, char* value) {
     } else if (strncmp(name,"swb:0",20)==0) {
         syslog(LOG_DEBUG, "DEBUG: interface: \"%s\"", name);
     } else {
-        syslog(LOG_NOTICE, "NOTICE: unknown interface type: \"%s\"", name);
+        syslog(LOG_NOTICE, "NOTICE: unknown interface type: %s", name);
     }
     return(EXIT_SUCCESS);
 };
@@ -117,7 +115,7 @@ int setSwitch(char* name, char* value) {
     tmpName = strtok(name, ":");
     tmpNumber = strtok(NULL, ":");
 
-    syslog(LOG_DEBUG, "DEBUG: s.%s[%s] = \"%s\"", tmpName, tmpNumber, value);
+    syslog(LOG_DEBUG, "DEBUG: s%s.%s[%s] = %s", confSectionNumber, tmpName, tmpNumber, value);
 
     return(EXIT_SUCCESS);
 };
@@ -128,7 +126,7 @@ int setDrive(char* name, char* value) {
     tmpName = strtok(name, ":");
     tmpNumber = strtok(NULL, ":");
 
-    syslog(LOG_DEBUG, "DEBUG: d.%s[%s] = \"%s\"", tmpName, tmpNumber, value);
+    syslog(LOG_DEBUG, "DEBUG: d%s.%s[%s] = %s", confSectionNumber, tmpName, tmpNumber, value);
 
     return(EXIT_SUCCESS);
 };
