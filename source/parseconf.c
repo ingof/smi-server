@@ -40,17 +40,14 @@ int parseConfFile(void) {
 }
 
 int parseConfLine(char* line) {
-    int remark;
-    // remark-line cut line at "#" char
-    remark = (int) strchr(line,(int)'#');
-    if ( remark != NULL ) {
-        // TODO only ignore comments an not the whole line
+    // int remark;
+    // // remark-line cut line at "#" char
+    // remark = ;
+    if ( (int) strchr(line,(int)'#') != NULL ) {
         // skip comments
-        // syslog(LOG_DEBUG,"DEBUG: remark=%3d", remark);
         ptr = strtok(line, "#");
-        // syslog(LOG_DEBUG,"DEBUG: |%s|->|%s|", line, ptr);
-        // return(EXIT_SUCCESS);
     }
+
     // get sections
     if ((strchr(line, (int) '[')!=NULL)&&(strchr(line,(int)']')!=NULL)) {
         char tmpLine[40]="\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0";
