@@ -73,8 +73,8 @@ int setSection(char* section) {
 
 int setValue(char* name, char* value) {
     syslog(LOG_DEBUG,"DEBUG: %4d: Section: %s,\tName: %s,\tValue: %s",lineCnt, confSection, name, value);
-    char* sectionName[20];
-    char* sectionNumber[20];
+    char* sectionName;
+    char* sectionNumber;
     sectionName = strtok(name, ":");
     sectionNumber = strtok(NULL, ":");
 
@@ -114,8 +114,8 @@ int setInterface(char* name, char* value) {
 };
 
 int setSwitch(char* name, char* value) {
-    char* tmpName[20];
-    char* tmpNumber[20];
+    char* tmpName;
+    char* tmpNumber;
     tmpName = strtok(name, ":");
     tmpNumber = strtok(NULL, ":");
 
@@ -125,8 +125,8 @@ int setSwitch(char* name, char* value) {
 };
 
 int setDrive(char* name, char* value) {
-    char* tmpName[20];
-    char* tmpNumber[20];
+    char* tmpName;
+    char* tmpNumber;
     tmpName = strtok(name, ":");
     tmpNumber = strtok(NULL, ":");
 
