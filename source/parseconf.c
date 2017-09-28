@@ -13,8 +13,7 @@ const int sectionMaxChar=20;
 // char confSection[sectionMaxChar];
 char line[80];
 char confSectionName[20];
-char confSectionNumber[20];
-int confSectionInteger=0;
+int confSectionNumber=0;
 
 FILE * fp;
 char *ptr, *ptr2;
@@ -77,10 +76,8 @@ int setSection(char* section) {
     // TODO handle section without number
     syslog(LOG_DEBUG,"DEBUG2: setSection: \"%s\" %s#%s",section ,sectionName, sectionNumber);
     strncpy(confSectionName,sectionName,sectionMaxChar);
-    strncpy(confSectionNumber,sectionNumber,sectionMaxChar);
-    confSectionInteger=atoi(sectionNumber);
-    syslog(LOG_INFO,"INFO: setSection: Name=\"%s\", value=\"%s\"", confSectionName, confSectionNumber);
-    syslog(LOG_INFO,"INFO: setSection: Name=\"%s\", value=\"%02d\"", confSectionName, confSectionInteger);
+    confSectionNumber=atoi(sectionNumber);
+    syslog(LOG_INFO,"INFO: setSection: Name=\"%s\", value=\"%2d\"", confSectionName, confSectionNumber);
     return(EXIT_SUCCESS);
 }
 
