@@ -73,6 +73,9 @@ int setSection(char* section) {
     char* sectionNumber;
     sectionName = strtok(section, ":");
     sectionNumber = strtok(NULL, ":");
+    if (sectionNumer== NULL) {
+        strncpy(sectionNumber,"0",20);
+    }
     syslog(LOG_DEBUG,"DEBUG2: setSection: \"%s\" %s#%s",section ,sectionName, sectionNumber);
     strncpy(confSectionName,sectionName,sectionMaxChar);
     strncpy(confSectionNumber,sectionNumber,sectionMaxChar);
