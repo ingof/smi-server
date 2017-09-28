@@ -30,11 +30,11 @@ int parseConfFile(void) {
         syslog(LOG_DEBUG, "DEBUG: parsing config file: %s", configFile);
         while((fscanf(fp,"%s\n",line)) != EOF) {
             tmp=parseConfLine(line);
-            syslog(LOG_ERR, "\tLine(%d): |%s| ->%d", lineCnt, line, tmp);
+            syslog(LOG_DEBUG, "DEBUG: Line(%d): |%s| ->%d", lineCnt, line, tmp);
             lineCnt++;
         }
     }
-    syslog(LOG_DEBUG, "\tline: |%s|",line);
+    syslog(LOG_DEBUG, "DEBUG: line: |%s|",line);
     fclose(fp);
     return 0;
 }
