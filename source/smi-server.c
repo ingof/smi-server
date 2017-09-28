@@ -99,14 +99,14 @@ int main(int argc, char *argv[]) {
 	tmp=parseConfFile();
 
 
-	syslog(LOG_EMERG,   "EMERG  : A panic condition. This is normally broadcast to all users.");
-	syslog(LOG_ALERT,   "ALERT  : A condition that should be corrected immediately, such as a corrupted system database.");
-	syslog(LOG_CRIT,    "CRIT   : Critical conditions, e.g., hard device errors.");
-	syslog(LOG_ERR,     "ERR    : Errors.");
-	syslog(LOG_WARNING, "WARNING: Warning messages.");
-	syslog(LOG_NOTICE,  "NOTICE : Conditions that are not error conditions, but should possibly be handled specially.");
-	syslog(LOG_INFO,    "INFO   : Informational messages.");
-	syslog(LOG_DEBUG,   "DEBUG  : Messages that contain information normally of use only when debugging a program.");
+	// syslog(LOG_EMERG,   "EMERG  : A panic condition. This is normally broadcast to all users.");
+	// syslog(LOG_ALERT,   "ALERT  : A condition that should be corrected immediately, such as a corrupted system database.");
+	// syslog(LOG_CRIT,    "CRIT   : Critical conditions, e.g., hard device errors.");
+	// syslog(LOG_ERR,     "ERR    : Errors.");
+	// syslog(LOG_WARNING, "WARNING: Warning messages.");
+	// syslog(LOG_NOTICE,  "NOTICE : Conditions that are not error conditions, but should possibly be handled specially.");
+	// syslog(LOG_INFO,    "INFO   : Informational messages.");
+	// syslog(LOG_DEBUG,   "DEBUG  : Messages that contain information normally of use only when debugging a program.");
 
 
 	/* Do some task here ... */
