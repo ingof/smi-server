@@ -56,16 +56,16 @@ int parseConfLine(char* line) {
         char tmpLine[40]="\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0";
         strncpy(tmpLine, (strchr(line, (int)'[')+1), ((strchr(line,(int)']')-strchr(line, (int) '[')-1)) );
         syslog(LOG_DEBUG, "DEBUG: Section: \t|%s|", tmpLine);
-        exit(EXIT_SUCCESS);
+        return(EXIT_SUCCESS);
     }
     // get values
     if (strchr(line,(int)'=')) {
         ptr = strtok(line, "=");
         ptr2 = strtok(NULL, "=");
         syslog(LOG_DEBUG, "DEBUG:  Value: \"%s\" is set to \"%s\" |%s|", ptr, ptr2, line);
-        exit(EXIT_SUCCESS);
+        return(EXIT_SUCCESS);
     }
 
     //  }
-     exit(EXIT_SUCCESS);
+    return(EXIT_SUCCESS);
 }
