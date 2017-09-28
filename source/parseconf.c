@@ -40,7 +40,7 @@ int parseConfFile(void) {
 }
 
 int parseConfLine(char* line) {
-    char* remark;// initialisieren und ersten Abschnitt erstellen
+    int remark;// initialisieren und ersten Abschnitt erstellen
     // remark-line cut line at "#" char
     remark=strchr(line,(int)'#');
     if ( remark != NULL ) {
