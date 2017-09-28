@@ -115,7 +115,7 @@ int setSwitch(char* name, char* value) {
     tmpName = strtok(name, ":");
     tmpNumber = strtok(NULL, ":");
 
-    syslog(LOG_DEBUG, "DEBUG: s%s.%s[%s] = %s", confSectionNumber, tmpName, tmpNumber, value);
+    syslog(LOG_DEBUG, "DEBUG: s%02d.%s[%s] = %s", confSectionNumber, tmpName, tmpNumber, value);
 
     return(EXIT_SUCCESS);
 };
@@ -125,23 +125,9 @@ int setDrive(char* name, char* value) {
     char* tmpNumber;
     tmpName = strtok(name, ":");
     tmpNumber = strtok(NULL, ":");
-    if (strncmp(confSectionNumber,"(null)",20)) {
-        strncpy(confSectionNumber,"0",20);
-        syslog(LOG_DEBUG,"DEBUG: ( N u l l )");
-        if (strncmp(confSectionNumber,"(null)",20)) {
-            syslog(LOG_DEBUG,"DEBUG: immer noch( N u l l )");
-        }
-
-    }
-    if (strncmp(confSectionNumber,"",20)) {
-        syslog(LOG_DEBUG,"DEBUG: . . . . . .");
-    }
-    if (confSectionNumber==NULL) {
-        syslog(LOG_DEBUG,"DEBUG: * N U L L *");
-    }
 
 
-    syslog(LOG_DEBUG, "DEBUG: d%s.%s[%s] = %s", confSectionNumber, tmpName, tmpNumber, value);
+    syslog(LOG_DEBUG, "DEBUG: d%02d.%s[%s] = %s", confSectionNumber, tmpName, tmpNumber, value);
 
 
     return(EXIT_SUCCESS);
