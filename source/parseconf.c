@@ -42,9 +42,11 @@ int parseConfFile(void) {
 int parseConfLine(char* line) {
 
     // skip comments
-    
+
     // if ( strchr(line,(int)'#') != NULL ) {
+    syslog(LOG_DEBUG,"DEBUG before: |%s|", line);
         line = strtok(line, "#");
+        syslog(LOG_DEBUG,"DEBUG after: |%s|", line);
     // }
 
     // get sections
@@ -107,24 +109,14 @@ int setInterface(char* name, char* value) {
 
 int setSwitch(char* name, char* value) {
     char* tmpName;
-    // char* tmpNumber;
     tmpName = strtok(name, ":");
-    // tmpNumber = strtok(NULL, ":");
-
     syslog(LOG_DEBUG, "DEBUG: s%02d.%s = %s", confSectionNumber, tmpName, value);
-
     return(EXIT_SUCCESS);
 };
 
 int setDrive(char* name, char* value) {
     char* tmpName;
-    // char* tmpNumber;
     tmpName = strtok(name, ":");
-    // tmpNumber = strtok(NULL, ":");
-
-
     syslog(LOG_DEBUG, "DEBUG: d%02d.%s = %s", confSectionNumber, tmpName, value);
-
-
     return(EXIT_SUCCESS);
 };
