@@ -22,7 +22,7 @@ int tmp;
 
 int parseConfFile(void) {
     char configFile[80]="/var/packages/smi-server/target/share/smi-server.conf";
-    int lineCnt=1;
+    int lineCnt=0;
     fp = fopen (configFile, "r");
     if (fp == NULL) {
         syslog(LOG_ERR, "ERROR: Could not open configuration file");
@@ -31,9 +31,9 @@ int parseConfFile(void) {
         syslog(LOG_DEBUG, "DEBUG: parsing config file: %s", configFile);
         // while((fscanf(fp,"%s\n",line)) != EOF) {
         while((fgets(line,lineMaxChar,fp)) != NULL) {
-            tmp=parseConfLine(line);
-            syslog(LOG_DEBUG, "DEBUG: Line(%d): |%s| ->%d", lineCnt, line, tmp);
             lineCnt++;
+//syslog(LOG_DEBUG, "DEBUG: Line(%d): |%s|", lineCnt, line);
+            tmp=parseConfLine(line);
         }
     }
     // syslog(LOG_DEBUG, "DEBUG: line: |%s|",line);
@@ -48,7 +48,8 @@ int parseConfLine(char* line) {
     if ( remark != NULL ) {
         // skip comments
         // line[(remark-1)]="\0";
-        syslog(LOG_DEBUG, "DEBUG: skip comment (%d) |%s|", remark, line);
+//        syslog(LOG_DEBUG, "DEBUG: skip comment (%d) |%s|", remark, line);
+        // TODO only ignore comments an not the whole line
         return(EXIT_SUCCESS);
     }
     // } else {
@@ -64,7 +65,7 @@ int parseConfLine(char* line) {
     if (strchr(line,(int)'=')) {
         ptr = strtok(line, "=");
         ptr2 = strtok(NULL, "=");
-        syslog(LOG_DEBUG, "DEBUG:  Value: \"%s\" is set to \"%s\"", ptr, ptr2);
+        syslog(LOG_DEBUG, "DEBUG:  Value: \"%s\" is set to \"%s", ptr, ptr2);
         return(EXIT_SUCCESS);
     }
 
