@@ -9,8 +9,10 @@ char str1[40], str2[40];
 char name[40], value[40];
 const int lineMaxChar=80;
 const int sectionMaxChar=20;
-char line[lineMaxChar];
-char confSection[sectionMaxChar];
+// char line[lineMaxChar];
+// char confSection[sectionMaxChar];
+char line[80];
+char confSection[20];
 
 FILE * fp;
 char *ptr, *ptr2;
