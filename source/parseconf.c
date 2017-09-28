@@ -31,9 +31,8 @@ int parseConfFile(void) {
         while((fscanf(fp,"%s\n",line)) != EOF) {
             tmp=parseConfLine(line);
             syslog(LOG_ERR, "\tLine(%d): |%s| ->%d", lineCnt, line, tmp);
-            lineCnt++
+            lineCnt++;
         }
-
     }
     syslog(LOG_DEBUG, "\tline: |%s|",line);
     fclose(fp);
