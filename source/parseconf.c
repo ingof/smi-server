@@ -72,6 +72,65 @@ int setSection(char* section) {
 }
 
 int setValue(char* name, char* value) {
-    syslog(LOG_DEBUG,"\tLine %d:\tSection: %s,\tName: %s,\tValue: %s",lineCnt, confSection, name, value);
+    syslog(LOG_DEBUG,"DEBUG: %4d: Section: %s,\tName: %s,\tValue: %s",lineCnt, confSection, name, value);
+    char* sectionName[20];
+    char* sectionNumber[20];
+    sectionName = strtok(name, ":");
+    sectionNumber = strtok(NULL, ":");
+
+    switch (sectionName) {
+        case "interface":
+            setInterface(name, value);
+            break;
+
+        case "switch:0","switch:1","switch:2","switch:3","switch:4","switch:5","switch:6","switch:7" :
+            setSwitch(name, value);
+            break;
+
+        case "drive:0","drive:1","drive:2","drive:3","drive:4","drive:5","drive:6","drive:7" :
+            setDrive(name, value);
+            break;
+
+        default:
+            syslog(LOG_NOTICE, "NOTICE: unknown section: \"%s\"#\"%s\"", sectionName, sectionNumber);
+            break;
+    }
     return(EXIT_SUCCESS);
 }
+
+int setInterface(char* name, char* value) {
+    switch (name) {
+        case "smi0":
+            break;
+        case "smi1":
+            break;
+        case "swb0":
+            break;
+        default:
+            syslog(LOG_NOTICE, "NOTICE: unknown interface type: \"%s\"", name);
+            break;
+    }
+    return(EXIT_SUCCESS)
+};
+
+int setSwitch(char* name, char* value) {
+    char* tmpName[20];
+    char* tmpNumber[20];
+    tmpName = strtok(name, ":");
+    tmpNumber = strtok(NULL, ":");
+
+    syslog(LOG_NOTICE, "DEBUG: s.%s[%s]", tmpName, tmpNumber);
+
+    return(EXIT_SUCCESS)
+};
+
+int setDrive(char* name, char* value) {
+    char* tmpName[20];
+    char* tmpNumber[20];
+    tmpName = strtok(name, ":");
+    tmpNumber = strtok(NULL, ":");
+
+    syslog(LOG_NOTICE, "DEBUG: d.%s[%s]", tmpName, tmpNumber);
+
+    return(EXIT_SUCCESS)
+};
