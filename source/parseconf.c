@@ -42,7 +42,8 @@ int parseConfFile(void) {
 int parseConfLine(char* line) {
 
     // skip comments
-    line = strcat(" ", line);
+    // TODO try to solve comment at second position
+    // line = strcat(" ", line);
     line = strtok(line, "#");
 
     // get sections
