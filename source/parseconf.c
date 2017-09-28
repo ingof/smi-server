@@ -68,10 +68,12 @@ int parseConfLine(char* line) {
 }
 
 int setSection(char* section) {
+    syslog(LOG_DEBUG,"DEBUG2: setSection: \"%s\" ==>",section);
     char* sectionName;
     char* sectionNumber;
     sectionName = strtok(section, ":");
     sectionNumber = strtok(NULL, ":");
+    syslog(LOG_DEBUG,"DEBUG2: setSection: \"%s\" %s#%s",section ,sectionName, sectionNumber);
     strncpy(confSectionName,sectionName,sectionMaxChar);
     strncpy(confSectionNumber,sectionNumber,sectionMaxChar);
     syslog(LOG_INFO,"INFO: setSection: Name=\"%s\", value=\"%s\"", confSectionName, confSectionNumber);
