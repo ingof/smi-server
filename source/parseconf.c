@@ -128,6 +128,10 @@ int setDrive(char* name, char* value) {
     if (strncmp(confSectionNumber,"(null)",20)) {
         strncpy(confSectionNumber,"0",20);
         syslog(LOG_DEBUG,"DEBUG: ( N u l l )");
+        if (strncmp(confSectionNumber,"(null)",20)) {
+            syslog(LOG_DEBUG,"DEBUG: immer noch( N u l l )");
+        }
+
     }
     if (strncmp(confSectionNumber,"",20)) {
         syslog(LOG_DEBUG,"DEBUG: . . . . . .");
