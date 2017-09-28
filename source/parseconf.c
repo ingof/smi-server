@@ -68,13 +68,11 @@ int parseConfLine(char* line) {
 }
 
 int setSection(char* section) {
-    syslog(LOG_DEBUG,"DEBUG2: setSection: \"%s\" ==>",section);
     char* sectionName;
     char* sectionNumber;
     sectionName = strtok(section, ":");
     sectionNumber = strtok(NULL, ":");
     // TODO handle section without number
-    syslog(LOG_DEBUG,"DEBUG2: setSection: \"%s\" %s#%s",section ,sectionName, sectionNumber);
     strncpy(confSectionName,sectionName,sectionMaxChar);
     confSectionNumber=atoi(sectionNumber);
     syslog(LOG_INFO,"INFO: setSection: Name=\"%s\", value=\"%2d\"", confSectionName, confSectionNumber);
@@ -82,8 +80,6 @@ int setSection(char* section) {
 }
 
 int setValue(char* name, char* value) {
-    syslog(LOG_DEBUG,"DEBUG: %4d: Section: %s:%s,\tName: %s,\tValue: %s",lineCnt, confSectionName, confSectionNumber, name, value);
-
     if (strncmp(confSectionName,"interface",20)==0) {
         setInterface(name, value);
     } else if (strncmp(confSectionName,"switch",20)==0) {
