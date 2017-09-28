@@ -74,6 +74,7 @@ int setSection(char* section) {
     sectionNumber = strtok(NULL, ":");
     strncpy(confSectionName,sectionName,sectionMaxChar);
     strncpy(confSectionNumber,sectionNumber,sectionMaxChar);
+    syslog(LOG_INFO,"INFO: setSection: Name=\"%s\", value=\"%s\"", confSectionName, confSectionNumber)
     return(EXIT_SUCCESS);
 }
 
@@ -111,7 +112,7 @@ int setSwitch(char* name, char* value) {
     tmpName = strtok(name, ":");
     tmpNumber = strtok(NULL, ":");
 
-    syslog(LOG_DEBUG, "DEBUG: s.%s[%s]", tmpName, tmpNumber);
+    syslog(LOG_DEBUG, "DEBUG: s.%s[%s] = \"%s\"", tmpName, tmpNumber, value);
 
     return(EXIT_SUCCESS);
 };
@@ -122,7 +123,7 @@ int setDrive(char* name, char* value) {
     tmpName = strtok(name, ":");
     tmpNumber = strtok(NULL, ":");
 
-    syslog(LOG_DEBUG, "DEBUG: d.%s[%s]", tmpName, tmpNumber);
+    syslog(LOG_DEBUG, "DEBUG: d.%s[%s] = \"%s\"", tmpName, tmpNumber, value);
 
     return(EXIT_SUCCESS);
 };
