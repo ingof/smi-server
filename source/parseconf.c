@@ -42,7 +42,7 @@ int parseConfFile(void) {
 int parseConfLine(char* line) {
     int remark;
     // remark-line cut line at "#" char
-    remark = (int) strchr(line,(int)'#');
+    remark =  strchr(line,(int)'#');
     if ( remark != NULL ) {
         // TODO only ignore comments an not the whole line
         // skip comments
