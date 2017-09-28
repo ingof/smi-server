@@ -36,7 +36,7 @@ int parseConfFile(void) {
             lineCnt++;
         }
     }
-    syslog(LOG_DEBUG, "DEBUG: line: |%s|",line);
+    // syslog(LOG_DEBUG, "DEBUG: line: |%s|",line);
     fclose(fp);
     return 0;
 }
@@ -49,7 +49,7 @@ int parseConfLine(char* line) {
         // skip comments
         // line[(remark-1)]="\0";
         syslog(LOG_DEBUG, "DEBUG: skip comment (%d) |%s|", remark, line);
-        return(EXIT_FAILURE);
+        return(EXIT_SUCCESS);
     }
     // } else {
 
@@ -64,7 +64,7 @@ int parseConfLine(char* line) {
     if (strchr(line,(int)'=')) {
         ptr = strtok(line, "=");
         ptr2 = strtok(NULL, "=");
-        syslog(LOG_DEBUG, "DEBUG:  Value: \"%s\" is set to \"%s\" |%s|", ptr, ptr2, line);
+        syslog(LOG_DEBUG, "DEBUG:  Value: \"%s\" is set to \"%s\"", ptr, ptr2);
         return(EXIT_SUCCESS);
     }
 
