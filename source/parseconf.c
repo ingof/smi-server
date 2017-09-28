@@ -78,11 +78,11 @@ int setValue(char* name, char* value) {
     sectionName = strtok(confSection, ":");
     sectionNumber = strtok(NULL, ":");
 
-    if (sectionName=="interface") {
+    if (strncmp(sectionName,"interface",20)==0) {
         setInterface(name, value);
-    } else if (sectionName=="switch") {
+    } else if (strncmp(sectionName,"switch",20)==0) {
         setSwitch(name, value);
-    } else if (sectionName=="drive") {
+    } else if (strncmp(sectionName,"drive",20)==0) {
         setDrive(name, value);
     } else {
         syslog(LOG_NOTICE, "NOTICE: unknown section: \"%s#%s\" , value:, \"%s#%s\"",sectionName, sectionNumber, sectionName, sectionNumber);
