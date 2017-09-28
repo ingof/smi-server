@@ -12,7 +12,8 @@ const int sectionMaxChar=20;
 // char line[lineMaxChar];
 // char confSection[sectionMaxChar];
 char line[80];
-char confSection[20];
+char confSectionName[20];
+char confSectionNumber[20];
 
 FILE * fp;
 char *ptr, *ptr2;
@@ -67,35 +68,36 @@ int parseConfLine(char* line) {
 }
 
 int setSection(char* section) {
-    strncpy(confSection,section,sectionMaxChar);
+    char* sectionName;
+    char* sectionNumber;
+    sectionName = strtok(section, ":");
+    sectionNumber = strtok(NULL, ":");
+    strncpy(confSectionName,sectionName,sectionMaxChar);
+    strncpy(confSectionNumber,sectionNumber,sectionMaxChar);
     return(EXIT_SUCCESS);
 }
 
 int setValue(char* name, char* value) {
-    syslog(LOG_DEBUG,"DEBUG: %4d: Section: %s,\tName: %s,\tValue: %s",lineCnt, confSection, name, value);
-    char* sectionName;
-    char* sectionNumber;
-    sectionName = strtok(confSection, ":");
-    sectionNumber = strtok(NULL, ":");
+    syslog(LOG_DEBUG,"DEBUG: %4d: Section: %s:%s,\tName: %s,\tValue: %s",lineCnt, confSectionName, confSectionNumber, name, value);
 
-    if (strncmp(sectionName,"interface",20)==0) {
+    if (strncmp(confSectionName,"interface",20)==0) {
         setInterface(name, value);
-    } else if (strncmp(sectionName,"switch",20)==0) {
+    } else if (strncmp(confSectionName,"switch",20)==0) {
         setSwitch(name, value);
-    } else if (strncmp(sectionName,"drive",20)==0) {
+    } else if (strncmp(confSectionName,"drive",20)==0) {
         setDrive(name, value);
     } else {
-        syslog(LOG_NOTICE, "NOTICE: unknown section: \"%s#%s\" , value:, \"%s#%s\"",sectionName, sectionNumber, sectionName, sectionNumber);
+        syslog(LOG_NOTICE, "NOTICE: unknown section: \"%s#%s\" , value:, \"%s#%s\"",confSectionName, confSectionNumber, name, value);
     }
     return(EXIT_SUCCESS);
 }
 
 int setInterface(char* name, char* value) {
-    if (name=="smi:0") {
+    if (strncmp(name,"smi:0",20)==0) {
         syslog(LOG_DEBUG, "DEBUG: interface: \"%s\"", name);
-    } else if (name=="smi:1") {
+    } else if (strncmp(name,"smi:1",20)==0) {
         syslog(LOG_DEBUG, "DEBUG: interface: \"%s\"", name);
-    } else if (name=="swb:0") {
+    } else if (strncmp(name,"swb:0",20)==0) {
         syslog(LOG_DEBUG, "DEBUG: interface: \"%s\"", name);
     } else {
         syslog(LOG_NOTICE, "NOTICE: unknown interface type: \"%s\"", name);
