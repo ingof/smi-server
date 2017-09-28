@@ -73,7 +73,7 @@ int setSection(char* section) {
     char* sectionNumber;
     sectionName = strtok(section, ":");
     sectionNumber = strtok(NULL, ":");
-    if (sectionNumer== NULL) {
+    if (sectionNumber== NULL) {
         strncpy(sectionNumber,"0",20);
     }
     syslog(LOG_DEBUG,"DEBUG2: setSection: \"%s\" %s#%s",section ,sectionName, sectionNumber);
