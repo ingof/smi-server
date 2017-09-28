@@ -74,7 +74,7 @@ int setSection(char* section) {
     sectionNumber = strtok(NULL, ":");
     strncpy(confSectionName,sectionName,sectionMaxChar);
     strncpy(confSectionNumber,sectionNumber,sectionMaxChar);
-    syslog(LOG_INFO,"INFO: setSection: Name=\"%s\", value=\"%s\"", confSectionName, confSectionNumber)
+    syslog(LOG_INFO,"INFO: setSection: Name=\"%s\", value=\"%s\"", confSectionName, confSectionNumber);
     return(EXIT_SUCCESS);
 }
 
