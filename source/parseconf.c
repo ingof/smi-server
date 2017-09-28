@@ -9,7 +9,8 @@ char str1[40], str2[40];
 char name[40], value[40];
 const int lineMaxChar=80;
 const int sectionMaxChar=20;
-char line[linMaxChar];
+char line[lineMaxChar];
+char confSection[sectionMaxChar];
 
 FILE * fp;
 char *ptr, *ptr2;
@@ -37,7 +38,6 @@ int parseConfFile(void) {
 
 int parseConfLine(char* line) {
     int remark;
-    char confSection[20];
     // remark-line cut line at "#" char
     remark=strchr(line,(int)'#');
     if ( remark != NULL ) {
@@ -57,7 +57,7 @@ int parseConfLine(char* line) {
     if (strchr(line,(int)'=')) {
         ptr = strtok(line, "=");
         ptr2 = strtok(NULL, "=");
-        setValue(prt, ptr2);
+        setValue(ptr, ptr2);
         // syslog(LOG_DEBUG, "DEBUG:  Value: \"%s\" is set to \"%s", ptr, ptr2);
         return(EXIT_SUCCESS);
     }
