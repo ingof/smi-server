@@ -42,12 +42,8 @@ int parseConfFile(void) {
 int parseConfLine(char* line) {
 
     // skip comments
-
-    // if ( strchr(line,(int)'#') != NULL ) {
-    syslog(LOG_DEBUG,"DEBUG before: |%s|", line);
-        line = strtok(line, "#");
-        syslog(LOG_DEBUG,"DEBUG after: |%s|", line);
-    // }
+    line = strcat(" ", line);
+    line = strtok(line, "#");
 
     // get sections
     if ((strchr(line, (int) '[')!=NULL)&&(strchr(line,(int)']')!=NULL)) {
