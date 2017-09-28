@@ -8,7 +8,7 @@
 char str1[40], str2[40];
 char name[40], value[40];
 int lineMaxChar=80;
-char line[lineMaxChar];
+char line[80];
 // int year;
 FILE * fp;
 char *ptr, *ptr2;
@@ -30,7 +30,7 @@ int parseConfFile(void) {
     } else {
         syslog(LOG_DEBUG, "DEBUG: parsing config file: %s", configFile);
         // while((fscanf(fp,"%s\n",line)) != EOF) {
-        while((fgets(line,lineMaxChar,fp)) != EOF) {
+        while((fgets(line,lineMaxChar,fp)) != NULL) {
             tmp=parseConfLine(line);
             syslog(LOG_DEBUG, "DEBUG: Line(%d): |%s| ->%d", lineCnt, line, tmp);
             lineCnt++;
