@@ -7,32 +7,26 @@
 
 char str1[40], str2[40];
 char name[40], value[40];
-int lineMaxChar=80;
-char line[80];
-// int year;
+const int lineMaxChar=80;
+const int sectionMaxChar=20;
+char line[linMaxChar];
+
 FILE * fp;
 char *ptr, *ptr2;
 int tmp;
-
-// int main() {
-//
-//  tmp=parseConfFile();
-//  return(0);
-// }
+int lineCnt;
 
 int parseConfFile(void) {
     char configFile[80]="/var/packages/smi-server/target/share/smi-server.conf";
-    int lineCnt=0;
+    lineCnt=0;
     fp = fopen (configFile, "r");
     if (fp == NULL) {
         syslog(LOG_ERR, "ERROR: Could not open configuration file");
         return 1;
     } else {
         syslog(LOG_DEBUG, "DEBUG: parsing config file: %s", configFile);
-        // while((fscanf(fp,"%s\n",line)) != EOF) {
         while((fgets(line,lineMaxChar,fp)) != NULL) {
             lineCnt++;
-//syslog(LOG_DEBUG, "DEBUG: Line(%d): |%s|", lineCnt, line);
             tmp=parseConfLine(line);
         }
     }
@@ -42,33 +36,40 @@ int parseConfFile(void) {
 }
 
 int parseConfLine(char* line) {
-    int remark;// initialisieren und ersten Abschnitt erstellen
+    int remark;
+    char confSection[20];
     // remark-line cut line at "#" char
     remark=strchr(line,(int)'#');
     if ( remark != NULL ) {
-        // skip comments
-        // line[(remark-1)]="\0";
-//        syslog(LOG_DEBUG, "DEBUG: skip comment (%d) |%s|", remark, line);
         // TODO only ignore comments an not the whole line
+        // skip comments
         return(EXIT_SUCCESS);
     }
-    // } else {
-
     // get sections
     if ((strchr(line, (int) '[')!=NULL)&&(strchr(line,(int)']')!=NULL)) {
         char tmpLine[40]="\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0";
         strncpy(tmpLine, (strchr(line, (int)'[')+1), ((strchr(line,(int)']')-strchr(line, (int) '[')-1)) );
-        syslog(LOG_DEBUG, "DEBUG: Section: \t|%s|", tmpLine);
+        tmp=setSection(tmpLine);
+        // syslog(LOG_DEBUG, "DEBUG: Section: \t|%s|", tmpLine);
         return(EXIT_SUCCESS);
     }
     // get values
     if (strchr(line,(int)'=')) {
         ptr = strtok(line, "=");
         ptr2 = strtok(NULL, "=");
-        syslog(LOG_DEBUG, "DEBUG:  Value: \"%s\" is set to \"%s", ptr, ptr2);
+        setValue(prt, ptr2);
+        // syslog(LOG_DEBUG, "DEBUG:  Value: \"%s\" is set to \"%s", ptr, ptr2);
         return(EXIT_SUCCESS);
     }
+    return(EXIT_SUCCESS);
+}
 
-    //  }
+int setSection(char* section) {
+    strncpy(confSection,section,sectionMaxChar)
+    return(EXIT_SUCCESS);
+}
+
+int setValue(char* name, char* value) {
+    syslog(LOG_DEBUG,"\tLine %d:\tSection: %s,\tName: %s,\tValue: %s",lineCnt, confSection, name, value);
     return(EXIT_SUCCESS);
 }
