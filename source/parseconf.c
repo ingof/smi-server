@@ -126,7 +126,7 @@ int setDrive(char* name, char* value) {
     tmpName = strtok(name, ":");
     tmpNumber = strtok(NULL, ":");
     if (strncmp(confSectionNumber,"(null)",20)) {
-        strncpy(confSectionNumber,"0");
+        strncpy(confSectionNumber,"0",20);
         syslog(LOG_DEBUG,"DEBUG: ( N u l l )");
     }
     if (strncmp(confSectionNumber,"",20)) {
