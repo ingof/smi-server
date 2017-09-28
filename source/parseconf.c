@@ -124,7 +124,7 @@ int setInterface(char* name, char* value) {
             syslog(LOG_NOTICE, "NOTICE: unknown interface type: \"%s\"", name);
             break;
     }
-    return(EXIT_SUCCESS)
+    return(EXIT_SUCCESS);
 };
 
 int setSwitch(char* name, char* value) {
@@ -135,7 +135,7 @@ int setSwitch(char* name, char* value) {
 
     syslog(LOG_NOTICE, "DEBUG: s.%s[%s]", tmpName, tmpNumber);
 
-    return(EXIT_SUCCESS)
+    return(EXIT_SUCCESS);
 };
 
 int setDrive(char* name, char* value) {
@@ -146,5 +146,5 @@ int setDrive(char* name, char* value) {
 
     syslog(LOG_NOTICE, "DEBUG: d.%s[%s]", tmpName, tmpNumber);
 
-    return(EXIT_SUCCESS)
+    return(EXIT_SUCCESS);
 };
