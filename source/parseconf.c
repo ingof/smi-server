@@ -21,6 +21,7 @@ int tmp;
 
 int parseConfFile(void) {
     char configFile[80]="/var/packages/smi-server/target/share/smi-server.conf";
+    int lineCnt=1;
     fp = fopen (configFile, "r");
     if (fp == NULL) {
         syslog(LOG_ERR, "ERROR: Could not open configuration file");
@@ -29,7 +30,10 @@ int parseConfFile(void) {
         syslog(LOG_DEBUG, "DEBUG: parsing config file: %s", configFile);
         while((fscanf(fp,"%s\n",line)) != EOF) {
             tmp=parseConfLine(line);
+            syslog(LOG_ERR, "\tLine(%d): |%s| ->%d", lineCnt, line, tmp);
+            lineCnt++
         }
+
     }
     syslog(LOG_DEBUG, "\tline: |%s|",line);
     fclose(fp);
@@ -39,27 +43,30 @@ int parseConfFile(void) {
 int parseConfLine(char* line) {
     char* remark;// initialisieren und ersten Abschnitt erstellen
     // remark-line cut line at "#" char
-    if (strchr(line,(int)'#')) {
-        remark=strchr(line, 35); //35="#"
-        if ( remark != NULL ) {
-            // skip comments
-            syslog(LOG_DEBUG, "DEBUG: skip comment (%d)", remark);
-            exit(EXIT_FAILURE);
-        } else {
-            // get sections
-            if ((strchr(line, (int) '[')!=NULL)&&(strchr(line,(int)']')!=NULL)) {
-                char tmpLine[40]="\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0";
-                strncpy(tmpLine, (strchr(line, (int)'[')+1), ((strchr(line,(int)']')-strchr(line, (int) '[')-1)) );
-                syslog(LOG_DEBUG, "DEBUG: Section: \t|%s|", tmpLine);
-            }
-            // get values
-            if (strchr(line,(int)'=')) {
-                ptr = strtok(line, "=");
-                ptr2 = strtok(NULL, "=");
-                syslog(LOG_DEBUG, "DEBUG:  Value: \"%s\" is set to \"%s\"", ptr, ptr2);
-            }
-            exit(EXIT_SUCCESS);
-         }
-     }
+    remark=strchr(line,(int)'#');
+    if ( remark != NULL ) {
+        // skip comments
+        line[remark]="\0";
+        syslog(LOG_DEBUG, "DEBUG: skip comment (%d) |%s|", remark, line);
+        // exit(EXIT_FAILURE);
+    }
+    // } else {
+
+    // get sections
+    if ((strchr(line, (int) '[')!=NULL)&&(strchr(line,(int)']')!=NULL)) {
+        char tmpLine[40]="\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0";
+        strncpy(tmpLine, (strchr(line, (int)'[')+1), ((strchr(line,(int)']')-strchr(line, (int) '[')-1)) );
+        syslog(LOG_DEBUG, "DEBUG: Section: \t|%s|", tmpLine);
+        exit(EXIT_SUCCESS);
+    }
+    // get values
+    if (strchr(line,(int)'=')) {
+        ptr = strtok(line, "=");
+        ptr2 = strtok(NULL, "=");
+        syslog(LOG_DEBUG, "DEBUG:  Value: \"%s\" is set to \"%s\" |%s|", ptr, ptr2, line);
+        exit(EXIT_SUCCESS);
+    }
+
+    //  }
      exit(EXIT_SUCCESS);
 }
