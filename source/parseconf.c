@@ -42,10 +42,11 @@ int parseConfFile(void) {
 int parseConfLine(char* line) {
     int remark;
     // remark-line cut line at "#" char
-    remark=strchr(line,(int)'#');
+    remark = (int) strchr(line,(int)'#');
     if ( remark != NULL ) {
         // TODO only ignore comments an not the whole line
         // skip comments
+        syslog(LOG_DEBUG,"DEBUG: remark=%3d", remark);
         return(EXIT_SUCCESS);
     }
     // get sections
@@ -75,7 +76,7 @@ int setSection(char* section) {
     // TODO handle section without number
     strncpy(confSectionName,sectionName,sectionMaxChar);
     confSectionNumber=atoi(sectionNumber);
-    syslog(LOG_INFO,"INFO: setSection: Name=\"%s\", value=\"%2d\"", confSectionName, confSectionNumber);
+    syslog(LOG_INFO,"DEBUG: setSection: %s#%d", confSectionName, confSectionNumber);
     return(EXIT_SUCCESS);
 }
 
@@ -107,23 +108,23 @@ int setInterface(char* name, char* value) {
 
 int setSwitch(char* name, char* value) {
     char* tmpName;
-    char* tmpNumber;
+    // char* tmpNumber;
     tmpName = strtok(name, ":");
-    tmpNumber = strtok(NULL, ":");
+    // tmpNumber = strtok(NULL, ":");
 
-    syslog(LOG_DEBUG, "DEBUG: s%02d.%s[%s] = %s", confSectionNumber, tmpName, tmpNumber, value);
+    syslog(LOG_DEBUG, "DEBUG: s%02d.%s = %s", confSectionNumber, tmpName, value);
 
     return(EXIT_SUCCESS);
 };
 
 int setDrive(char* name, char* value) {
     char* tmpName;
-    char* tmpNumber;
+    // char* tmpNumber;
     tmpName = strtok(name, ":");
-    tmpNumber = strtok(NULL, ":");
+    // tmpNumber = strtok(NULL, ":");
 
 
-    syslog(LOG_DEBUG, "DEBUG: d%02d.%s[%s] = %s", confSectionNumber, tmpName, tmpNumber, value);
+    syslog(LOG_DEBUG, "DEBUG: d%02d.%s = %s", confSectionNumber, tmpName, value);
 
 
     return(EXIT_SUCCESS);
