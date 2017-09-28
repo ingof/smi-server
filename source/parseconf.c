@@ -85,7 +85,7 @@ int setValue(char* name, char* value) {
     } else if (confSection=="drive") {
         setDrive(name, value);
     } else {
-        syslog(LOG_NOTICE, "NOTICE: unknown section: \"%s#%s\"", sectionName, sectionNumber);
+        syslog(LOG_NOTICE, "NOTICE: unknown section:%s ,\"%s#%s\"",confSection, sectionName, sectionNumber);
     }
     return(EXIT_SUCCESS);
 }
