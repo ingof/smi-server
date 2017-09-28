@@ -91,16 +91,14 @@ int setValue(char* name, char* value) {
 }
 
 int setInterface(char* name, char* value) {
-    switch (name) {
-        case "smi0":
-            break;
-        case "smi1":
-            break;
-        case "swb0":
-            break;
-        default:
-            syslog(LOG_NOTICE, "NOTICE: unknown interface type: \"%s\"", name);
-            break;
+    if (name=="smi:0") {
+        syslog(LOG_DEBUG, "DEBUG: interface: \"%s\"", name);
+    } else if (name=="smi:1") {
+        syslog(LOG_DEBUG, "DEBUG: interface: \"%s\"", name);
+    } else if (name=="swb:0") {
+        syslog(LOG_DEBUG, "DEBUG: interface: \"%s\"", name);
+    } else {
+        syslog(LOG_NOTICE, "NOTICE: unknown interface type: \"%s\"", name);
     }
     return(EXIT_SUCCESS);
 };
