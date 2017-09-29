@@ -76,7 +76,6 @@ int setSection(char* section) {
     // TODO handle section without number
     strncpy(confSectionName,sectionName,sectionMaxChar);
     confSectionNumber=atoi(sectionNumber);
-    syslog(LOG_INFO,"DEBUG: setSection: %s#%d", confSectionName, confSectionNumber);
     return(EXIT_SUCCESS);
 }
 
@@ -88,20 +87,20 @@ int setValue(char* name, char* value) {
     } else if (strncmp(confSectionName,"drive",20)==0) {
         setDrive(name, value);
     } else {
-        syslog(LOG_NOTICE, "NOTICE: unknown section: \"%s#%s\" , value:, \"%s#%s\"",confSectionName, confSectionNumber, name, value);
+        syslog(LOG_NOTICE, "NOTICE: %3d: unknown section: \"%s#%s\" , value:, \"%s#%s\"", lineCnt, confSectionName, confSectionNumber, name, value);
     }
     return(EXIT_SUCCESS);
 }
 
 int setInterface(char* name, char* value) {
     if (strncmp(name,"smi:0",20)==0) {
-        syslog(LOG_DEBUG, "DEBUG: interface: \"%s\"", name);
+        syslog(LOG_DEBUG, "DEBUG: %3d: interface: %s = %s", lineCnt, name, value);
     } else if (strncmp(name,"smi:1",20)==0) {
-        syslog(LOG_DEBUG, "DEBUG: interface: \"%s\"", name);
+        syslog(LOG_DEBUG, "DEBUG: %3d: interface: %s = %s", lineCnt, name, value);
     } else if (strncmp(name,"swb:0",20)==0) {
-        syslog(LOG_DEBUG, "DEBUG: interface: \"%s\"", name);
+        syslog(LOG_DEBUG, "DEBUG: %3d: interface: %s = %s", lineCnt, name, value);
     } else {
-        syslog(LOG_NOTICE, "NOTICE: unknown interface type: %s", name);
+        syslog(LOG_NOTICE, "NOTICE: %3d: unknown interface type: %s", lineCnt, name);
     }
     return(EXIT_SUCCESS);
 };
@@ -109,13 +108,13 @@ int setInterface(char* name, char* value) {
 int setSwitch(char* name, char* value) {
     char* tmpName;
     tmpName = strtok(name, ":");
-    syslog(LOG_DEBUG, "DEBUG: s%02d.%s = %s", confSectionNumber, tmpName, value);
+    syslog(LOG_DEBUG, "DEBUG: %3d:    switch%02d.%s = %s", lineCnt, confSectionNumber, tmpName, value);
     return(EXIT_SUCCESS);
 };
 
 int setDrive(char* name, char* value) {
     char* tmpName;
     tmpName = strtok(name, ":");
-    syslog(LOG_DEBUG, "DEBUG: d%02d.%s = %s", confSectionNumber, tmpName, value);
+    syslog(LOG_DEBUG, "DEBUG: %3d:     drive%02d.%s = %s", lineCnt, confSectionNumber, tmpName, value);
     return(EXIT_SUCCESS);
 };
