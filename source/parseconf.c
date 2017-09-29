@@ -51,7 +51,7 @@ int parseConfLine(char* line) {
     }
     strncat(tmpLine, line, 39);
     linePtr = strtok(tmpLine, "#");
-    strncpy(line,linePtr,40);
+    strncpy(line,tmpLine,40);
     syslog(LOG_DEBUG,"DEBUG: LineOut: |%s", line);
 
     // get sections
