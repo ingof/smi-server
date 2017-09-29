@@ -46,9 +46,9 @@ int parseConfLine(char* line) {
     syslog(LOG_DEBUG,"DEBUG:  LineIn: |%s", line);
     char tmpLine[40]="";
     char *linePtr;
-    char *linePtr2=(strchr(line, (int) '#') - *line);
-    syslog(LOG_DEBUG,"%s, %s, %s, %s",line, *line , linePtr2, *linePtr2);
-    if ( linePtr2 != NULL ) {
+    char *linePtr2=(strchr(line, (int) '#'));
+    syslog(LOG_DEBUG,"%s, %s",linePtr2, *linePtr2);
+    if ( (strchr(line, (int) '#') != NULL ) {
         strncpy(tmpLine, "  ", 1);
     }
     strncat(tmpLine, line, 39);
