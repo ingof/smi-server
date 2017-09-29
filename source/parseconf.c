@@ -43,8 +43,13 @@ int parseConfLine(char* line) {
 
     // skip comments
     // TODO try to solve comment at second position
-    // line = strcat(" ", line);
-    line = strtok(line, "#");
+    syslog:(LOG_DEBUG,"DEBUG:  LineIn: |$s|", line);
+    char tmpLine[40]="";
+    char *linePtr;
+    strcat(tmpLine, line, 39);
+    linePtr = strtok(tmpLine, "#");
+    strncpy(line,linePtr,40);
+    syslog:(LOG_DEBUG,"DEBUG: LineOut: |$s|", line);
 
     // get sections
     if ((strchr(line, (int) '[')!=NULL)&&(strchr(line,(int)']')!=NULL)) {
