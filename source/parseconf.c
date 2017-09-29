@@ -43,22 +43,22 @@ int parseConfLine(char* line) {
 
     // skip comments
     // TODO try to solve comment at second position
-    syslog(LOG_DEBUG,"DEBUG:  LineIn: |%s", line);
-    char tmpLine[40]="";
+    // syslog(LOG_DEBUG,"DEBUG:  LineIn: |%s", line);
+    char tmpLine[80]="";
     char *linePtr;
-    syslog(LOG_DEBUG,"#:%d, o:%d, >:%d", strchr(line, (int) '#'), line ,(strchr(line, (int) '#')-line));
+    // syslog(LOG_DEBUG,"#:%d, o:%d, >:%d", strchr(line, (int) '#'), line ,(strchr(line, (int) '#')-line));
     if (strchr(line, (int) '#') == line ) {
         strncpy(tmpLine, "  ", 1);
     }
-    strncat(tmpLine, line, 39);
-    syslog(LOG_DEBUG,"DEBUG:    Line: |%s", tmpLine);
+    strncat(tmpLine, line, 79);
+    // syslog(LOG_DEBUG,"DEBUG:    Line: |%s", tmpLine);
     linePtr = strtok(tmpLine, "#");
-    strncpy(line,tmpLine,40);
-    syslog(LOG_DEBUG,"DEBUG: LineOut: |%s", line);
+    strncpy(line,tmpLine, 80);
+    // syslog(LOG_DEBUG,"DEBUG: LineOut: |%s", line);
 
     // get sections
     if ((strchr(line, (int) '[')!=NULL)&&(strchr(line,(int)']')!=NULL)) {
-        char tmpLine[40]="\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0";
+        char tmpLine[80]="\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0";
         strncpy(tmpLine, (strchr(line, (int)'[')+1), ((strchr(line,(int)']')-strchr(line, (int) '[')-1)) );
         tmp=setSection(tmpLine);
         // syslog(LOG_DEBUG, "DEBUG: Section: \t|%s|", tmpLine);
