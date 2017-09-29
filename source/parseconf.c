@@ -48,7 +48,7 @@ int parseConfLine(char* line) {
     char *linePtr;
     char *linePtr2=(strchr(line, (int) '#') - *line);
     syslog(LOG_DEBUG,"%s, %s, %s, %s",line, *line , linePtr2, *linePtr2);
-    if ( linePtr2 == 1 ) {
+    if ( linePtr2 != NULL ) {
         strncpy(tmpLine, "  ", 1);
     }
     strncat(tmpLine, line, 39);
