@@ -42,27 +42,20 @@ int parseConfFile(void) {
 int parseConfLine(char* line) {
 
     // skip comments
-    // TODO try to solve comment at second position
-    // syslog(LOG_DEBUG,"DEBUG:  LineIn: |%s", line);
     char tmpLine[80]="";
-    char *linePtr;
-    // syslog(LOG_DEBUG,"#:%d, o:%d, >:%d", strchr(line, (int) '#'), line ,(strchr(line, (int) '#')-line));
     if (strchr(line, (int) '#') == line ) {
         strncpy(tmpLine, "  ", 1);
     }
     strncat(tmpLine, line, 79);
-    // syslog(LOG_DEBUG,"DEBUG:    Line: |%s", tmpLine);
-    linePtr = strtok(tmpLine, "#");
+    strtok(tmpLine, "#");
     strncpy(line,tmpLine, 80);
-    // syslog(LOG_DEBUG,"DEBUG: LineOut: |%s", line);
 
     // get sections
     if ((strchr(line, (int) '[')!=NULL)&&(strchr(line,(int)']')!=NULL)) {
         char tmpLine[80]="\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0";
         strncpy(tmpLine, (strchr(line, (int)'[')+1), ((strchr(line,(int)']')-strchr(line, (int) '[')-1)) );
         tmp=setSection(tmpLine);
-        // syslog(LOG_DEBUG, "DEBUG: Section: \t|%s|", tmpLine);
-        // return(EXIT_SUCCESS);
+        return(EXIT_SUCCESS);
     }
 
     // get values
@@ -70,8 +63,7 @@ int parseConfLine(char* line) {
         ptr = strtok(line, "=");
         ptr2 = strtok(NULL, "=");
         tmp=setValue(ptr, ptr2);
-        // syslog(LOG_DEBUG, "DEBUG:  Value: \"%s\" is set to \"%s", ptr, ptr2);
-        // return(EXIT_SUCCESS);
+        return(EXIT_SUCCESS);
     }
     return(EXIT_SUCCESS);
 }
