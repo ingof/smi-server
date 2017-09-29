@@ -50,12 +50,12 @@ int parseConfLine(char* line) {
     } else {
         tmpLine=" ";
     }
-        char *linePtr;
-        strncat(tmpLine, line, 39);
-        linePtr = strtok(tmpLine, "#");
-        strncpy(line,linePtr,40);
-        syslog(LOG_DEBUG,"DEBUG: LineOut: |%s", line);
-    }
+    char *linePtr;
+    strncat(tmpLine, line, 39);
+    linePtr = strtok(tmpLine, "#");
+    strncpy(line,linePtr,40);
+    syslog(LOG_DEBUG,"DEBUG: LineOut: |%s", line);
+    
     // get sections
     if ((strchr(line, (int) '[')!=NULL)&&(strchr(line,(int)']')!=NULL)) {
         char tmpLine[40]="\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0";
