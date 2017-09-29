@@ -46,10 +46,10 @@ int parseConfLine(char* line) {
     syslog(LOG_DEBUG,"DEBUG:  LineIn: |%s", line);
     char tmpLine[40]="";
     char *linePtr;
-    syslog(LOG_DEBUG,"s:%s, d:%d", strchr(line, (int) '#'), strchr(line, (int) '#') );
-    // if (strchr(line, (int) '#') != NULL ) {
+    syslog(LOG_DEBUG,"#:%d, o:%d, >:%d", strchr(line, (int) '#'), line ,(strchr(line, (int) '#')-line));
+    if (strchr(line, (int) '#') != NULL ) {
         strncpy(tmpLine, "  ", 1);
-    // }
+    }
     strncat(tmpLine, line, 39);
     syslog(LOG_DEBUG,"DEBUG:    Line: |%s", tmpLine);
     linePtr = strtok(tmpLine, "#");
