@@ -43,14 +43,19 @@ int parseConfLine(char* line) {
 
     // skip comments
     // TODO try to solve comment at second position
-    syslog(LOG_DEBUG,"DEBUG:  LineIn: |%s|", line);
+    syslog(LOG_DEBUG,"DEBUG:  LineIn: |%s", line);
     char tmpLine[40]="";
-    char *linePtr;
-    strncat(tmpLine, line, 39);
-    linePtr = strtok(tmpLine, "#");
-    strncpy(line,linePtr,40);
-    syslog(LOG_DEBUG,"DEBUG: LineOut: |%s|", line);
-
+    if ( strchr(line, (int) '#') == NULL ) {
+        tmpLine="";
+    } else {
+        tmpLine=" ";
+    }
+        char *linePtr;
+        strncat(tmpLine, line, 39);
+        linePtr = strtok(tmpLine, "#");
+        strncpy(line,linePtr,40);
+        syslog(LOG_DEBUG,"DEBUG: LineOut: |%s", line);
+    }
     // get sections
     if ((strchr(line, (int) '[')!=NULL)&&(strchr(line,(int)']')!=NULL)) {
         char tmpLine[40]="\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0";
@@ -61,7 +66,7 @@ int parseConfLine(char* line) {
     }
 
     // get values
-    if (strchr(line,(int)'=')) {
+    if ( strchr(line, (int) '=' ) ) {
         ptr = strtok(line, "=");
         ptr2 = strtok(NULL, "=");
         tmp=setValue(ptr, ptr2);
