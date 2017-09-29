@@ -7,12 +7,14 @@
 
 char str1[40], str2[40];
 char name[40], value[40];
-const int lineMaxChar=80;
-const int sectionMaxChar=20;
+define LINE_MAX_CHAR 80;
+define SECT_MAX_CHAR 20;
+// const int lineMaxChar=80;
+// const int sectionMaxChar=20;
 // char line[lineMaxChar];
 // char confSection[sectionMaxChar];
-char line[80];
-char confSectionName[20];
+char line[LINE_MAX_CHAR];
+char confSectionName[SECT_MAX_CHAR];
 int confSectionNumber=0;
 
 FILE * fp;
@@ -29,7 +31,7 @@ int parseConfFile(void) {
         return 1;
     } else {
         syslog(LOG_DEBUG, "DEBUG: parsing config file: %s", configFile);
-        while((fgets(line,lineMaxChar,fp)) != NULL) {
+        while((fgets(line,LINE_MAX_CHAR,fp)) != NULL) {
             lineCnt++;
             tmp=parseConfLine(line);
         }
@@ -42,13 +44,13 @@ int parseConfFile(void) {
 int parseConfLine(char* line) {
 
     // skip comments
-    char tmpLine[80]="";
+    char tmpLine[LINE_MAX_CHAR]="";
     if (strchr(line, (int) '#') == line ) {
         strncpy(tmpLine, "  ", 1);
     }
-    strncat(tmpLine, line, 79);
+    strncat(tmpLine, line, (LINE_MAX_CHAR-1));
     strtok(tmpLine, "#");
-    strncpy(line,tmpLine, 80);
+    strncpy(line,tmpLine, LINE_MAX_CHAR);
 
     // get sections
     if ((strchr(line, (int) '[')!=NULL)&&(strchr(line,(int)']')!=NULL)) {
@@ -74,17 +76,17 @@ int setSection(char* section) {
     sectionName = strtok(section, ":");
     sectionNumber = strtok(NULL, ":");
     // TODO handle section without number
-    strncpy(confSectionName,sectionName,sectionMaxChar);
+    strncpy(confSectionName, sectionName, SECT_MAX_CHAR);
     confSectionNumber=atoi(sectionNumber);
     return(EXIT_SUCCESS);
 }
 
 int setValue(char* name, char* value) {
-    if (strncmp(confSectionName,"interface",20)==0) {
+    if (strncmp(confSectionName,"interface", SECT_MAX_CHAR)==0) {
         setInterface(name, value);
-    } else if (strncmp(confSectionName,"switch",20)==0) {
+    } else if (strncmp(confSectionName,"switch", SECT_MAX_CHAR)==0) {
         setSwitch(name, value);
-    } else if (strncmp(confSectionName,"drive",20)==0) {
+    } else if (strncmp(confSectionName,"drive", SECT_MAX_CHAR)==0) {
         setDrive(name, value);
     } else {
         syslog(LOG_NOTICE, "NOTICE: %3d: unknown section: \"%s#%s\" , value:, \"%s#%s\"", lineCnt, confSectionName, confSectionNumber, name, value);
@@ -93,11 +95,11 @@ int setValue(char* name, char* value) {
 }
 
 int setInterface(char* name, char* value) {
-    if (strncmp(name,"smi:0",20)==0) {
+    if (strncmp(name,"smi:0",SECT_MAX_CHAR)==0) {
         syslog(LOG_DEBUG, "DEBUG: %3d: interface: %s = %s", lineCnt, name, value);
-    } else if (strncmp(name,"smi:1",20)==0) {
+    } else if (strncmp(name,"smi:1",SECT_MAX_CHAR)==0) {
         syslog(LOG_DEBUG, "DEBUG: %3d: interface: %s = %s", lineCnt, name, value);
-    } else if (strncmp(name,"swb:0",20)==0) {
+    } else if (strncmp(name,"swb:0",SECT_MAX_CHAR)==0) {
         syslog(LOG_DEBUG, "DEBUG: %3d: interface: %s = %s", lineCnt, name, value);
     } else {
         syslog(LOG_NOTICE, "NOTICE: %3d: unknown interface type: %s", lineCnt, name);
