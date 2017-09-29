@@ -45,10 +45,10 @@ int parseConfLine(char* line) {
     // TODO try to solve comment at second position
     syslog(LOG_DEBUG,"DEBUG:  LineIn: |%s", line);
     char tmpLine[40]="";
-    if ( strchr(line, (int) '#') == NULL ) {
-        tmpLine=strncpy(tmpLine, " ", 1);
-    }
     char *linePtr;
+    if ( strchr(line, (int) '#') == NULL ) {
+        strncpy(tmpLine, " ", 1);
+    }
     strncat(tmpLine, line, 39);
     linePtr = strtok(tmpLine, "#");
     strncpy(line,linePtr,40);
