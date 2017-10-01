@@ -37,6 +37,12 @@
 #include <stdio.h>			/* syslog */
 #include <unistd.h>			/* getpwd() */
 
+DRIVE drive[16];
+BUTTON button[32];
+int tcpWEB=8088;
+char *serialSMI[3];
+char *serialSWB[1];
+
 int main(int argc, char *argv[]) {
 
 	/* my process ID and Session ID */
