@@ -9,7 +9,7 @@
 // }
 
 
-unsigned int hmtoi(char *hex, int* maxDigits) {
+unsigned int htoi(char *hex, int* maxDigits) {
     int cnt=0;
     unsigned int hexInt = 0;
     while (cnt < maxDigits) {
