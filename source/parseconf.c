@@ -87,7 +87,7 @@ int setSection(char* section) {
 }
 
 int setValue(char* name, char* value) {
-    syslog(LOG_DEBUG, "DEBUG: setValue(%s, %s) ", name, value);
+    syslog(LOG_DEBUG, "DEBUG: setValue: name=%s value=%s section=%d", name, value, confSectionNumber);
     if (strncmp(confSectionName,"interface", SECT_MAX_CHAR)==0) {
         setInterface(name, value);
     } else if (strncmp(confSectionName,"switch", SECT_MAX_CHAR)==0) {
@@ -101,6 +101,7 @@ int setValue(char* name, char* value) {
 }
 
 int setInterface(char* name, char* value) {
+    syslog(LOG_DEBUG, "DEBUG: setInterface: name=%s value=%s section=%d", name, value, confSectionNumber);
     if (strncmp(name, "smi:0", SECT_MAX_CHAR ) == 0) {
         strncpy(serialSmi[0], value, 29);
         syslog(LOG_DEBUG, "DEBUG: %3d: interface: %s = %s", lineCnt, name, value );
@@ -120,7 +121,7 @@ int setInterface(char* name, char* value) {
 };
 
 int setSwitch(char* name, char* value) {
-    syslog(LOG_DEBUG, "DEBUG: setSwitch(%s, %s) ", name, value);
+    syslog(LOG_DEBUG, "DEBUG: setSwitch: name=%s value=%s section=%d", name, value, confSectionNumber);
     char* tmpName;
     tmpName = strtok(name, ":");
     if ((confSectionNumber>31) && (confSectionNumber<0)) {
@@ -141,7 +142,7 @@ int setSwitch(char* name, char* value) {
 };
 
 int setDrive(char* name, char* value) {
-    syslog(LOG_DEBUG, "DEBUG: setDrive(%s, %s) ", name, value);
+    syslog(LOG_DEBUG, "DEBUG: setDrive: name=%s value=%s section=%d", name, value, confSectionNumber);
     char* tmpName;
     tmpName = strtok(name, ":");
     if ((confSectionNumber>15) && (confSectionNumber<0)) {
