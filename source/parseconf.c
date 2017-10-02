@@ -87,6 +87,7 @@ int setSection(char* section) {
 }
 
 int setValue(char* name, char* value) {
+    syslog(LOG_DEBUG, "DEBUG: setValue(%s, %s) ", name, value);
     if (strncmp(confSectionName,"interface", SECT_MAX_CHAR)==0) {
         setInterface(name, value);
     } else if (strncmp(confSectionName,"switch", SECT_MAX_CHAR)==0) {
