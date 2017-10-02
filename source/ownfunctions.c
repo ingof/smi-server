@@ -9,10 +9,12 @@
 // }
 
 
-unsigned int htoi(char *hex, int* maxDigits) {
+
+unsigned int htoi(char* hex) {
+    int max = strlen(hex);
     int cnt=0;
     unsigned int hexInt = 0;
-    while (cnt < maxDigits) {
+    while (cnt < max) {
         switch ( hex[cnt] ) {
             case '0':
             case '1':
@@ -57,10 +59,4 @@ unsigned int htoi(char *hex, int* maxDigits) {
         cnt++;
     }
     return hexInt;
-}
-
-unsigned int htoi(char* hex) {
-    int max = strlen(hex);
-    int tmpHexInt = htoi(hex, max);
-    return tmpHexInt;
 }
