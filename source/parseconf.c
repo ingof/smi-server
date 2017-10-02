@@ -5,10 +5,11 @@
 #include "parseconf.h"
 #include "typesdef.h"   /* type definitions */
 
+#define LINE_MAX_CHAR 80
+#define SECT_MAX_CHAR 20
+
 char str1[40], str2[40];
 char name[40], value[40];
-#define LINE_MAX_CHAR 80;
-#define SECT_MAX_CHAR 20;
 // const int lineMaxChar=80;
 // const int sectionMaxChar=20;
 // char line[lineMaxChar];
@@ -21,6 +22,7 @@ FILE * fp;
 char *ptr, *ptr2;
 int tmp;
 int lineCnt;
+
 
 int parseConfFile(void) {
     char configFile[80]="/var/packages/smi-server/target/share/smi-server.conf";
