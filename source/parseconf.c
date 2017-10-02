@@ -119,6 +119,7 @@ int setInterface(char* name, char* value) {
 };
 
 int setSwitch(char* name, char* value) {
+    syslog(LOG_DEBUG, "DEBUG: setSwitch(%s, %s) ", name, value);
     char* tmpName;
     tmpName = strtok(name, ":");
     if ((confSectionNumber>31) && (confSectionNumber<0)) {
@@ -139,6 +140,7 @@ int setSwitch(char* name, char* value) {
 };
 
 int setDrive(char* name, char* value) {
+    syslog(LOG_DEBUG, "DEBUG: setDrive(%s, %s) ", name, value);
     char* tmpName;
     tmpName = strtok(name, ":");
     if ((confSectionNumber>15) && (confSectionNumber<0)) {
