@@ -89,7 +89,7 @@ int setSection(char* section) {
 int setValue(char* name, char* value) {
     syslog(LOG_DEBUG, "DEBUG: setValue: name=%s value=%s section=%d", name, value, confSectionNumber);
     if (strncmp(confSectionName,"interface", SECT_MAX_CHAR)==0) {
-        setInterface(name, value);
+        // TODO setInterface(name, value);
     } else if (strncmp(confSectionName,"switch", SECT_MAX_CHAR)==0) {
         setSwitch(name, value);
     } else if (strncmp(confSectionName,"drive", SECT_MAX_CHAR)==0) {
@@ -114,7 +114,7 @@ int setInterface(char* name, char* value) {
         syslog(LOG_DEBUG, "DEBUG: %3d: interface: %s = %s", lineCnt, name, value );
     } else if (strncmp( name, "swb:0", SECT_MAX_CHAR ) == 0) {
         syslog(LOG_DEBUG, "DEBUG: %3d: interface: \'%s\' = \'%s\'", lineCnt, name, value );
-        // TODO strncpy(serialSwb[0], value, 10);
+        strncpy(serialSwb[0], value, 10);
         syslog(LOG_DEBUG, "DEBUG: %3d: interface: \'%s\' = \'%s\'", lineCnt, name, value );
     } else {
         syslog(LOG_NOTICE, "NOTICE: %3d: unknown interface type: \'%s\'", lineCnt, name );
