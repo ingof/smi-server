@@ -104,17 +104,17 @@ int setInterface(char* name, char* value) {
     syslog(LOG_DEBUG, "DEBUG: setInterface: name=%s value=%s section=%d", name, value, confSectionNumber);
     syslog(LOG_DEBUG," DEBUG: swbdiff: %d",strncmp( name, "swb:0", SECT_MAX_CHAR ));
     if (strncmp(name, "smi:0", SECT_MAX_CHAR ) == 0) {
-        strncpy(serialSmi[0], value, 29);
+        strncpy(serialSmi1, value, 29);
         syslog(LOG_DEBUG, "DEBUG: %3d: interface: %s = %s", lineCnt, name, value );
     } else if (strncmp( name, "smi:1", SECT_MAX_CHAR ) == 0) {
-        strncpy(serialSmi[1], value, 29);
+        strncpy(serialSmi2, value, 29);
         syslog(LOG_DEBUG, "DEBUG: %3d: interface: %s = %s", lineCnt, name, value );
     } else if (strncmp( name, "smi:2", SECT_MAX_CHAR ) == 0) {
-        strncpy(serialSmi[2], value, 29);
+        strncpy(serialSmi3, value, 29);
         syslog(LOG_DEBUG, "DEBUG: %3d: interface: %s = %s", lineCnt, name, value );
     } else if (strncmp( name, "swb:0", SECT_MAX_CHAR ) == 0) {
         syslog(LOG_DEBUG, "DEBUG: %3d: interface: \'%s\' = \'%s\'", lineCnt, name, value );
-        strncpy(serialSwb[0], value, 29);
+        strncpy(serialSwb, value, 29);
         syslog(LOG_DEBUG, "DEBUG: %3d: interface: \'%s\' = \'%s\'", lineCnt, name, value );
     } else {
         syslog(LOG_NOTICE, "NOTICE: %3d: unknown interface type: \'%s\'", lineCnt, name );
