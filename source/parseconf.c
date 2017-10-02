@@ -164,7 +164,7 @@ int setDrive(char* name, char* value) {
         syslog(LOG_DEBUG, "DEBUG: %3d:     drive%02d.%s = %s", lineCnt, confSectionNumber, tmpName, value);
     }
     else if (strncmp(tmpName, "control", SECT_MAX_CHAR) == 0) {
-        if ((strupr(value) == "SWB") || (strupr(value) == "SWB")) {
+        if (strcmp((strupr(value),"SWB") == 0) || (strcmp(strupr(value),"SWB") == 0) ) {
             drive.control=value;
             syslog(LOG_DEBUG, "DEBUG: %3d:     drive%02d.%s = %s", lineCnt, confSectionNumber, tmpName, strupr(value));
         } else {
