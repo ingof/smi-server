@@ -102,7 +102,7 @@ int setValue(char* name, char* value) {
 
 int setInterface(char* name, char* value) {
     syslog(LOG_DEBUG, "DEBUG: setInterface: name=%s value=%s section=%d", name, value, confSectionNumber);
-    syslog(LOG_DEBUG," DEBUG: swbdiff:",strncmp( name, "swb:0", SECT_MAX_CHAR ));
+    syslog(LOG_DEBUG," DEBUG: swbdiff: %d",strncmp( name, "swb:0", SECT_MAX_CHAR ));
     if (strncmp(name, "smi:0", SECT_MAX_CHAR ) == 0) {
         strncpy(serialSmi[0], value, 29);
         syslog(LOG_DEBUG, "DEBUG: %3d: interface: %s = %s", lineCnt, name, value );
