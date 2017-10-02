@@ -5,11 +5,11 @@
 #include "parseconf.h"
 #include "typesdef.h"   /* type definitions */
 
-char itoh(int integer) {
-}
+// char itoh(int integer) {
+// }
 
 
-unsigned int htoi(char *hex, int maxDigits) {
+unsigned int htoi(char *hex, int* maxDigits) {
     int cnt=0;
     unsigned int hexInt = 0;
     while (cnt < maxDigits) {
@@ -59,7 +59,7 @@ unsigned int htoi(char *hex, int maxDigits) {
     return hexInt;
 }
 
-unsigned int htoi(char *hex) {
+unsigned int htoi(char* hex) {
     int max = strlen(hex);
     int tmpHexInt = htoi(hex, max);
     return tmpHexInt;
