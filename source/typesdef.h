@@ -12,8 +12,8 @@ typedef enum {AUTO,MANUAL} buttonStatus;
 typedef struct {
     char name[30];
     int bus;
-    int smiId;
-    char smiAddr[9];
+    int id;
+    char addr[9];
     char switchAddr[5];
     unsigned int direction;
     controlType control;
@@ -23,7 +23,7 @@ typedef struct {
 
 typedef struct {
     char name[30];
-    char switch_addr[4];
+    char addr[4];
     buttonStatus status;
 } BUTTON;
 

@@ -5,25 +5,62 @@
 #include "parseconf.h"
 #include "typesdef.h"   /* type definitions */
 
-unsigned int htoi(char *hex) {
-    int cnt = sizeof(hex) / sizeof(char) -2;
+char itoh(int integer) {
+}
+
+
+unsigned int htoi(char *hex, int maxDigits) {
+    int cnt=0;
     unsigned int hexInt = 0;
-    while ( cnt >= 0 ) {
+    while (cnt < maxDigits) {
         switch ( hex[cnt] ) {
-            case (int) '0'..(int) '9':
-                hexInt << 4;
-                hexint &= ( hex[cnt] - 0x30 );
+            case '0':
+            case '1':
+            case '2':
+            case '3':
+            case '4':
+            case '5':
+            case '6':
+            case '7':
+            case '8':
+            case '9':
+                hexInt = hexInt << 4;
+                hexInt |= ( hex[cnt] - 0x30 );
                 break;
-            case (int) 'a'..(int) 'f':
-            case (int) 'A'..(int) 'F':
-                hexInt << 4;
-                hexint &= ( hex[cnt] - 0x40 );
+            case 'a':
+            case 'b':
+            case 'c':
+            case 'd':
+            case 'e':
+            case 'f':
+                hexInt = hexInt << 4;
+                hexInt |= ( hex[cnt] - (0x60-9) );
                 break;
-            case (int) ' ':
+            case 'A':
+            case 'B':
+            case 'C':
+            case 'D':
+            case 'E':
+            case 'F':
+                hexInt = hexInt << 4;
+                hexInt |= ( hex[cnt] - (0x40-9) );
+                break;
+            case 'x':   // 0xABCD
+                break;
+            case ' ':
+            case 'h':
+            case 'H':
             default:
+                return hexInt;
                 break;
         }
-        cnt--;
+        cnt++;
     }
     return hexInt;
+}
+
+unsigned int htoi(char *hex) {
+    int max = strlen(hex);
+    int tmpHexInt = htoi(hex, max);
+    return tmpHexInt;
 }

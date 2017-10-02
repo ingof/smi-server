@@ -4,7 +4,9 @@
 
 
 /* functions */
+char itoh(int integer);
 unsigned int htoi(char *hex);
+unsigned int htoi(char *hex, int maxDigits);
 
 
 #endif /* ownfunctions.h */
