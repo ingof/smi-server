@@ -59,7 +59,7 @@ int parseConfLine(char* line) {
 
     // get sections
     if ((strchr(line, (int) '[')!=NULL)&&(strchr(line,(int)']')!=NULL)) {
-        char tmpLine[80]="\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0";
+        char tmpLine[80]="\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0";
         strncpy(tmpLine, (strchr(line, (int)'[')+1), ((strchr(line,(int)']')-strchr(line, (int) '[')-1)) );
         tmp=setSection(tmpLine);
         return(EXIT_SUCCESS);
@@ -68,7 +68,7 @@ int parseConfLine(char* line) {
     // get values
     if ( strchr(line, (int) '=' ) ) {
         ptr = strtok(line, "=");
-        ptr2 = strtok(NULL, "=");
+        ptr2 = strtok(NULL, "\n");
         tmp=setValue(ptr, ptr2);
         return(EXIT_SUCCESS);
     }
