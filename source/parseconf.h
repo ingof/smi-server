@@ -7,6 +7,10 @@ extern BUTTON button[32];
 // extern int tcpWEB=8088;
 extern char *serialSMI[3];
 extern char *serialSWB[1];
+int tcpWEB=8088;
+char *serialSmi[3];
+char *serialSwb[1];
+
 
 
 /* functions */

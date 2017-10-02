@@ -40,8 +40,8 @@
 DRIVE drive[16];
 BUTTON button[32];
 int tcpWEB=8088;
-char *serialSMI[3];
-char *serialSWB[1];
+char *serialSmi[3];
+char *serialSwb[1];
 
 int main(int argc, char *argv[]) {
 

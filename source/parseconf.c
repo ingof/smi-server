@@ -7,8 +7,8 @@
 
 char str1[40], str2[40];
 char name[40], value[40];
-define LINE_MAX_CHAR 80;
-define SECT_MAX_CHAR 20;
+#define LINE_MAX_CHAR 80;
+#define SECT_MAX_CHAR 20;
 // const int lineMaxChar=80;
 // const int sectionMaxChar=20;
 // char line[lineMaxChar];
@@ -96,7 +96,7 @@ int setValue(char* name, char* value) {
 
 int setInterface(char* name, char* value) {
     if (strncmp(name, "smi:0", SECT_MAX_CHAR ) == 0) {
-        strncpy( serialSmi[0], value, 29);
+        strncpy(serialSmi[0], value, 29);
         syslog(LOG_DEBUG, "DEBUG: %3d: interface: %s = %s", lineCnt, name, value );
     } else if (strncmp( name, "smi:1", SECT_MAX_CHAR ) == 0) {
         strncpy(serialSmi[1], value, 29);
