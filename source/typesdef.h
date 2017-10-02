@@ -13,8 +13,8 @@ typedef struct {
     char name[30];
     int bus;
     int id;
-    char addr[9];
-    char switchAddr[5];
+    unsigned int addr;
+    unsigned int switchAddr;
     unsigned int direction;
     controlType control;
     unsigned int actualPos;
@@ -23,7 +23,7 @@ typedef struct {
 
 typedef struct {
     char name[30];
-    char addr[4];
+    unsigned int addr;
     buttonStatus status;
 } BUTTON;
 
