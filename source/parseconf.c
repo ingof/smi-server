@@ -114,7 +114,7 @@ int setInterface(char* name, char* value) {
         syslog(LOG_DEBUG, "DEBUG: %3d: interface: %s = %s", lineCnt, name, value );
     } else if (strncmp( name, "swb:0", SECT_MAX_CHAR ) == 0) {
         syslog(LOG_DEBUG, "DEBUG: %3d: interface: \'%s\' = \'%s\'", lineCnt, name, value );
-        strncpy(serialSwb[0], value, 10);
+        // TODO strncpy(serialSwb[0], value, 10);
         syslog(LOG_DEBUG, "DEBUG: %3d: interface: \'%s\' = \'%s\'", lineCnt, name, value );
     } else {
         syslog(LOG_NOTICE, "NOTICE: %3d: unknown interface type: \'%s\'", lineCnt, name );
