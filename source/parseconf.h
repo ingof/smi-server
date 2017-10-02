@@ -5,8 +5,10 @@
 extern DRIVE drive[16];
 extern BUTTON button[32];
 // extern int tcpWEB=8088;
-extern char* serialSmi[3];
-extern char* serialSwb[1];
+extern char* serialSmi1[40];
+extern char* serialSmi2[40];
+extern char* serialSmi3[40];
+extern char* serialSwb[40];
 extern int tcpWEB;
 
 
