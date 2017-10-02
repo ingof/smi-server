@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "ownfunctions.h"
 #include "parseconf.h"
 #include "typesdef.h"   /* type definitions */
 
@@ -167,7 +168,7 @@ int setDrive(char* name, char* value) {
     }
     else if (strncmp(tmpName, "control", SECT_MAX_CHAR) == 0) {
         // if ((strcmp(strupr(value),"SWB") == 0) || (strcmp(strupr(value),"SWB") == 0) ) {
-            drive[confSectionNumber].control = atoi(value);
+            drive[confSectionNumber].control = value;
             syslog(LOG_DEBUG, "DEBUG: %3d:     drive%02d.%s = %s", lineCnt, confSectionNumber, tmpName, strupr(value));
         // } else {
         //     syslog(LOG_DEBUG, "DEBUG: %3d:     unknown control type \'%s\'", lineCnt, strupr(value));
