@@ -149,11 +149,12 @@ int setSwitch(char* name, char* value) {
 
 int setDrive(char* name, char* value) {
     // syslog(LOG_DEBUG, "DEBUG: setDrive: name=%s value=%s section=%d", name, value, confSectionNumber);
-    char tmpName;
-    char tmpNumber;
-    strncpy(tmpName, name, 39);
-    tmpName = strtok(tmpName, ":");
-    tmpNumber = strtok(tmpName, "\n");
+    char* tmpName;
+    char* tmpNumber;
+    char nameCopy;
+    strncpy(nameCopy, name, 39);
+    tmpName = strtok(nameCopy, ":");
+    tmpNumber = strtok(nameCopy, "\n");
     if ((confSectionNumber>15) && (confSectionNumber<0)) {
         syslog(LOG_NOTICE, "NOTICE: SektionNumber \'%d\' of \'%s\' is out of range (0..15)", confSectionNumber, tmpName);
         return(EXIT_FAILURE);
