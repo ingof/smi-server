@@ -190,8 +190,15 @@ int setDrive(char* name, char* value) {
         syslog(LOG_DEBUG, "DEBUG: control: value=%s",value);
         if ((strcmp(strupr(value),"SMI") == 0) || (strcmp(strupr(value),"SWB") == 0) ) {
             syslog(LOG_DEBUG, "DEBUG: control: value=%s",value);
-            syslog(LOG_DEBUG, "DEBUG: control: value=%s smi=%d swb=%d",strupr(value), (strcmp(strupr(value),"SMI"), (strcmp(strupr(value),"SWB"));
-            drive[confSectionNumber].control = value;
+            syslog(LOG_DEBUG, "DEBUG: control: value=%s smi=%d swb=%d",strupr(value), strcmp(strupr(value),"SMI"), strcmp(strupr(value),"SWB"));
+            if (strupr(value)=="SWB") {
+                drive[confSectionNumber].control = 1;
+            // }
+            // if (strupr(value)=="SMI") {
+            } else {
+                drive[confSectionNumber].control = 0;
+            }
+
             syslog(LOG_DEBUG, "DEBUG: %3d: drive%02d.%s = \'%s\'", lineCnt, confSectionNumber, tmpName, strupr(value));
         } else {
             syslog(LOG_DEBUG, "DEBUG: %3d: unknown control type \'%s\'", lineCnt, strupr(value));
