@@ -167,11 +167,11 @@ int setDrive(char* name, char* value) {
     }
     else if (strncmp(tmpName, "bus", SECT_MAX_CHAR) == 0) {
         drive[confSectionNumber].bus = atoi(value);
-        syslog(LOG_DEBUG, "DEBUG: %3d: drive%02d.%s = \'%s\'", lineCnt, confSectionNumber, tmpName, value);
+        syslog(LOG_DEBUG, "DEBUG: %3d: drive%02d.%s = %s", lineCnt, confSectionNumber, tmpName, value);
     }
     else if (strncmp(tmpName, "id", SECT_MAX_CHAR) == 0) {
         drive[confSectionNumber].id = atoi(value);
-        syslog(LOG_DEBUG, "DEBUG: %3d: drive%02d.%s = \'%s\'", lineCnt, confSectionNumber, tmpName, value);
+        syslog(LOG_DEBUG, "DEBUG: %3d: drive%02d.%s = %s", lineCnt, confSectionNumber, tmpName, value);
     }
     else if (strncmp(tmpName, "address", SECT_MAX_CHAR) == 0) {
         drive[confSectionNumber].addr = htoi(value);
@@ -183,7 +183,7 @@ int setDrive(char* name, char* value) {
     }
     else if (strncmp(tmpName, "direction", SECT_MAX_CHAR) == 0) {
         drive[confSectionNumber].direction = atoi(value);
-        syslog(LOG_DEBUG, "DEBUG: %3d: drive%02d.%s = \'%s\'", lineCnt, confSectionNumber, tmpName, value);
+        syslog(LOG_DEBUG, "DEBUG: %3d: drive%02d.%s = %s", lineCnt, confSectionNumber, tmpName, value);
     }
     else if (strncmp(tmpName, "controlSwb", SECT_MAX_CHAR) == 0) {
         // TODO: fix this
@@ -193,8 +193,7 @@ int setDrive(char* name, char* value) {
             } else {
                 drive[confSectionNumber].controlSwb = NO;
             }
-            syslog(LOG_DEBUG, "DEBUG: control: value=%s",value);
-            syslog(LOG_DEBUG, "DEBUG: %3d: drive%02d.%s = \'%d\' / \'%s\'", lineCnt, confSectionNumber, tmpName, drive[confSectionNumber].controlSwb, value);
+            syslog(LOG_DEBUG, "DEBUG: %3d: drive%02d.%s = %d", lineCnt, confSectionNumber, tmpName, drive[confSectionNumber].controlSwb);
         } else {
             syslog(LOG_DEBUG, "DEBUG: %3d: unknown control type \'%s\'", lineCnt, value);
         }
