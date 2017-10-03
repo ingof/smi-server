@@ -95,7 +95,7 @@ int setValue(char* name, char* value) {
     } else if (strncmp(confSectionName,"drive", SECT_MAX_CHAR)==0) {
         setDrive(name, value);
     } else {
-        syslog(LOG_NOTICE, "NOTICE: %3d: unknown section: \'%s#%s\' , value:, \'%s#%s\'", lineCnt, confSectionName, confSectionNumber, name, value);
+        syslog(LOG_NOTICE, "NOTICE: %3d: unknown section: \'%s#%s\' , value: \'%s#%s\'", lineCnt, confSectionName, confSectionNumber, name, value);
         return(EXIT_FAILURE);
     }
     return(EXIT_SUCCESS);
@@ -106,16 +106,16 @@ int setInterface(char* name, char* value) {
     // syslog(LOG_DEBUG," DEBUG: swbdiff: %d",strncmp( name, "swb:0", SECT_MAX_CHAR ));
     // TODO combine smi interface
     if (strncmp(name, "smi:0", SECT_MAX_CHAR) == 0) {
-        strncpy(serialSmi1, value, 29);
+        strncpy(serialSmi1, value, 39);
         syslog(LOG_DEBUG, "DEBUG: %3d: interface: \'%s\' = \'%s\'", lineCnt, name, value );
     } else if (strncmp(name, "smi:1", SECT_MAX_CHAR) == 0) {
-        strncpy(serialSmi2, value, 29);
+        strncpy(serialSmi2, value, 39);
         syslog(LOG_DEBUG, "DEBUG: %3d: interface: \'%s\' = \'%s\'", lineCnt, name, value );
     } else if (strncmp(name, "smi:2", SECT_MAX_CHAR) == 0) {
-        strncpy(serialSmi3, value, 29);
+        strncpy(serialSmi3, value, 39);
         syslog(LOG_DEBUG, "DEBUG: %3d: interface: \'%s\' = \'%s\'", lineCnt, name, value );
     } else if (strncmp(name, "swb:0", SECT_MAX_CHAR) == 0) {
-        strncpy(serialSwb, value, 29);
+        strncpy(serialSwb, value, 39);
         syslog(LOG_DEBUG, "DEBUG: %3d: interface: \'%s\' = \'%s\'", lineCnt, name, value );
     } else {
         syslog(LOG_NOTICE, "NOTICE: %3d: unknown interface type: \'%s\'", lineCnt, name );
@@ -133,7 +133,7 @@ int setSwitch(char* name, char* value) {
         return (EXIT_FAILURE);
     }
     if (strncmp(tmpName, "name", SECT_MAX_CHAR) == 0) {
-        strncpy(button[confSectionNumber].name, value, 29);
+        strncpy(button[confSectionNumber].name, value, 39);
         syslog(LOG_DEBUG, "DEBUG: %3d:    \'switch%02d.%s\' = \'%s\'", lineCnt, confSectionNumber, tmpName, value);
     }
     else if (strncmp(tmpName, "address", SECT_MAX_CHAR) == 0) {
@@ -150,13 +150,16 @@ int setSwitch(char* name, char* value) {
 int setDrive(char* name, char* value) {
     // syslog(LOG_DEBUG, "DEBUG: setDrive: name=%s value=%s section=%d", name, value, confSectionNumber);
     char* tmpName;
-    tmpName = strtok(name, ":");
+    char* tmpNumber;
+    strncpy(tmpName, name);
+    tmpName = strtok(tmpName, ":");
+    tmpNumber = strtok(tmpName, "\n");
     if ((confSectionNumber>15) && (confSectionNumber<0)) {
         syslog(LOG_NOTICE, "NOTICE: SektionNumber \'%d\' of \'%s\' is out of range (0..15)", confSectionNumber, tmpName);
         return(EXIT_FAILURE);
     }
     if (strncmp(tmpName, "name", SECT_MAX_CHAR) == 0) {
-        strncpy( drive[confSectionNumber].name, value, 29);
+        strncpy(drive[confSectionNumber].name, value, 39);
         syslog(LOG_DEBUG, "DEBUG: %3d:     \'drive%02d.%s\' = \'%s\'", lineCnt, confSectionNumber, tmpName, value);
     }
     else if (strncmp(tmpName, "bus", SECT_MAX_CHAR) == 0) {
