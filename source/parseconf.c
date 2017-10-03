@@ -107,16 +107,16 @@ int setInterface(char* name, char* value) {
     // TODO combine smi interface
     if (strncmp(name, "smi:0", SECT_MAX_CHAR) == 0) {
         strncpy(serialSmi1, value, 29);
-        syslog(LOG_DEBUG, "DEBUG: %3d: interface: \'%s\' = \'%s\'", lineCnt, name, value );
+        syslog(LOG_DEBUG, "DEBUG: %3d: interface.%s = \'%s\'", lineCnt, name, value );
     } else if (strncmp(name, "smi:1", SECT_MAX_CHAR) == 0) {
         strncpy(serialSmi2, value, 29);
-        syslog(LOG_DEBUG, "DEBUG: %3d: interface: \'%s\' = \'%s\'", lineCnt, name, value );
+        syslog(LOG_DEBUG, "DEBUG: %3d: interface.%s = \'%s\'", lineCnt, name, value );
     } else if (strncmp(name, "smi:2", SECT_MAX_CHAR) == 0) {
         strncpy(serialSmi3, value, 29);
-        syslog(LOG_DEBUG, "DEBUG: %3d: interface: \'%s\' = \'%s\'", lineCnt, name, value );
+        syslog(LOG_DEBUG, "DEBUG: %3d: interface.%s = \'%s\'", lineCnt, name, value );
     } else if (strncmp(name, "swb:0", SECT_MAX_CHAR) == 0) {
         strncpy(serialSwb, value, 29);
-        syslog(LOG_DEBUG, "DEBUG: %3d: interface: \'%s\' = \'%s\'", lineCnt, name, value );
+        syslog(LOG_DEBUG, "DEBUG: %3d: interface.%s = \'%s\'", lineCnt, name, value );
     } else {
         syslog(LOG_NOTICE, "NOTICE: %3d: unknown interface type: \'%s\'", lineCnt, name );
         return(EXIT_FAILURE);
@@ -134,14 +134,14 @@ int setSwitch(char* name, char* value) {
     }
     if (strncmp(tmpName, "name", SECT_MAX_CHAR) == 0) {
         strncpy(button[confSectionNumber].name, value, 29);
-        syslog(LOG_DEBUG, "DEBUG: %3d:    \'switch%02d.%s\' = \'%s\'", lineCnt, confSectionNumber, tmpName, value);
+        syslog(LOG_DEBUG, "DEBUG: %3d: switch%02d.%s = \'%s\'", lineCnt, confSectionNumber, tmpName, value);
     }
     else if (strncmp(tmpName, "address", SECT_MAX_CHAR) == 0) {
         button[confSectionNumber].addr = htoi(value);
-        syslog(LOG_DEBUG, "DEBUG: %3d:    \'switch%02d.%s\' = \'%s\'", lineCnt, confSectionNumber, tmpName, value);
+        syslog(LOG_DEBUG, "DEBUG: %3d: switch%02d.%s = \'%s\'", lineCnt, confSectionNumber, tmpName, value);
     }
     else {
-        syslog(LOG_NOTICE, "NOTICE: %3d:    unknown switch item \'%s\'", lineCnt, tmpName);
+        syslog(LOG_NOTICE, "NOTICE: %3d: unknown switch item \'%s\'", lineCnt, tmpName);
         return(EXIT_FAILURE);
     }
     return(EXIT_SUCCESS);
@@ -155,55 +155,59 @@ int setDrive(char* name, char* value) {
     strncpy(nameCopy, name, 29);
     tmpName = strtok(nameCopy, ":");
     tmpNumber = strtok(nameCopy, "\n");
+
     if ((confSectionNumber>15) && (confSectionNumber<0)) {
         syslog(LOG_NOTICE, "NOTICE: SektionNumber \'%d\' of \'%s\' is out of range (0..15)", confSectionNumber, tmpName);
         return(EXIT_FAILURE);
     }
+
     if (strncmp(tmpName, "name", SECT_MAX_CHAR) == 0) {
         strncpy(drive[confSectionNumber].name, value, 29);
-        syslog(LOG_DEBUG, "DEBUG: %3d:     \'drive%02d.%s\' = \'%s\'", lineCnt, confSectionNumber, tmpName, value);
+        syslog(LOG_DEBUG, "DEBUG: %3d: drive%02d.%s = \'%s\'", lineCnt, confSectionNumber, tmpName, value);
     }
     else if (strncmp(tmpName, "bus", SECT_MAX_CHAR) == 0) {
         drive[confSectionNumber].bus = atoi(value);
-        syslog(LOG_DEBUG, "DEBUG: %3d:     \'drive%02d.%s\' = \'%s\'", lineCnt, confSectionNumber, tmpName, value);
+        syslog(LOG_DEBUG, "DEBUG: %3d:drive%02d.%s = \'%s\'", lineCnt, confSectionNumber, tmpName, value);
     }
     else if (strncmp(tmpName, "id", SECT_MAX_CHAR) == 0) {
         drive[confSectionNumber].id = atoi(value);
-        syslog(LOG_DEBUG, "DEBUG: %3d:     \'drive%02d.%s\' = \'%s\'", lineCnt, confSectionNumber, tmpName, value);
+        syslog(LOG_DEBUG, "DEBUG: %3d: drive%02d.%s = \'%s\'", lineCnt, confSectionNumber, tmpName, value);
     }
     else if (strncmp(tmpName, "address", SECT_MAX_CHAR) == 0) {
         drive[confSectionNumber].addr = htoi(value);
-        syslog(LOG_DEBUG, "DEBUG: %3d:     \'drive%02d.%s\' = \'%s\'", lineCnt, confSectionNumber, tmpName, value);
+        syslog(LOG_DEBUG, "DEBUG: %3d: drive%02d.%s = \'%s\'", lineCnt, confSectionNumber, tmpName, value);
     }
     else if (strncmp(tmpName, "switchAddress", SECT_MAX_CHAR) == 0) {
         drive[confSectionNumber].switchAddr = htoi(value);
-        syslog(LOG_DEBUG, "DEBUG: %3d:     \'drive%02d.%s\' = \'%s\'", lineCnt, confSectionNumber, tmpName, value);
+        syslog(LOG_DEBUG, "DEBUG: %3d: drive%02d.%s = \'%s\'", lineCnt, confSectionNumber, tmpName, value);
     }
     else if (strncmp(tmpName, "direction", SECT_MAX_CHAR) == 0) {
         drive[confSectionNumber].direction = atoi(value);
-        syslog(LOG_DEBUG, "DEBUG: %3d:     \'drive%02d.%s\' = \'%s\'", lineCnt, confSectionNumber, tmpName, value);
+        syslog(LOG_DEBUG, "DEBUG: %3d: drive%02d.%s = \'%s\'", lineCnt, confSectionNumber, tmpName, value);
     }
     else if (strncmp(tmpName, "control", SECT_MAX_CHAR) == 0) {
-        // TODO:
-        // // if ((strcmp(strupr(value),"SWB") == 0) || (strcmp(strupr(value),"SWB") == 0) ) {
-        //     drive[confSectionNumber].control = value;
-        //     syslog(LOG_DEBUG, "DEBUG: %3d:     drive%02d.%s = %s", lineCnt, confSectionNumber, tmpName, strupr(value));
-        // // } else {
-        // //     syslog(LOG_DEBUG, "DEBUG: %3d:     unknown control type \'%s\'", lineCnt, strupr(value));
-        // // }
+        // TODO: fix this
+        syslog(LOG_DEBUG"DEBUG: control: value=%s",value);
+        if ((strcmp(strupr(value),"SMI") == 0) || (strcmp(strupr(value),"SWB") == 0) ) {
+            syslog(LOG_DEBUG"DEBUG: control: value=%s",value);
+            syslog(LOG_DEBUG"DEBUG: control: value=%s smi=%d swb=%d",strupr(value), (strcmp(strupr(value),"SMI"), (strcmp(strupr(value),"SWB"));
+            drive[confSectionNumber].control = value;
+            syslog(LOG_DEBUG, "DEBUG: %3d: drive%02d.%s = \'%s\'", lineCnt, confSectionNumber, tmpName, strupr(value));
+        } else {
+            syslog(LOG_DEBUG, "DEBUG: %3d: unknown control type \'%s\'", lineCnt, strupr(value));
+        }
     }
-    //TODO: use 'tmpName' instead of 'name'
+    // TODO: use 'tmpName' instead of 'name' and merge :1 and :2
     else if (strncmp(name, "position:1", SECT_MAX_CHAR) == 0) {
         drive[confSectionNumber].storedPos[0] = htoi(value);
-        syslog(LOG_DEBUG, "DEBUG: %3d:     \'drive%02d.%s\' = \'%s\'", lineCnt, confSectionNumber, name, value);
+        syslog(LOG_DEBUG, "DEBUG: %3d: drive%02d.%s = \'%s\'", lineCnt, confSectionNumber, name, value);
     }
-    //TODO: use 'tmpName' instead of 'name'
     else if (strncmp(name, "position:2", SECT_MAX_CHAR) == 0) {
         drive[confSectionNumber].storedPos[1] = htoi(value);
-        syslog(LOG_DEBUG, "DEBUG: %3d:     \'drive%02d.%s\' = \'%s\'", lineCnt, confSectionNumber, name, value);
+        syslog(LOG_DEBUG, "DEBUG: %3d: drive%02d.%s = \'%s\'", lineCnt, confSectionNumber, name, value);
     }
     else {
-        syslog(LOG_NOTICE, "NOTICE: %3d:    unknown drive item \'%s\'", lineCnt, tmpName);
+        syslog(LOG_NOTICE, "NOTICE: %3d: unknown drive item \'%s\'", lineCnt, tmpName);
         return(EXIT_FAILURE);
     }
     return(EXIT_SUCCESS);
