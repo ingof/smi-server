@@ -96,6 +96,7 @@ int setValue(char* name, char* value) {
         setDrive(name, value);
     } else {
         syslog(LOG_NOTICE, "NOTICE: %3d: unknown section: \'%s#%s\' , value:, \'%s#%s\'", lineCnt, confSectionName, confSectionNumber, name, value);
+        return(EXIT_FAILURE);
     }
     return(EXIT_SUCCESS);
 }
@@ -118,6 +119,7 @@ int setInterface(char* name, char* value) {
         syslog(LOG_DEBUG, "DEBUG: %3d: interface: \'%s\' = \'%s\'", lineCnt, name, value );
     } else {
         syslog(LOG_NOTICE, "NOTICE: %3d: unknown interface type: \'%s\'", lineCnt, name );
+        return(EXIT_FAILURE);
     }
     return(EXIT_SUCCESS);
 };
@@ -134,12 +136,13 @@ int setSwitch(char* name, char* value) {
         strncpy(button[confSectionNumber].name, value, 29);
         syslog(LOG_DEBUG, "DEBUG: %3d:    \'switch%02d.%s\' = \'%s\'", lineCnt, confSectionNumber, tmpName, value);
     }
-    else if (strncmp(tmpName, "addr", SECT_MAX_CHAR) == 0) {
+    else if (strncmp(tmpName, "address", SECT_MAX_CHAR) == 0) {
         button[confSectionNumber].addr = htoi(value);
         syslog(LOG_DEBUG, "DEBUG: %3d:    \'switch%02d.%s\' = \'%s\'", lineCnt, confSectionNumber, tmpName, value);
     }
     else {
-        syslog(LOG_DEBUG, "DEBUG: %3d:    unknown switch item \'%s\'", lineCnt, tmpName);
+        syslog(LOG_NOTICE, "NOTICE: %3d:    unknown switch item \'%s\'", lineCnt, tmpName);
+        return(EXIT_FAILURE);
     }
     return(EXIT_SUCCESS);
 };
@@ -149,7 +152,8 @@ int setDrive(char* name, char* value) {
     char* tmpName;
     tmpName = strtok(name, ":");
     if ((confSectionNumber>15) && (confSectionNumber<0)) {
-        syslog(LOG_DEBUG, " SektionNumber \'%d\' of \'%s\' is out of range (0..15)", confSectionNumber, tmpName);
+        syslog(LOG_NOTICE, "NOTICE: SektionNumber \'%d\' of \'%s\' is out of range (0..15)", confSectionNumber, tmpName);
+        return(EXIT_FAILURE);
     }
     if (strncmp(tmpName, "name", SECT_MAX_CHAR) == 0) {
         strncpy( drive[confSectionNumber].name, value, 29);
@@ -163,17 +167,17 @@ int setDrive(char* name, char* value) {
         drive[confSectionNumber].id = atoi(value);
         syslog(LOG_DEBUG, "DEBUG: %3d:     \'drive%02d.%s\' = \'%s\'", lineCnt, confSectionNumber, tmpName, value);
     }
-    else if (strncmp(tmpName, "addr", SECT_MAX_CHAR) == 0) {
+    else if (strncmp(tmpName, "address", SECT_MAX_CHAR) == 0) {
         drive[confSectionNumber].addr = htoi(value);
         syslog(LOG_DEBUG, "DEBUG: %3d:     \'drive%02d.%s\' = \'%s\'", lineCnt, confSectionNumber, tmpName, value);
     }
-    else if (strncmp(tmpName, "switchAddr", SECT_MAX_CHAR) == 0) {
+    else if (strncmp(tmpName, "switchAddress", SECT_MAX_CHAR) == 0) {
         drive[confSectionNumber].switchAddr = htoi(value);
         syslog(LOG_DEBUG, "DEBUG: %3d:     \'drive%02d.%s\' = \'%s\'", lineCnt, confSectionNumber, tmpName, value);
     }
     else if (strncmp(tmpName, "direction", SECT_MAX_CHAR) == 0) {
         drive[confSectionNumber].direction = atoi(value);
-        syslog(LOG_DEBUG, "DEBUG: %3d:     \'drive%02d.%s = %s\'", lineCnt, confSectionNumber, tmpName, value);
+        syslog(LOG_DEBUG, "DEBUG: %3d:     \'drive%02d.%s\' = \'%s\'", lineCnt, confSectionNumber, tmpName, value);
     }
     else if (strncmp(tmpName, "control", SECT_MAX_CHAR) == 0) {
         // TODO:
@@ -195,7 +199,8 @@ int setDrive(char* name, char* value) {
         syslog(LOG_DEBUG, "DEBUG: %3d:     \'drive%02d.%s\' = \'%s\'", lineCnt, confSectionNumber, tmpName, value);
     }
     else {
-        syslog(LOG_DEBUG, "DEBUG: %3d:    unknown drive item \'$s\'", lineCnt, tmpName);
+        syslog(LOG_NOTICE, "NOTICE: %3d:    unknown drive item \'%s\'", lineCnt, tmpName);
+        return(EXIT_FAILURE);
     }
     return(EXIT_SUCCESS);
 };
