@@ -191,12 +191,12 @@ int setDrive(char* name, char* value) {
     //TODO: use 'tmpName' instead of 'name'
     else if (strncmp(name, "position:1", SECT_MAX_CHAR) == 0) {
         drive[confSectionNumber].storedPos[0] = htoi(value);
-        syslog(LOG_DEBUG, "DEBUG: %3d:     \'drive%02d.%s\' = \'%s\'", lineCnt, confSectionNumber, tmpName, value);
+        syslog(LOG_DEBUG, "DEBUG: %3d:     \'drive%02d.%s\' = \'%s\'", lineCnt, confSectionNumber, name, value);
     }
     //TODO: use 'tmpName' instead of 'name'
     else if (strncmp(name, "position:2", SECT_MAX_CHAR) == 0) {
         drive[confSectionNumber].storedPos[1] = htoi(value);
-        syslog(LOG_DEBUG, "DEBUG: %3d:     \'drive%02d.%s\' = \'%s\'", lineCnt, confSectionNumber, tmpName, value);
+        syslog(LOG_DEBUG, "DEBUG: %3d:     \'drive%02d.%s\' = \'%s\'", lineCnt, confSectionNumber, name, value);
     }
     else {
         syslog(LOG_NOTICE, "NOTICE: %3d:    unknown drive item \'%s\'", lineCnt, tmpName);
