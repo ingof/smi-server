@@ -6,8 +6,6 @@
 typedef unsigned char uint8_t;
 typedef unsigned int  unint16_t;
 
-typedef enum {SMI,SWB} controlType;
-typedef enum {AUTO,MANUAL} buttonStatus;
 
 typedef struct {
     char name[30];
@@ -16,7 +14,7 @@ typedef struct {
     unsigned int addr;
     unsigned int switchAddr;
     unsigned int direction;
-    controlType control;
+    int controlSwb;
     unsigned int actualPos;
     unsigned int storedPos[2];
 } DRIVE;
@@ -24,7 +22,7 @@ typedef struct {
 typedef struct {
     char name[30];
     unsigned int addr;
-    buttonStatus status;
+    int automatic;
 } BUTTON;
 
 
