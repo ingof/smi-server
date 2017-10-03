@@ -149,8 +149,8 @@ int setSwitch(char* name, char* value) {
 
 int setDrive(char* name, char* value) {
     // syslog(LOG_DEBUG, "DEBUG: setDrive: name=%s value=%s section=%d", name, value, confSectionNumber);
-    char* tmpName;
-    char* tmpNumber;
+    char tmpName;
+    char tmpNumber;
     strncpy(tmpName, name, 39);
     tmpName = strtok(tmpName, ":");
     tmpNumber = strtok(tmpName, "\n");
