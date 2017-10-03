@@ -2,7 +2,7 @@
 #ifndef TYPESDEF_H
 #define TYPESDEF_H
 
-
+#define
 typedef unsigned char uint8_t;
 typedef unsigned int  unint16_t;
 

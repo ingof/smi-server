@@ -189,12 +189,12 @@ int setDrive(char* name, char* value) {
         // TODO: fix this
         if ((strcmp(value,"yes") == 0) || (strcmp(value,"no") == 0) ) {
             if (strcmp(value, "yes") == 0) {
-                drive[confSectionNumber].controlSwb = TRUE;
+                drive[confSectionNumber].controlSwb = 1;
             } else {
-                drive[confSectionNumber].controlSwb = FALSE;
+                drive[confSectionNumber].controlSwb = 0;
             }
             syslog(LOG_DEBUG, "DEBUG: control: value=%s",value);
-            syslog(LOG_DEBUG, "DEBUG: %3d: drive%02d.%s = \'%d\' / \'%s\'", lineCnt, confSectionNumber, tmpName, drive[confSectionNumber].control, value);
+            syslog(LOG_DEBUG, "DEBUG: %3d: drive%02d.%s = \'%d\' / \'%s\'", lineCnt, confSectionNumber, tmpName, drive[confSectionNumber].controlSwb, value);
         } else {
             syslog(LOG_DEBUG, "DEBUG: %3d: unknown control type \'%s\'", lineCnt, value);
         }
