@@ -6,7 +6,7 @@
 typedef unsigned char uint8_t;
 typedef unsigned int  unint16_t;
 
-typedef enum {SWB,SMI} controlType;
+typedef enum {SMI,SWB} controlType;
 typedef enum {AUTO,MANUAL} buttonStatus;
 
 typedef struct {

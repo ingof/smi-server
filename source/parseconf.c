@@ -188,10 +188,10 @@ int setDrive(char* name, char* value) {
     else if (strncmp(tmpName, "control", SECT_MAX_CHAR) == 0) {
         // TODO: fix this
         syslog(LOG_DEBUG, "DEBUG: control: value=%s",value);
-        if ((strcmp(strupr(value),"SMI") == 0) || (strcmp(strupr(value),"SWB") == 0) ) {
+        if ((strcmp(value,"smi") == 0) || (strcmp(value,"swb") == 0) ) {
             syslog(LOG_DEBUG, "DEBUG: control: value=%s",value);
             syslog(LOG_DEBUG, "DEBUG: control: value=%s smi=%d swb=%d",strupr(value), strcmp(strupr(value),"SMI"), strcmp(strupr(value),"SWB"));
-            if (strupr(value)=="SWB") {
+            if (value=="swb") {
                 drive[confSectionNumber].control = 1;
             // }
             // if (strupr(value)=="SMI") {
