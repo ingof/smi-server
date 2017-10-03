@@ -199,9 +199,9 @@ int setDrive(char* name, char* value) {
                 drive[confSectionNumber].control = 0;
             }
 
-            syslog(LOG_DEBUG, "DEBUG: %3d: drive%02d.%s = \'%s\'", lineCnt, confSectionNumber, tmpName, strupr(value));
+            syslog(LOG_DEBUG, "DEBUG: %3d: drive%02d.%s = \'%s\'", lineCnt, confSectionNumber, tmpName, value);
         } else {
-            syslog(LOG_DEBUG, "DEBUG: %3d: unknown control type \'%s\'", lineCnt, strupr(value));
+            syslog(LOG_DEBUG, "DEBUG: %3d: unknown control type \'%s\'", lineCnt, value);
         }
     }
     // TODO: use 'tmpName' instead of 'name' and merge :1 and :2
