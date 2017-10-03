@@ -2,7 +2,11 @@
 #ifndef TYPESDEF_H
 #define TYPESDEF_H
 
-#define
+#define TRUE = 1
+#define YES = 1
+#define FALSE = 0
+#define NO = 0
+
 typedef unsigned char uint8_t;
 typedef unsigned int  unint16_t;
 

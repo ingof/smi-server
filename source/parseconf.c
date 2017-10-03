@@ -189,9 +189,9 @@ int setDrive(char* name, char* value) {
         // TODO: fix this
         if ((strcmp(value,"yes") == 0) || (strcmp(value,"no") == 0) ) {
             if (strcmp(value, "yes") == 0) {
-                drive[confSectionNumber].controlSwb = 1;
+                drive[confSectionNumber].controlSwb = YES;
             } else {
-                drive[confSectionNumber].controlSwb = 0;
+                drive[confSectionNumber].controlSwb = NO;
             }
             syslog(LOG_DEBUG, "DEBUG: control: value=%s",value);
             syslog(LOG_DEBUG, "DEBUG: %3d: drive%02d.%s = \'%d\' / \'%s\'", lineCnt, confSectionNumber, tmpName, drive[confSectionNumber].controlSwb, value);
