@@ -12,6 +12,7 @@
 #include <linux/serial.h>	/* custom divisor */
 
 #include "typesdef.h"	/* own funcions */
+#include "webserver.h"
 #include "smi-server.h"	/* own funcions */
 
 /* web server */

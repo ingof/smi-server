@@ -30,11 +30,11 @@
 #include "webserver.c"
 #include "parseconf.c"
 
-#include<netinet/in.h>		/* web server */
-#include<sys/socket.h>		/* web server */
-#include<sys/stat.h>		/* web server */
-#include<sys/types.h>		/* web server */
-#include<unistd.h>			/* web server */
+#include <netinet/in.h>		/* web server */
+#include <sys/socket.h>		/* web server */
+#include <sys/stat.h>		/* web server */
+#include <sys/types.h>		/* web server */
+#include <unistd.h>			/* web server */
 #include <syslog.h>			/* syslog */
 #include <stdio.h>			/* syslog */
 #include <unistd.h>			/* getpwd() */
