@@ -22,13 +22,13 @@
 #include <string.h>
 
 #include "typesdef.h"		/* type definitions */
+#include "webserver.h"
 #include "parseconf.h"		/* config parser */
 #include "swb-serial.h"		/* swb-bus functions */
 #include "smi-serial.h"		/* swb-bus functions */
-#include "webserver.h"
 #include "smi-server.h"		/* own funcions */
-#include "webserver.c"
 #include "parseconf.c"
+#include "webserver.c"
 
 #include <netinet/in.h>		/* web server */
 #include <sys/socket.h>		/* web server */
