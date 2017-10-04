@@ -27,7 +27,7 @@
 #include "smi-serial.h"		/* swb-bus functions */
 #include "webserver.h"
 #include "smi-server.h"		/* own funcions */
-#include "webserver.c"
+// #include "webserver.c"
 #include "parseconf.c"
 
 #include <netinet/in.h>		/* web server */
