@@ -25,7 +25,9 @@
 #include "parseconf.h"		/* config parser */
 #include "swb-serial.h"		/* swb-bus functions */
 #include "smi-serial.h"		/* swb-bus functions */
+#include "webserver.h"
 #include "smi-server.h"		/* own funcions */
+#include "webserver.c"
 #include "parseconf.c"
 
 #include<netinet/in.h>		/* web server */
@@ -39,7 +41,7 @@
 
 DRIVE drive[16];
 BUTTON button[32];
-int tcpWEB=8088;
+int tcpControl=8088;
 char serialSmi1[40];
 char serialSmi2[40];
 char serialSmi3[40];

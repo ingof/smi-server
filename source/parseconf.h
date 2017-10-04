@@ -9,7 +9,7 @@ extern char serialSmi1[40];
 extern char serialSmi2[40];
 extern char serialSmi3[40];
 extern char serialSwb[40];
-extern int tcpWEB;
+extern int tcpControl;
 
 
 

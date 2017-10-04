@@ -21,9 +21,9 @@
 #include<sys/types.h>
 #include<unistd.h>
 
-int smiCmd=0;
-int smiId=0;
-int smiGrp=0;
+// int smiCmd=0;
+// int smiId=0;
+// int smiGrp=0;
 
 int setNonblocking(int fd)
 {
