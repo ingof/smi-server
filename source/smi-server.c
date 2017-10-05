@@ -140,68 +140,68 @@ int main(int argc, char *argv[]) {
 	for (loop=0; ;loop++) {
 		if (loop>=0x80000000) {
 			loop=0;
+			syslog(LOG_DEBG, " 4 Sekunden");
 		}
-/* webserver */
-{
-	{
-		tmpListen=listen(mySocket, 10);
-		if (tmpListen < 0) {
-			perror("webserver listen:");
-			printf(" %d\n",tmpListen);
-			exit(1);
-		}
-
-		setNonblocking(mySocket);
-		clientAddrLen = sizeof( (struct sockaddr *) &clientAddress);
-
-		if ((new_socket = accept(mySocket, (struct sockaddr *) &clientAddress, &clientAddrLen)) < 0) {
-				if (errno == EAGAIN) { // no data available
-				} else {
-					perror("webserver accept");
-					printf("%d \n",newSocket);
+		/* webserver */
+		{
+			{
+				tmpListen=listen(mySocket, 10);
+				if (tmpListen < 0) {
+					syslog(LOG_NOTICE, "NOTICE: webserver listen: %d", tmpListen);
 					exit(1);
 				}
-			} else { // data available
-			if (newSocket <= 0){
-				perror("webserver connect:");
-			}
-			/* receive header */
-			// memset(bufferHTTP, 0, bufsize);
-			// fill_n(bufferHTTP, 0, bufsize);
-			for (loop2=0;loop2<bufSize;loop2++) {
-				bufferHTTP[loop2]=0;
-			}
 
-			recv(new_socket, bufferHTTP, bufsize, 0);
-			// printf("%s*ENDE*", bufferHTTP);
-			// getPostData(bufferHTTP,bufsize);
-			getPostData(bufferHTTP,bufsize);
-			logBufferAscii(bufferHTTP,bufsize);
+				setNonblocking(mySocket);
+				clientAddrLen = sizeof( (struct sockaddr *) &clientAddress);
 
-			/* send response */
-			write(new_socket, "HTTP/1.1 200 OK\r\n", 17);
-			write(new_socket, "Content-length: 111\r\n", 21);
-			write(new_socket, "Content-Type: text/html\r\n\r\n", 27);
-			write(new_socket, "<html>\r\n",8);
-			write(new_socket, " <body>\r\n",9);
-			write(new_socket, "  <h1>Found</h1>\r\n",18);
-			write(new_socket, "  <p>The requested URL was found on this server ;-)</p>\r\n",57);
-			write(new_socket, " </body>\r\n",10);
-			write(new_socket, "</html>\r\n",9);
+				if ((new_socket = accept(mySocket, (struct sockaddr *) &clientAddress, &clientAddrLen)) < 0) {
+						if (errno == EAGAIN) { // no data available
+						} else {
+							syslog(LOG_NOTICE, "NOTICE: webserver accept %d", newSocket);
+							exit(1);
+						}
+					} else { // data available
+					if (newSocket <= 0){
+						syslog(LOG_DEBUG, "webserver connect:");
+					}
+					/* receive header */
+					memset(bufferHTTP, 0, bufsize);
+					fill_n(bufferHTTP, 0, bufsize);
+					// for (loop2=0;loop2<bufSize;loop2++) {
+					// 	bufferHTTP[loop2]=0;
+					// }
 
-			/* TODO: in PHP post-data will be send only after
-			receiving the 200-OK-Header. Add or use the second buffer only!
-			*/
-			// /* receive posted data */
-			// memset(bufferHTTP, 0, bufsize);
-			// recv(new_socket, bufferHTTP, bufsize, 0);
-			// printf("%s*ENDE*\n", bufferHTTP);
-			// printBuffer(bufferHTTP,bufsize);
-			// fflush(stdout);
-			/* close this socket */
-			close(new_socket);
+					recv(new_socket, bufferHTTP, bufsize, 0);
+					// printf("%s*ENDE*", bufferHTTP);
+					// getPostData(bufferHTTP,bufsize);
+					logBufferAscii(bufferHTTP,bufsize);
+					getPostData(bufferHTTP,bufsize);
+					logBufferAscii(bufferHTTP,bufsize);
 
-} /* webserver */
+					/* send response */
+					write(new_socket, "HTTP/1.1 200 OK\r\n", 17);
+					write(new_socket, "Content-length: 111\r\n", 21);
+					write(new_socket, "Content-Type: text/html\r\n\r\n", 27);
+					write(new_socket, "<html>\r\n",8);
+					write(new_socket, " <body>\r\n",9);
+					write(new_socket, "  <h1>Found</h1>\r\n",18);
+					write(new_socket, "  <p>The requested URL was found on this server ;-)</p>\r\n",57);
+					write(new_socket, " </body>\r\n",10);
+					write(new_socket, "</html>\r\n",9);
+
+					/* TODO: in PHP post-data will be send only after
+					receiving the 200-OK-Header. Add or use the second buffer only!
+					*/
+					// /* receive posted data */
+					// memset(bufferHTTP, 0, bufsize);
+					// recv(new_socket, bufferHTTP, bufsize, 0);
+					// printf("%s*ENDE*\n", bufferHTTP);
+					// printBuffer(bufferHTTP,bufsize);
+					// fflush(stdout);
+					/* close this socket */
+					close(new_socket);
+
+		} /* webserver */
 
 	}
 
