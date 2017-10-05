@@ -6,7 +6,7 @@
 #include "parseconf.h"
 #include "typesdef.h"   /* type definitions */
 
-#include "ownfunctions.c"
+
 
 #define LINE_MAX_CHAR 80
 #define SECT_MAX_CHAR 20
