@@ -27,6 +27,8 @@
 // int smiId=0;
 // int smiGrp=0;
 
+// TODO use syslog for logs
+
 int setNonblocking(int fd) {
     int flags;
         /* If they have O_NONBLOCK, use the Posix way to do it */
@@ -79,3 +81,6 @@ int initWebserver(int port) {
     }
     return webSocket;
 }
+
+
+// next function...

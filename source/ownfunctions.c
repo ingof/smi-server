@@ -1,9 +1,11 @@
+#include <syslog.h>			/* syslog */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
 #include "parseconf.h"
-#include "typesdef.h"   /* type definitions */
+#include "typesdef.h"       /* type definitions */
+
 
 // char itoh(int integer) {
 // }
@@ -59,4 +61,23 @@ unsigned int htoi(char* hex) {
         cnt++;
     }
     return hexInt;
+}
+
+/* display buffer in ASCII to stdout */
+void printBufferAscii(unsigned char *buffer, int size) {
+	printf("  (%d ",size);
+	int x;
+	char c2;
+	for (x = 0; x < (size) ; x++)
+	{
+		c2 = buffer[x];
+		putchar(c2);
+	}
+	printf(")");
+	fflush(stdout); // Will now print everything in the stdout buffer
+}
+
+void logBufferAscii(unsigned char *buffer, int size) {
+    syslog(LOG_DEBUG, "HTTP Buffer of size %d received:\n %s", size, buffer]);
+
 }

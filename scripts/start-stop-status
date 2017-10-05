@@ -14,7 +14,7 @@ case $1 in
 #		rmmod usbserial
 		### Stop this package.
 		## TODO: kill with PID???
-		smi-server "Stop"
+		## smi-server "Stop"
 #		echo "FTDI-SUB Treiber wurden entladen." > $SYNOPKG_TEMP_LOGFILE
 		exit 0
 	;;
