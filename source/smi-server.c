@@ -172,23 +172,23 @@ int main(int argc, char *argv[]) {
 						bufferHTTP[loop2]=0;
 					}
 
-					recv(new_socket, bufferHTTP, bufSize, 0);
+					recv(newSocket, bufferHTTP, bufSize, 0);
 					// printf("%s*ENDE*", bufferHTTP);
 					// getPostData(bufferHTTP,bufsize);
-					logBufferAscii(bufferHTTP,bufsize);
-					getPostData(bufferHTTP,bufsize);
-					logBufferAscii(bufferHTTP,bufsize);
+					logBufferAscii(bufferHTTP,bufSize);
+					getPostData(bufferHTTP,bufSize);
+					logBufferAscii(bufferHTTP,bufSize);
 
 					/* send response */
-					write(new_socket, "HTTP/1.1 200 OK\r\n", 17);
-					write(new_socket, "Content-length: 111\r\n", 21);
-					write(new_socket, "Content-Type: text/html\r\n\r\n", 27);
-					write(new_socket, "<html>\r\n",8);
-					write(new_socket, " <body>\r\n",9);
-					write(new_socket, "  <h1>Found</h1>\r\n",18);
-					write(new_socket, "  <p>The requested URL was found on this server ;-)</p>\r\n",57);
-					write(new_socket, " </body>\r\n",10);
-					write(new_socket, "</html>\r\n",9);
+					write(newSocket, "HTTP/1.1 200 OK\r\n", 17);
+					write(newSocket, "Content-length: 111\r\n", 21);
+					write(newSocket, "Content-Type: text/html\r\n\r\n", 27);
+					write(newSocket, "<html>\r\n",8);
+					write(newSocket, " <body>\r\n",9);
+					write(newSocket, "  <h1>Found</h1>\r\n",18);
+					write(newSocket, "  <p>The requested URL was found on this server ;-)</p>\r\n",57);
+					write(newSocket, " </body>\r\n",10);
+					write(newSocket, "</html>\r\n",9);
 
 					/* TODO: in PHP post-data will be send only after
 					receiving the 200-OK-Header. Add or use the second buffer only!
@@ -200,7 +200,7 @@ int main(int argc, char *argv[]) {
 					// printBuffer(bufferHTTP,bufsize);
 					// fflush(stdout);
 					/* close this socket */
-					close(new_socket);
+					close(newSocket);
 
 		} /* webserver */
 
