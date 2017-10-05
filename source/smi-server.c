@@ -165,11 +165,11 @@ int main(int argc, char *argv[]) {
 						syslog(LOG_DEBUG, "webserver connect:");
 					}
 					/* receive header */
-					memset(bufferHTTP, 0, bufsize);
-					fill_n(bufferHTTP, 0, bufsize);
-					// for (loop2=0;loop2<bufSize;loop2++) {
-					// 	bufferHTTP[loop2]=0;
-					// }
+					// memset(bufferHTTP, 0, bufsize);
+					// fill_n(bufferHTTP, 0, bufsize);
+					for (loop2=0;loop2<bufSize;loop2++) {
+						bufferHTTP[loop2]=0;
+					}
 
 					recv(new_socket, bufferHTTP, bufsize, 0);
 					// printf("%s*ENDE*", bufferHTTP);
