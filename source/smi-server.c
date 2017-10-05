@@ -47,7 +47,10 @@ char serialSmi2[40];
 char serialSmi3[40];
 char serialSwb[40];
 
+
+
 int main(int argc, char *argv[]) {
+	int mySocket;
 
 	/* my process ID and Session ID */
 	pid_t pid, sid;
@@ -120,6 +123,8 @@ int main(int argc, char *argv[]) {
 
 
 	/* Do some task here ... */
+	mySocket=initWebserver(tcpControl);
+	closeWebserver(mySocket);
 
 
 	syslog(LOG_DEBUG, "DEBUG: SMI-Server closing");
