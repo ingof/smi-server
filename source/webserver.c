@@ -77,7 +77,7 @@ int initWebserver(int port) {
     if (tmpBind== 0) {
         syslog(LOG_DEBUG, "DEBUG: Binding Socket %d\n",tmpBind);
     } else {
-        syslog(LOG_NOTICE, "webserver bind");
+        syslog(LOG_NOTICE, "NOTICE: webserver bind");
     }
     return webSocket;
 }
@@ -153,7 +153,7 @@ int getPostData(unsigned char *buffer, int size, int count) {
 			syslog(LOG_NOTICE, "NOTICE: no token found");
 		}
 	}
-	syslog(LOG_DEBUG, "DEBUG:\n\033[36m%6d.%03d WWW: ID:%02X GR:%02X CM:%02X\033[1m\033[0m",count/2000,(count/2)%1000,smiId,smiGrp,smiCmd);
+	syslog(LOG_DEBUG, "DEBUG:\033[36m%6d.%03d WWW: ID:%02X GR:%02X CM:%02X\033[1m\033[0m",count/2000,(count/2)%1000,smiId,smiGrp,smiCmd);
 	// printf("\n\033[1m%6d.%03d SMI: ",loop/2000,(loop/2)%1000);
 	// fflush(stdout);
 	return 0;

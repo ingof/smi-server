@@ -162,7 +162,7 @@ int main(int argc, char *argv[]) {
 				}
 			} else { // data available
 				if (newSocket <= 0){
-					syslog(LOG_DEBUG, "webserver connect:");
+					syslog(LOG_DEBUG, "DEBUG: webserver connect:");
 				}
 				/* receive header */
 				// memset(bufferHTTP, 0, bufsize);
@@ -174,7 +174,6 @@ int main(int argc, char *argv[]) {
 				recv(newSocket, bufferHTTP, bufSize, 0);
 				// printf("%s*ENDE*", bufferHTTP);
 				// getPostData(bufferHTTP,bufsize);
-				logBufferAscii(bufferHTTP,bufSize);
 				getPostData(bufferHTTP,bufSize,loop);
 				logBufferAscii(bufferHTTP,bufSize);
 
