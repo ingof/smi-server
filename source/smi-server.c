@@ -137,10 +137,11 @@ int main(int argc, char *argv[]) {
 	closeWebserver(mySocket);
 
 	/* endless-loop */
+	int loop, loop2;
 	for (loop=0; ;loop++) {
 		if (loop>=0x80000000) {
 			loop=0;
-			syslog(LOG_DEBG, " 4 Sekunden");
+			syslog(LOG_DEBUG, " 4 Sekunden");
 		}
 		/* webserver */
 		{
@@ -154,7 +155,7 @@ int main(int argc, char *argv[]) {
 				setNonblocking(mySocket);
 				clientAddrLen = sizeof( (struct sockaddr *) &clientAddress);
 
-				if ((new_socket = accept(mySocket, (struct sockaddr *) &clientAddress, &clientAddrLen)) < 0) {
+				if ((newSocket = accept(mySocket, (struct sockaddr *) &clientAddress, &clientAddrLen)) < 0) {
 						if (errno == EAGAIN) { // no data available
 						} else {
 							syslog(LOG_NOTICE, "NOTICE: webserver accept %d", newSocket);
@@ -171,7 +172,7 @@ int main(int argc, char *argv[]) {
 						bufferHTTP[loop2]=0;
 					}
 
-					recv(new_socket, bufferHTTP, bufsize, 0);
+					recv(new_socket, bufferHTTP, bufSize, 0);
 					// printf("%s*ENDE*", bufferHTTP);
 					// getPostData(bufferHTTP,bufsize);
 					logBufferAscii(bufferHTTP,bufsize);
