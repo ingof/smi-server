@@ -7,5 +7,7 @@
 
 /* nonblocking for network socket */
 int setNonblocking(int fd);
+int initWebserver(int port);
+void closeWebserver(int socket);
 
 #endif /* webserver.h */
