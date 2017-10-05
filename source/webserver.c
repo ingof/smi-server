@@ -16,11 +16,12 @@
 #include "smi-server.h"	/* own funcions */
 
 /* web server */
-#include<netinet/in.h>
-#include<sys/socket.h>
-#include<sys/stat.h>
-#include<sys/types.h>
-#include<unistd.h>
+
+#include <netinet/in.h>
+#include <sys/socket.h>
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <unistd.h>
 
 // int smiCmd=0;
 // int smiId=0;
@@ -57,11 +58,11 @@ void closeWebserver(int socket) {
 
 int initWebserver(int port) {
     /* webserver */
-    int socket;
+    int webSocket;
     int tmpBind;
     struct sockaddr_in address;
 
-    if ((socket = socket(AF_INET, SOCK_STREAM, 0)) > 0) {
+    if ((webSocket = socket(AF_INET, SOCK_STREAM, 0)) > 0) {
         printf("The socket was created:\n");
     }
 
@@ -70,11 +71,11 @@ int initWebserver(int port) {
     address.sin_addr.s_addr = INADDR_ANY;
     address.sin_port = htons(port);
 
-    tmpBind=bind(socket, (struct sockaddr *) &address, sizeof(address)) ;
+    tmpBind=bind(webSocket, (struct sockaddr *) &address, sizeof(address)) ;
     if (tmpBind== 0) {
         printf("Binding Socket %d\n",tmpBind);
     } else {
         perror("webserver bind");
     }
-    return mySocket;
+    return webSocket;
 }
