@@ -65,7 +65,7 @@ int initWebserver(int port) {
     struct sockaddr_in address;
 
     if ((webSocket = socket(AF_INET, SOCK_STREAM, 0)) > 0) {
-        printf("The socket was created:\n");
+        syslog(LOG_DEBUG, "DEBUG: The socket was created:\n");
     }
 
     // TODO: allow only one or two ip-addresses
@@ -75,9 +75,9 @@ int initWebserver(int port) {
 
     tmpBind=bind(webSocket, (struct sockaddr *) &address, sizeof(address)) ;
     if (tmpBind== 0) {
-        printf("Binding Socket %d\n",tmpBind);
+        syslog(LOG_DEBUG, "DEBUG: Binding Socket %d\n",tmpBind);
     } else {
-        perror("webserver bind");
+        syslog(LOG_NOTICE, "webserver bind");
     }
     return webSocket;
 }
