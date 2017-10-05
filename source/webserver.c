@@ -26,22 +26,19 @@
 // int smiId=0;
 // int smiGrp=0;
 
-/* set nonblocking */
-{
-    int setNonblocking(int fd) {
-        int flags;
-            /* If they have O_NONBLOCK, use the Posix way to do it */
-        #if defined(O_NONBLOCK)
-            /* Fixme: O_NONBLOCK is defined but broken on SunOS 4.1.x and AIX 3.2.5. */
-            if (-1 == (flags = fcntl(fd, F_GETFL, 0)))
-                flags = 0;
-            return fcntl(fd, F_SETFL, flags | O_NONBLOCK);
-        #else
-            /* Otherwise, use the old way of doing it */
-            flags = 1;
-            return ioctl(fd, FIOBIO, &flags);
-        #endif
-    }
+int setNonblocking(int fd) {
+    int flags;
+        /* If they have O_NONBLOCK, use the Posix way to do it */
+    #if defined(O_NONBLOCK)
+        /* Fixme: O_NONBLOCK is defined but broken on SunOS 4.1.x and AIX 3.2.5. */
+        if (-1 == (flags = fcntl(fd, F_GETFL, 0)))
+            flags = 0;
+        return fcntl(fd, F_SETFL, flags | O_NONBLOCK);
+    #else
+        /* Otherwise, use the old way of doing it */
+        flags = 1;
+        return ioctl(fd, FIOBIO, &flags);
+    #endif
 }
 
 
@@ -51,9 +48,8 @@
 // int bufsize = 1024;
 // unsigned char *bufferHTTP = malloc(bufsize);
 // struct sockaddr_in clientaddress;
+// int tmpListen;
 
-int tmpListen;
-int tmpBind;
 
 void closeWebserver(int socket) {
     close(socket);
@@ -62,6 +58,7 @@ void closeWebserver(int socket) {
 int initWebserver(int port) {
     /* webserver */
     int socket;
+    int tmpBind;
     struct sockaddr_in address;
 
     if ((socket = socket(AF_INET, SOCK_STREAM, 0)) > 0) {
@@ -79,5 +76,5 @@ int initWebserver(int port) {
     } else {
         perror("webserver bind");
     }
-    return mySocket
+    return mySocket;
 }
