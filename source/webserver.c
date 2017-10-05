@@ -83,7 +83,10 @@ int initWebserver(int port) {
 }
 
 int getPostData(unsigned char *buffer, int size, int count) {
-	char *token;
+    int smiCmd;
+    int smiId;
+    int smiGrp;
+    char *token;
 	char *tokenName;
 	char *tokenValue;
 	// char *word="\r\n\r\n";
