@@ -135,7 +135,6 @@ int main(int argc, char *argv[]) {
 
 	/* Do some task here ... */
 	mySocket=initWebserver(tcpControl);
-	closeWebserver(mySocket);
 
 	/* endless-loop */
 	int loop, loop2;
@@ -205,6 +204,7 @@ int main(int argc, char *argv[]) {
 		} /* webserver */
 
 	}
+	closeWebserver(mySocket);
 
 	syslog(LOG_DEBUG, "DEBUG: SMI-Server closing");
 	closelog();
