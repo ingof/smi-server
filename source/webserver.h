@@ -9,5 +9,6 @@
 int setNonblocking(int fd);
 int initWebserver(int port);
 void closeWebserver(int socket);
+int getPostData(unsigned char *buffer, int size, int count);
 
 #endif /* webserver.h */

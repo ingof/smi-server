@@ -82,5 +82,78 @@ int initWebserver(int port) {
     return webSocket;
 }
 
+int getPostData(unsigned char *buffer, int size, int count) {
+	char *token;
+	char *tokenName;
+	char *tokenValue;
+	// char *word="\r\n\r\n";
+	char *word="GET";
+	char *postStart;
+	// printBuffer(buffer, size);
+	// printBufferAscii(buffer, size);
+	//TODO check header
+	// printf(".");
+	// char string[] = {"Ein Teststring mit Worten"};
+	// printf(".");
+	// printf("%s\n",strchr(string, (int)'W'));
+	// printf(".");
+	// printf("%s\n",strchr(string, (int)'T'));
+	// printf(".");
+
+
+	/* find end of header */
+	postStart = strstr((char*) buffer,word)+6;
+
+	/* remove "end of header" marker */
+	// token=strsep(&postStart,"\n");
+	// token=strsep(&postStart,"\n");
+	// printf("\nTOKENS:");
+	// printf("Size: (%d) PostStart:{%s}\n",size,&postStart[0]);
+
+	/* clear old values */
+	smiCmd=0;
+	smiId=0;
+	smiGrp=0;
+
+	/* extract each posted data pair */
+	while ((token=strsep(&postStart,"&")) != NULL) {
+			tokenName=strsep(&token,"=");
+		tokenValue=strsep(&token,"=");
+		// printf("Parameter \"%s\" is \"%s\"\n",tokenName,tokenValue);
+		// printf(".");
+		if ((tokenName != NULL) && (tokenValue != NULL)) {
+		// if ((tokenName != "") && (tokenValue != "")) {
+			// printf("\n1");
+			if (strcmp(tokenName,"cmd")==0) {
+				// printf(".");
+				smiCmd=atoi(tokenValue);
+				// printf(".");
+				if (smiCmd>16) smiCmd=16;
+				// printf(".");
+				if (smiCmd<0) smiCmd=0;
+				// printf(".");
+			}
+			// printf("\n2");
+			if (strcmp(tokenName,"id")==0) {
+				smiId=atoi(tokenValue);
+				if (smiId>16) smiId=16;
+				if (smiId<0) smiId=0;
+			}
+			// printf("\n3");
+			if (strcmp(tokenName,"grp")==0) {
+				smiGrp=atoi(tokenValue);
+				smiGrp &=0xffff;
+				if (smiGrp<0) smiGrp=0;
+			}
+			// printf("\n4\n\n");
+		} else {
+			syslog(LOG_NOTICE, "NOTICE: no token found");
+		}
+	}
+	syslog(LOG_DEBUG, "DEBUG:\n\033[36m%6d.%03d WWW: ID:%02X GR:%02X CM:%02X\033[1m\033[0m",count/2000,(count/2)%1000,smiId,smiGrp,smiCmd);
+	// printf("\n\033[1m%6d.%03d SMI: ",loop/2000,(loop/2)%1000);
+	// fflush(stdout);
+	return 0;
+}
 
 // next function...
