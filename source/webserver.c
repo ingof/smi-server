@@ -91,20 +91,15 @@ int getPostData(unsigned char *buffer, int size, int count) {
 	char *tokenValue;
 	// char *word="\r\n\r\n";
 	char *word="GET";
+    char *word0="SmiControl"
 	char *postStart;
-	// printBuffer(buffer, size);
-	// printBufferAscii(buffer, size);
+
 	//TODO check header
-	// printf(".");
-	// char string[] = {"Ein Teststring mit Worten"};
-	// printf(".");
-	// printf("%s\n",strchr(string, (int)'W'));
-	// printf(".");
-	// printf("%s\n",strchr(string, (int)'T'));
-	// printf(".");
-
-
-	/* find end of header */
+    // exit if get does not contain 'SmiControl'
+    if strstr((char*) buffer,word0) ==NULL {
+        return EXIT_FAILURE;
+    }
+	/* find start of header */
 	postStart = strstr((char*) buffer,word)+6;
 
 	/* remove "end of header" marker */
@@ -120,7 +115,7 @@ int getPostData(unsigned char *buffer, int size, int count) {
 
 	/* extract each posted data pair */
 	while ((token=strsep(&postStart,"&?")) != NULL) {
-			tokenName=strsep(&token,"=");
+		tokenName=strsep(&token,"=");
 		tokenValue=strsep(&token,"=");
 		// printf("Parameter \"%s\" is \"%s\"\n",tokenName,tokenValue);
 		// printf(".");
@@ -149,14 +144,14 @@ int getPostData(unsigned char *buffer, int size, int count) {
 				if (smiGrp<0) smiGrp=0;
 			}
 			// printf("\n4\n\n");
-		} else {
-			syslog(LOG_NOTICE, "NOTICE: no token found");
+		// } else {
+		// 	syslog(LOG_NOTICE, "NOTICE: no token found");
 		}
 	}
 	syslog(LOG_DEBUG, "DEBUG:\033[36m%6d.%03d WWW: ID:%02X GR:%02X CM:%02X\033[1m\033[0m",count/2000,(count/2)%1000,smiId,smiGrp,smiCmd);
 	// printf("\n\033[1m%6d.%03d SMI: ",loop/2000,(loop/2)%1000);
 	// fflush(stdout);
-	return 0;
+	return EXIT_SUCCESS;
 }
 
 // next function...
