@@ -96,7 +96,7 @@ int getPostData(unsigned char *buffer, int size, int count) {
 
 	//TODO check header
     // exit if get does not contain 'SmiControl'
-    if strstr((char*) buffer,word0) ==NULL {
+    if (strstr((char*) buffer,word0) ==NULL) {
         return EXIT_FAILURE;
     }
 	/* find start of header */
