@@ -175,7 +175,7 @@ int main(int argc, char *argv[]) {
 				// printf("%s*ENDE*", bufferHTTP);
 				// getPostData(bufferHTTP,bufsize);
 				logBufferAscii(bufferHTTP,bufSize);
-				getPostData(bufferHTTP,bufSize,loop);
+				syslog(LOG_DEBUG, "DEBUG: getPostData = %d",getPostData(bufferHTTP,bufSize,loop));
 
 				/* send response */
 				write(newSocket, "HTTP/1.1 200 OK\r\n", 17);
