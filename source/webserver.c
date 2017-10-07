@@ -91,7 +91,7 @@ int getPostData(unsigned char *buffer, int size, int count) {
 	char *tokenValue;
 	// char *word="\r\n\r\n";
 	char *word="GET";
-    char *word0="SmiControl"
+    char *word0="SmiControl";
 	char *postStart;
 
 	//TODO check header
