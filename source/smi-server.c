@@ -20,10 +20,15 @@
 #include <sys/stat.h>		/* web server */
 #include <sys/types.h>		/* web server */
 #include <unistd.h>			/* web server */
+#include <arpa/inet.h>
 #include <syslog.h>			/* syslog */
-#include <stdio.h>		/* Standard input/output definitions */
+#include <stdio.h>			/* Standard input/output definitions */
 #include <termios.h>
 #include <sys/ioctl.h>
+
+
+
+
 
 #include "typesdef.h"		/* type definitions */
 #include "webserver.h"
@@ -138,6 +143,7 @@ int main(int argc, char *argv[]) {
 
 	/* endless-loop */
 	int loop, loop2;
+	char* remoteIp;
 	for (loop=0; ;loop++) {
 		if (loop>=0x80000000) {
 			loop=0;
@@ -161,8 +167,9 @@ int main(int argc, char *argv[]) {
 					exit(1);
 				}
 			} else { // data available
+				remoteIp=inet_ntoa(clientAddress.sin_addr.s_addr);
 				if (newSocket <= 0){
-					syslog(LOG_DEBUG, "DEBUG: webserver connect: (%S)", inet_ntoa(clientAddress.sin_addr.s_addr));
+					syslog(LOG_DEBUG, "DEBUG: webserver connect: (%S)", remoteIp);
 				}
 				/* receive header */
 				// memset(bufferHTTP, 0, bufsize);
@@ -176,7 +183,7 @@ int main(int argc, char *argv[]) {
 				// getPostData(bufferHTTP,bufsize);
 				logBufferAscii(bufferHTTP,bufSize);
 				if (getPostData(bufferHTTP,bufSize,loop)==0) {
-					syslog(LOG_DEBUG, "DEBUG Steuerbefehl empfangen ! (%s)", inet_ntoa(clientAddress.sin_addr.s_addr));
+					syslog(LOG_DEBUG, "DEBUG Steuerbefehl empfangen ! (%s)", remoteIp);
 				}
 
 				/* send response */
