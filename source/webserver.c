@@ -72,6 +72,7 @@ int initWebserver(int port) {
     address.sin_family = AF_INET;
     address.sin_addr.s_addr = INADDR_ANY;
     address.sin_port = htons(port);
+    address.sin_addr
 
     tmpBind=bind(webSocket, (struct sockaddr *) &address, sizeof(address)) ;
     if (tmpBind== 0) {

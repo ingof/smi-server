@@ -157,7 +157,7 @@ int main(int argc, char *argv[]) {
 			if ((newSocket = accept(mySocket, (struct sockaddr *) &clientAddress, &clientAddrLen)) < 0) {
 				if (errno == EAGAIN) { // no data available
 				} else {
-					syslog(LOG_NOTICE, "NOTICE: webserver accept %d", newSocket);
+					syslog(LOG_NOTICE, "NOTICE: webserver accept %d / %08X", newSocket, clientAddress.sin_addr.s_addr);
 					exit(1);
 				}
 			} else { // data available
@@ -175,7 +175,9 @@ int main(int argc, char *argv[]) {
 				// printf("%s*ENDE*", bufferHTTP);
 				// getPostData(bufferHTTP,bufsize);
 				logBufferAscii(bufferHTTP,bufSize);
-				syslog(LOG_DEBUG, "DEBUG: getPostData = %d",getPostData(bufferHTTP,bufSize,loop));
+				if (getPostData(bufferHTTP,bufSize,loop))==0) {
+					syslog(LOGDEBUG, "Steuerbefehl empfangen");
+				}
 
 				/* send response */
 				write(newSocket, "HTTP/1.1 200 OK\r\n", 17);
