@@ -23,6 +23,7 @@
 #include <sys/types.h>
 #include <unistd.h>
 
+socklen_t clientAddrLen;
 // int smiCmd=0;
 // int smiId=0;
 // int smiGrp=0;
@@ -84,7 +85,7 @@ int initWebserver(int port) {
 
 void handleWebserver(int socket) {
     int newSocket;
-	socklen_t clientAddrLen;
+    // socklen_t clientAddrLen;
 	int bufSize = 1024;
 	unsigned char *bufferHTTP = malloc(bufSize);
 	struct sockaddr_in clientAddress;
@@ -218,7 +219,7 @@ int getPostData(unsigned char *buffer, int size, int count) {
 		// 	syslog(LOG_NOTICE, "NOTICE: no token found");
 		}
 	}
-	syslog(LOG_DEBUG, "DEBUG:\033[36m%6d.%03d WWW: ID:%02X GR:%02X CM:%02X\033[1m\033[0m",count/2000,(count/2)%1000,smiId,smiGrp,smiCmd);
+	syslog(LOG_DEBUG, "DEBUG: \033[36m WWW%s: ID:%02X GR:%02X CM:%02X\033[1m\033[0m",remoteIp ,smiId,smiGrp,smiCmd);
 	// printf("\n\033[1m%6d.%03d SMI: ",loop/2000,(loop/2)%1000);
 	// fflush(stdout);
 	return EXIT_SUCCESS;
