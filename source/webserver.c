@@ -23,7 +23,9 @@
 #include <sys/types.h>
 #include <unistd.h>
 
-socklen_t clientAddrLen;
+// socklen_t clientAddrLen;
+char* remoteIp="";
+
 // int smiCmd=0;
 // int smiId=0;
 // int smiGrp=0;
@@ -85,12 +87,12 @@ int initWebserver(int port) {
 
 void handleWebserver(int socket) {
     int newSocket;
-    // socklen_t clientAddrLen;
+    socklen_t clientAddrLen;
 	int bufSize = 1024;
 	unsigned char *bufferHTTP = malloc(bufSize);
 	struct sockaddr_in clientAddress;
 	int tmpListen;
-    char* remoteIp;
+    // char* remoteIp;
     int loop;
 
     tmpListen=listen(socket, 10);
