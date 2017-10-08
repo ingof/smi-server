@@ -59,13 +59,6 @@ void closeWebserver(int socket) {
 }
 
 int initWebserver(int port) {
-    int newSocket;
-	socklen_t clientAddrLen;
-	int bufSize = 1024;
-	unsigned char *bufferHTTP = malloc(bufSize);
-	struct sockaddr_in clientAddress;
-	int tmpListen;
-
     /* webserver */
     int webSocket;
     int tmpBind;
@@ -89,7 +82,16 @@ int initWebserver(int port) {
     return webSocket;
 }
 
-int handleWebserver(int socket) {
+void handleWebserver(int socket) {
+    int newSocket;
+	socklen_t clientAddrLen;
+	int bufSize = 1024;
+	unsigned char *bufferHTTP = malloc(bufSize);
+	struct sockaddr_in clientAddress;
+	int tmpListen;
+    char* remoteIp;
+    int loop;
+
     tmpListen=listen(socket, 10);
     if (tmpListen < 0) {
         syslog(LOG_NOTICE, "NOTICE: webserver listen: %d", tmpListen);
@@ -113,8 +115,8 @@ int handleWebserver(int socket) {
         /* receive header */
         // memset(bufferHTTP, 0, bufsize);
         // fill_n(bufferHTTP, 0, bufsize);
-        for (loop2=0;loop2<bufSize;loop2++) {
-            bufferHTTP[loop2]=0;
+        for (loop=0;loop<bufSize;loop++) {
+            bufferHTTP[loop]=0;
         }
 
         recv(newSocket, bufferHTTP, bufSize, 0);

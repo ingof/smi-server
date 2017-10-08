@@ -142,8 +142,7 @@ int main(int argc, char *argv[]) {
 	mySocket=initWebserver(tcpControl);
 
 	/* endless-loop */
-	int loop, loop2;
-	char* remoteIp;
+	int loop;
 	for (loop=0; ;loop++) {
 		if (loop>=0x80000000) {
 			loop=0;

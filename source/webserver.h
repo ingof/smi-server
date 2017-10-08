@@ -9,7 +9,7 @@
 int setNonblocking(int fd);
 int initWebserver(int port);
 void closeWebserver(int socket);
-void handleWebserver(void);
+void handleWebserver(int socket);
 int getPostData(unsigned char *buffer, int size, int count);
 
 #endif /* webserver.h */
