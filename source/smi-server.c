@@ -167,7 +167,7 @@ int main(int argc, char *argv[]) {
 					exit(1);
 				}
 			} else { // data available
-				remoteIp=inet_ntoa(clientAddress.sin_addr.s_addr);
+				remoteIp=inet_ntoa(clientAddress.sin_addr);
 				if (newSocket <= 0){
 					syslog(LOG_DEBUG, "DEBUG: webserver connect: (%S)", remoteIp);
 				}
