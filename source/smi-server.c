@@ -176,7 +176,7 @@ int main(int argc, char *argv[]) {
 				// getPostData(bufferHTTP,bufsize);
 				logBufferAscii(bufferHTTP,bufSize);
 				if (getPostData(bufferHTTP,bufSize,loop)==0) {
-					syslog(LOGDEBUG, "Steuerbefehl empfangen");
+					syslog(LOG_DEBUG, "DEBUG Steuerbefehl empfangen !");
 				}
 
 				/* send response */
