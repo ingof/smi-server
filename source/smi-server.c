@@ -163,7 +163,7 @@ int main(int argc, char *argv[]) {
 			if ((newSocket = accept(mySocket, (struct sockaddr *) &clientAddress, &clientAddrLen)) < 0) {
 				if (errno == EAGAIN) { // no data available
 				} else {
-					syslog(LOG_NOTICE, "NOTICE: webserver accept %d / (%S)", newSocket, inet_ntoa(clientAddress.sin_addr.s_addr));
+					syslog(LOG_NOTICE, "NOTICE: webserver accept %d / (%S)", newSocket, inet_ntoa(clientAddress.sin_addr));
 					exit(1);
 				}
 			} else { // data available
