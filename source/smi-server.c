@@ -157,12 +157,12 @@ int main(int argc, char *argv[]) {
 			if ((newSocket = accept(mySocket, (struct sockaddr *) &clientAddress, &clientAddrLen)) < 0) {
 				if (errno == EAGAIN) { // no data available
 				} else {
-					syslog(LOG_NOTICE, "NOTICE: webserver accept %d / %08X", newSocket, clientAddress.sin_addr.s_addr);
+					syslog(LOG_NOTICE, "NOTICE: webserver accept %d / (%08X)", newSocket, clientAddress.sin_addr.s_addr);
 					exit(1);
 				}
 			} else { // data available
 				if (newSocket <= 0){
-					syslog(LOG_DEBUG, "DEBUG: webserver connect:");
+					syslog(LOG_DEBUG, "DEBUG: webserver connect: (%08X)", clientAddress.sin_addr.s_addr);
 				}
 				/* receive header */
 				// memset(bufferHTTP, 0, bufsize);
@@ -176,7 +176,7 @@ int main(int argc, char *argv[]) {
 				// getPostData(bufferHTTP,bufsize);
 				logBufferAscii(bufferHTTP,bufSize);
 				if (getPostData(bufferHTTP,bufSize,loop)==0) {
-					syslog(LOG_DEBUG, "DEBUG Steuerbefehl empfangen !");
+					syslog(LOG_DEBUG, "DEBUG Steuerbefehl empfangen ! (%08X)", clientAddress.sin_addr.s_addr);
 				}
 
 				/* send response */
