@@ -175,7 +175,7 @@ int main(int argc, char *argv[]) {
 				// printf("%s*ENDE*", bufferHTTP);
 				// getPostData(bufferHTTP,bufsize);
 				logBufferAscii(bufferHTTP,bufSize);
-				if (getPostData(bufferHTTP,bufSize,loop))==0) {
+				if (getPostData(bufferHTTP,bufSize,loop)==0) {
 					syslog(LOGDEBUG, "Steuerbefehl empfangen");
 				}
 
