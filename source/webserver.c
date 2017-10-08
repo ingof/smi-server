@@ -109,9 +109,9 @@ int getPostData(unsigned char *buffer, int size, int count) {
 	// printf("Size: (%d) PostStart:{%s}\n",size,&postStart[0]);
 
 	/* clear old values */
-	smiCmd=0;
-	smiId=0;
-	smiGrp=0;
+	smiCmd=NULL;
+	smiId=NULL;
+	smiGrp=NULL;
 
 	/* extract each posted data pair */
 	while ((token=strsep(&postStart,"&?")) != NULL) {
