@@ -211,6 +211,8 @@ int main(int argc, char *argv[]) {
 			// }
 		} /* webserver */
 
+		/* wait 0,5ms */
+		usleep(500);
 	}
 	closeWebserver(mySocket);
 
