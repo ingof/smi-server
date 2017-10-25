@@ -88,7 +88,7 @@ int initWebserver(int port) {
 void handleWebserver(int socket) {
     int newSocket;
     socklen_t clientAddrLen;
-	int bufSize = 1024;
+	int bufSize = 1024*sizeof(char);
 	unsigned char *bufferHTTP = malloc(bufSize);
 	struct sockaddr_in clientAddress;
 	int tmpListen;
@@ -107,13 +107,13 @@ void handleWebserver(int socket) {
     if ((newSocket = accept(socket, (struct sockaddr *) &clientAddress, &clientAddrLen)) < 0) {
         if (errno == EAGAIN) { // no data available
         } else {
-            syslog(LOG_NOTICE, "NOTICE: webserver accept %d / (%S)", newSocket, inet_ntoa(clientAddress.sin_addr));
+            syslog(LOG_NOTICE, "NOTICE: webserver accept %d / (%d)", newSocket, inet_ntoa(clientAddress.sin_addr));
             exit(1);
         }
     } else { // data available
         remoteIp=inet_ntoa(clientAddress.sin_addr);
         if (newSocket <= 0){
-            syslog(LOG_DEBUG, "DEBUG: webserver connect: (%S)", remoteIp);
+            syslog(LOG_DEBUG, "DEBUG: webserver connect: (%d)", remoteIp);
         }
         /* receive header */
         // memset(bufferHTTP, 0, bufsize);
@@ -152,6 +152,7 @@ void handleWebserver(int socket) {
         // fflush(stdout);
         /* close this socket */
         close(newSocket);
+        free(bufferHTTP);
     }
 }
 
