@@ -88,8 +88,7 @@ int initWebserver(int port) {
 void handleWebserver(int socket) {
     int newSocket;
     socklen_t clientAddrLen;
-	int bufSize = 1024*sizeof(char);
-	unsigned char *bufferHTTP = malloc(bufSize);
+	int bufSize = 1024;
 	struct sockaddr_in clientAddress;
 	int tmpListen;
     // char* remoteIp;
@@ -116,11 +115,12 @@ void handleWebserver(int socket) {
             syslog(LOG_DEBUG, "DEBUG: webserver connect: (%d)", remoteIp);
         }
         /* receive header */
+        unsigned char *bufferHTTP = calloc(bufSize,sizeof(char));
         // memset(bufferHTTP, 0, bufsize);
         // fill_n(bufferHTTP, 0, bufsize);
-        for (loop=0;loop<bufSize;loop++) {
-            bufferHTTP[loop]=0;
-        }
+        // for (loop=0;loop<bufSize;loop++) {
+        //     bufferHTTP[loop]=0;
+        // }
 
         recv(newSocket, bufferHTTP, bufSize, 0);
         // printf("%s*ENDE*", bufferHTTP);
@@ -129,6 +129,7 @@ void handleWebserver(int socket) {
         if (getPostData(bufferHTTP,bufSize,loop)==0) {
             syslog(LOG_DEBUG, "DEBUG Steuerbefehl empfangen ! (%s)", remoteIp);
         }
+        free(bufferHTTP);
 
         /* send response */
         write(newSocket, "HTTP/1.1 200 OK\r\n", 17);
@@ -152,7 +153,6 @@ void handleWebserver(int socket) {
         // fflush(stdout);
         /* close this socket */
         close(newSocket);
-        free(bufferHTTP);
     }
 }
 
