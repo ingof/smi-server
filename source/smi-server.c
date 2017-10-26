@@ -27,9 +27,6 @@
 #include <sys/ioctl.h>
 
 
-
-
-
 #include "typesdef.h"		/* type definitions */
 #include "webserver.h"
 #include "parseconf.h"		/* config parser */
@@ -41,8 +38,6 @@
 #include "ownfunctions.c"
 #include "parseconf.c"
 #include "webserver.c"
-
-
 
 
 // #include <unistd.h>			/* getpwd() */
@@ -57,16 +52,8 @@ char serialSwb[40];
 
 
 
-
-
 int main(int argc, char *argv[]) {
 	int mySocket;
-	// int newSocket;
-	// socklen_t clientAddrLen;
-	// int bufSize = 1024;
-	// unsigned char *bufferHTTP = malloc(bufSize);
-	// struct sockaddr_in clientAddress;
-	// int tmpListen;
 
 /* damonize */
 {
@@ -118,14 +105,6 @@ int main(int argc, char *argv[]) {
 
 	char puffer[200];
 
-	// if(getcwd(puffer,sizeof(puffer)) == NULL) {
-	// 	//    fprintf(stderr, "Fehler bei getcwd ...\n");
-	// 	syslog(LOG_ERR, "ERROR: can not get PWD! [%m]");
-	// 	// return EXIT_FAILURE;
-	// } else {
-	// 	syslog(LOG_DEBUG, "DEBUG: the actual working directory: %s", puffer);
-	// }
-
 	int tmp;
 	tmp=parseConfFile();
 
@@ -146,70 +125,8 @@ int main(int argc, char *argv[]) {
 	for (loop=0; ;loop++) {
 		if (loop>=0x80000000) {
 			loop=0;
-			syslog(LOG_DEBUG, " 4 Sekunden");
 		}
-		/* webserver */
-		{
-			handleWebserver(mySocket);
-			// tmpListen=listen(mySocket, 10);
-			// if (tmpListen < 0) {
-			// 	syslog(LOG_NOTICE, "NOTICE: webserver listen: %d", tmpListen);
-			// 	exit(1);
-			// }
-			//
-			// setNonblocking(mySocket);
-			// clientAddrLen = sizeof( (struct sockaddr *) &clientAddress);
-			//
-			// if ((newSocket = accept(mySocket, (struct sockaddr *) &clientAddress, &clientAddrLen)) < 0) {
-			// 	if (errno == EAGAIN) { // no data available
-			// 	} else {
-			// 		syslog(LOG_NOTICE, "NOTICE: webserver accept %d / (%S)", newSocket, inet_ntoa(clientAddress.sin_addr));
-			// 		exit(1);
-			// 	}
-			// } else { // data available
-			// 	remoteIp=inet_ntoa(clientAddress.sin_addr);
-			// 	if (newSocket <= 0){
-			// 		syslog(LOG_DEBUG, "DEBUG: webserver connect: (%S)", remoteIp);
-			// 	}
-			// 	/* receive header */
-			// 	// memset(bufferHTTP, 0, bufsize);
-			// 	// fill_n(bufferHTTP, 0, bufsize);
-			// 	for (loop2=0;loop2<bufSize;loop2++) {
-			// 		bufferHTTP[loop2]=0;
-			// 	}
-			//
-			// 	recv(newSocket, bufferHTTP, bufSize, 0);
-			// 	// printf("%s*ENDE*", bufferHTTP);
-			// 	// getPostData(bufferHTTP,bufsize);
-			// 	logBufferAscii(bufferHTTP,bufSize);
-			// 	if (getPostData(bufferHTTP,bufSize,loop)==0) {
-			// 		syslog(LOG_DEBUG, "DEBUG Steuerbefehl empfangen ! (%s)", remoteIp);
-			// 	}
-			//
-			// 	/* send response */
-			// 	write(newSocket, "HTTP/1.1 200 OK\r\n", 17);
-			// 	write(newSocket, "Content-length: 111\r\n", 21);
-			// 	write(newSocket, "Content-Type: text/html\r\n\r\n", 27);
-			// 	write(newSocket, "<html>\r\n",8);
-			// 	write(newSocket, " <body>\r\n",9);
-			// 	write(newSocket, "  <h1>Found</h1>\r\n",18);
-			// 	write(newSocket, "  <p>The requested URL was found on this server ;-)</p>\r\n",57);
-			// 	write(newSocket, " </body>\r\n",10);
-			// 	write(newSocket, "</html>\r\n",9);
-			//
-			// 	/* TODO: in PHP post-data will be send only after
-			// 	receiving the 200-OK-Header. Add or use the second buffer only!
-			// 	*/
-			// 	// /* receive posted data */
-			// 	// memset(bufferHTTP, 0, bufsize);
-			// 	// recv(new_socket, bufferHTTP, bufsize, 0);
-			// 	// printf("%s*ENDE*\n", bufferHTTP);
-			// 	// printBuffer(bufferHTTP,bufsize);
-			// 	// fflush(stdout);
-			// 	/* close this socket */
-			// 	close(newSocket);
-			// }
-		} /* webserver */
+		handleWebserver(mySocket);
 
 		/* wait 0,5ms */
 		usleep(500);
