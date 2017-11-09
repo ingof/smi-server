@@ -188,7 +188,7 @@ int getPostData(unsigned char *buffer, int size, int count) {
 	smiGrp=NULL;
 
 	/* extract each posted data pair */
-	while ((token=strsep(&postStart,"&?#")) != NULL) {
+	while ((token=strsep(&postStart,"&?")) != NULL) {
 		tokenName=strsep(&token,"=");
 		tokenValue=strsep(&token,"=");
 		// printf("Parameter \"%s\" is \"%s\"\n",tokenName,tokenValue);
