@@ -148,7 +148,7 @@ void handleWebserver(int socket) {
 
         recv(newSocket, bufferHTTP, bufSize, 0);
         logBufferAscii(bufferHTTP,bufSize);
-        getPostData(bufferHTTP,bufSize,loop)==0)
+        getPostData(bufferHTTP,bufSize,loop)==0);
         logBufferAscii(bufferHTTP,bufSize);
         free(bufferHTTP);
 
