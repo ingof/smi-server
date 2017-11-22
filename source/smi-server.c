@@ -127,8 +127,13 @@ int main(int argc, char *argv[]) {
 		if (loop>=0x80000000) {
 			loop=0;
 		}
+		command[0].id = -1;
+		command[0].group = -1;
+		command[0].command = -1;
 		handleWebserver(mySocket);
-		syslog(LOG_INFO, "INFO: ID=%2d Group=%2d Command=%2d ", command[0].id, command[0].group, command[0].command);
+		if ((command[0].id != -1) || (command[0].group != -1) || (command[0].command != -1)) {
+			syslog(LOG_INFO, "INFO: ID=%2d Group=%2d Command=%2d ", command[0].id, command[0].group, command[0].command);
+		}
 
 		/* wait 0,5ms */
 		usleep(500);
