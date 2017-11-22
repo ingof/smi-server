@@ -94,9 +94,14 @@ void handleWebserver(int socket) {
     // char* remoteIp;
     int loop;
 
-    //struct sockaddr_storage tmpddr;
+
+    struct sockaddr_storage tmpAddr;
+    socklen_t tmpLen;
     char ipstr[INET6_ADDRSTRLEN];
     int clientPort;
+
+    tmpLen = sizeof(tmpAddr);
+
 
     tmpListen=listen(socket, 10);
     if (tmpListen < 0) {
@@ -115,12 +120,12 @@ void handleWebserver(int socket) {
         }
     } else { // data available
 
-        if (clientAddress.ss_family == AF_INET) {
-            struct sockaddr_in *s = (struct sockaddr_in *)&clientAddress;
+        if (tmpAddr.ss_family == AF_INET) {
+            struct sockaddr_in *s = (struct sockaddr_in *)&tmpAddr;
             clientPort = ntohs(s->sin_port);
             inet_ntop(AF_INET, &s->sin_addr, ipstr, sizeof ipstr);
         } else { // AF_INET6
-            struct sockaddr_in6 *s = (struct sockaddr_in6 *)&clientAddress;
+            struct sockaddr_in6 *s = (struct sockaddr_in6 *)&tmpAddr;
             clientPort = ntohs(s->sin6_port);
             inet_ntop(AF_INET6, &s->sin6_addr, ipstr, sizeof ipstr);
         }
