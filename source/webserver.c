@@ -123,19 +123,17 @@ void handleWebserver(int socket) {
         }
     } else { // data available
 
-        // // get remote IP and Port
-        // if (tmpAddr.ss_family == AF_INET) {
-        //     struct sockaddr_in *s = (struct sockaddr_in *)&tmpAddr;
-        //     remotePort = ntohs(s->sin_port);
-        //     inet_ntop(AF_INET, &s->sin_addr, remoteIP, sizeof remoteIP);
-        // } else { // AF_INET6
-        //     struct sockaddr_in6 *s = (struct sockaddr_in6 *)&tmpAddr;
-        //     remotePort = ntohs(s->sin6_port);
-        //     inet_ntop(AF_INET6, &s->sin6_addr, remoteIP, sizeof remoteIP);
-        // }
+        // get remote IP and Port
+        if (tmpAddr.ss_family == AF_INET) {
+            struct sockaddr_in *s = (struct sockaddr_in *)&tmpAddr;
+            remotePort = ntohs(s->sin_port);
+            inet_ntop(AF_INET, &s->sin_addr, remoteIP, sizeof remoteIP);
+        } else { // AF_INET6
+            struct sockaddr_in6 *s = (struct sockaddr_in6 *)&tmpAddr;
+            remotePort = ntohs(s->sin6_port);
+            inet_ntop(AF_INET6, &s->sin6_addr, remoteIP, sizeof remoteIP);
+        }
 
-        remoteIP=getRemoteIP(tmpAddr);
-        remotePort=getRemotePort(tmpAddr);
 
         if (newSocket <= 0){
             syslog(LOG_DEBUG, "DEBUG: webserver connected (%s:%d)", remoteIP, remotePort);

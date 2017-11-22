@@ -63,28 +63,6 @@ unsigned int htoi(char* hex) {
     return hexInt;
 }
 
-int getRemotePort(struct sockaddr *addr) {
-    int port;
-    if (addr.ss_family == AF_INET) {
-        struct sockaddr_in *s = (struct sockaddr_in *)&addr;
-        port = ntohs(s->sin_port);
-    } else { // AF_INET6
-        struct sockaddr_in6 *s = (struct sockaddr_in6 *)&addr;
-        Port = ntohs(s->sin6_port);
-    }
-    return port;
-}
-
-char[] getRemoteIP(struct sockaddr *addr) {
-    char ip[INET6_ADDRSTRLEN];
-    if (addr.ss_family == AF_INET) {
-        struct sockaddr_in *s = (struct sockaddr_in *)&addr;
-        inet_ntop(AF_INET, &s->sin_addr, remoteIP, sizeof remoteIP);
-    } else { // AF_INET6
-        struct sockaddr_in6 *s = (struct sockaddr_in6 *)&addr;
-        inet_ntop(AF_INET6, &s->sin6_addr, remoteIP, sizeof remoteIP);
-    }
-}
 
 
 /* display buffer in ASCII to stdout */
