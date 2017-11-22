@@ -4,6 +4,7 @@
 
 // typedef unsigned char uint8_t;
 // typedef unsigned int  unint16_t;
+extern COMMAND command[1];
 
 /* nonblocking for network socket */
 int setNonblocking(int fd);
