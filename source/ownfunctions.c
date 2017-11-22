@@ -80,6 +80,6 @@ void printBufferAscii(unsigned char *buffer, int size) {
 }
 
 void logBufferAscii(unsigned char *buffer, int size) {
-    syslog(LOG_DEBUG, "DEBUG: HTTP Buffer of size %d received:\n\n %s", size, buffer);
+    syslog(LOG_DEBUG, "DEBUG: HTTP Buffer(%d) received:\n %s", size, buffer);
 
 }

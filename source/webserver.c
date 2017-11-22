@@ -147,12 +147,9 @@ void handleWebserver(int socket) {
         // }
 
         recv(newSocket, bufferHTTP, bufSize, 0);
-        // printf("%s*ENDE*", bufferHTTP);
-        // getPostData(bufferHTTP,bufsize);
         logBufferAscii(bufferHTTP,bufSize);
-        if (getPostData(bufferHTTP,bufSize,loop)==0) {
-            syslog(LOG_DEBUG, "DEBUG Steuerbefehl empfangen ! (%s:%d)", remoteIP, remotePort);
-        }
+        getPostData(bufferHTTP,bufSize,loop)==0)
+        logBufferAscii(bufferHTTP,bufSize);
         free(bufferHTTP);
 
         /* send response */
