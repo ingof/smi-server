@@ -94,6 +94,10 @@ void handleWebserver(int socket) {
     // char* remoteIp;
     int loop;
 
+    //struct sockaddr_storage tmpddr;
+    char ipstr[INET6_ADDRSTRLEN];
+    int clientPort;
+
     tmpListen=listen(socket, 10);
     if (tmpListen < 0) {
         syslog(LOG_NOTICE, "NOTICE: webserver listen: %d", tmpListen);
@@ -101,18 +105,31 @@ void handleWebserver(int socket) {
     }
 
     setNonblocking(socket);
-    clientAddrLen = sizeof( (struct sockaddr *) &clientAddress);
+    clientAddrLen = sizeof( (struct sockaddr_in *) &clientAddress);
 
-    if ((newSocket = accept(socket, (struct sockaddr *) &clientAddress, &clientAddrLen)) < 0) {
+    if ((newSocket = accept(socket, (struct sockaddr_in *) &clientAddress, &clientAddrLen)) < 0) {
         if (errno == EAGAIN) { // no data available
         } else {
-            syslog(LOG_NOTICE, "NOTICE: webserver accept %d / (%d)", newSocket, inet_ntoa(clientAddress.sin_addr));
+            syslog(LOG_NOTICE, "NOTICE: webserver accept %d / (%s)", newSocket, inet_ntoa(clientAddress.sin_addr));
             exit(1);
         }
     } else { // data available
+
+        if (clientAddress.ss_family == AF_INET) {
+            struct sockaddr_in *s = (struct sockaddr_in *)&clientAddress;
+            clientPort = ntohs(s->sin_port);
+            inet_ntop(AF_INET, &s->sin_addr, ipstr, sizeof ipstr);
+        } else { // AF_INET6
+            struct sockaddr_in6 *s = (struct sockaddr_in6 *)&clientAddress;
+            clientPort = ntohs(s->sin6_port);
+            inet_ntop(AF_INET6, &s->sin6_addr, ipstr, sizeof ipstr);
+        }
+        syslog(LOG_DEBUG, "DEBUG: sent by: %s:%d", ipstr, clientPort);
+
+
         remoteIp=inet_ntoa(clientAddress.sin_addr);
         if (newSocket <= 0){
-            syslog(LOG_DEBUG, "DEBUG: webserver connect: (%d)", remoteIp);
+            syslog(LOG_DEBUG, "DEBUG: webserver connect: (%s)", remoteIp);
         }
         /* receive header */
         unsigned char *bufferHTTP = calloc(bufSize,sizeof(char));
