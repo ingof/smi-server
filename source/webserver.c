@@ -24,7 +24,9 @@
 #include <unistd.h>
 
 // socklen_t clientAddrLen;
-char* remoteIp="";
+//char* remoteIp="";
+char remoteIP[INET6_ADDRSTRLEN];
+int remotePort;
 
 // int smiCmd=0;
 // int smiId=0;
@@ -97,8 +99,8 @@ void handleWebserver(int socket) {
 
     struct sockaddr_storage tmpAddr;
     socklen_t tmpLen;
-    char ipstr[INET6_ADDRSTRLEN];
-    int clientPort;
+    //char remoteIP[INET6_ADDRSTRLEN];
+    //int clientPort;
 
     tmpLen = sizeof(tmpAddr);
 
@@ -123,19 +125,19 @@ void handleWebserver(int socket) {
 
         if (tmpAddr.ss_family == AF_INET) {
             struct sockaddr_in *s = (struct sockaddr_in *)&tmpAddr;
-            clientPort = ntohs(s->sin_port);
-            inet_ntop(AF_INET, &s->sin_addr, ipstr, sizeof ipstr);
+            remotePort = ntohs(s->sin_port);
+            inet_ntop(AF_INET, &s->sin_addr, remoteIP, sizeof remoteIP);
         } else { // AF_INET6
             struct sockaddr_in6 *s = (struct sockaddr_in6 *)&tmpAddr;
-            clientPort = ntohs(s->sin6_port);
-            inet_ntop(AF_INET6, &s->sin6_addr, ipstr, sizeof ipstr);
+            remotePort = ntohs(s->sin6_port);
+            inet_ntop(AF_INET6, &s->sin6_addr, remoteIP, sizeof remoteIP);
         }
-        syslog(LOG_DEBUG, "DEBUG: sent by: %s:%d", ipstr, clientPort);
+        syslog(LOG_DEBUG, "DEBUG: sent by: %s:%d", remoteIP, remotePort);
 
 
-        remoteIp=inet_ntoa(clientAddress.sin_addr);
+        //remoteIp=inet_ntoa(clientAddress.sin_addr);
         if (newSocket <= 0){
-            syslog(LOG_DEBUG, "DEBUG: webserver connect: (%s)", remoteIp);
+            syslog(LOG_DEBUG, "DEBUG: webserver connect: (%s:%d)", remoteIP, remotePort);
         }
         /* receive header */
         unsigned char *bufferHTTP = calloc(bufSize,sizeof(char));
@@ -150,7 +152,7 @@ void handleWebserver(int socket) {
         // getPostData(bufferHTTP,bufsize);
         logBufferAscii(bufferHTTP,bufSize);
         if (getPostData(bufferHTTP,bufSize,loop)==0) {
-            syslog(LOG_DEBUG, "DEBUG Steuerbefehl empfangen ! (%s)", remoteIp);
+            syslog(LOG_DEBUG, "DEBUG Steuerbefehl empfangen ! (%s:%d)", remoteIP, remotePort);
         }
         free(bufferHTTP);
 
@@ -245,7 +247,7 @@ int getPostData(unsigned char *buffer, int size, int count) {
 		// 	syslog(LOG_NOTICE, "NOTICE: no token found");
 		}
 	}
-	syslog(LOG_DEBUG, "DEBUG: \033[36m WWW%s: ID:%02X GR:%02X CM:%02X\033[1m\033[0m",remoteIp ,smiId,smiGrp,smiCmd);
+	syslog(LOG_DEBUG, "DEBUG: \033[36m WWW_%s:%d: ID:%02X GR:%02X CM:%02X\033[1m\033[0m",remoteIP, remotePort ,smiId,smiGrp,smiCmd);
 	// printf("\n\033[1m%6d.%03d SMI: ",loop/2000,(loop/2)%1000);
 	// fflush(stdout);
 	return EXIT_SUCCESS;
