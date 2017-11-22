@@ -44,6 +44,7 @@
 
 DRIVE drive[16];
 BUTTON button[32];
+COMMAND command[1];
 int tcpControl=8088;
 char serialSmi1[40];
 char serialSmi2[40];
@@ -127,6 +128,7 @@ int main(int argc, char *argv[]) {
 			loop=0;
 		}
 		handleWebserver(mySocket);
+		syslog(LOG_INFO, "INFO: ID=%2d Group=%2d Command=%2d ", command[0].id, command[0].group, command[0].command);
 
 		/* wait 0,5ms */
 		usleep(500);

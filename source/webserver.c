@@ -147,11 +147,10 @@ void handleWebserver(int socket) {
         // }
 
         recv(newSocket, bufferHTTP, bufSize, 0);
-        logBufferAscii(bufferHTTP,bufSize);
+        // logBufferAscii(bufferHTTP,bufSize);
         if (getPostData(bufferHTTP,bufSize,loop)!=0) {
             syslog(LOG_DEBUG, "DEBUG: can not get post-data (%s:%d)", remoteIP, remotePort);
         }
-        logBufferAscii(bufferHTTP,bufSize);
         free(bufferHTTP);
 
         /* send response */
@@ -210,6 +209,11 @@ int getPostData(unsigned char *buffer, int size, int count) {
 	smiId=NULL;
 	smiGrp=NULL;
 
+    /* clear old values */
+    command[0].id = -1;
+    command[0].group = -1;
+    command[0].command = -1;
+
 	/* extract each posted data pair */
 	while ((token=strsep(&postStart,"&?")) != NULL) {
 		tokenName=strsep(&token,"=");
@@ -220,32 +224,41 @@ int getPostData(unsigned char *buffer, int size, int count) {
 		// if ((tokenName != "") && (tokenValue != "")) {
 			// printf("\n1");
 			if (strcmp(tokenName,"cmd")==0) {
-				// printf(".");
-				smiCmd=atoi(tokenValue);
-				// printf(".");
-				if (smiCmd>16) smiCmd=16;
-				// printf(".");
-				if (smiCmd<0) smiCmd=0;
-				// printf(".");
+                // // printf(".");
+				// smiCmd=atoi(tokenValue);
+				// // printf(".");
+				// if (smiCmd>16) smiCmd=16;
+				// // printf(".");
+				// if (smiCmd<0) smiCmd=0;
+				// // printf(".");
+				command[0].command=atoi(tokenValue);
+				if (command[0].command>16) command[0].command=16;
+				if (command[0].command<0) command[0].command=0;
 			}
 			// printf("\n2");
 			if (strcmp(tokenName,"id")==0) {
-				smiId=atoi(tokenValue);
-				if (smiId>16) smiId=16;
-				if (smiId<0) smiId=0;
+                // smiId=atoi(tokenValue);
+				// if (smiId>16) smiId=16;
+				// if (smiId<0) smiId=0;
+                command[0].id=atoi(tokenValue);
+				if (command[0].id>16) command[0].id=16;
+				if (command[0].id<0) command[0].id=0;
 			}
 			// printf("\n3");
 			if (strcmp(tokenName,"grp")==0) {
-				smiGrp=atoi(tokenValue);
-				smiGrp &=0xffff;
-				if (smiGrp<0) smiGrp=0;
+                // smiGrp=atoi(tokenValue);
+				// smiGrp &=0xffff;
+				// if (smiGrp<0) smiGrp=0;
+                command[0].group=atoi(tokenValue);
+				command[0].group &=0xffff;
+				if (command[0].group<0) command[0].group=0;
 			}
 			// printf("\n4\n\n");
 		// } else {
 		// 	syslog(LOG_NOTICE, "NOTICE: no token found");
 		}
 	}
-	syslog(LOG_DEBUG, "DEBUG: \033[36m %s:%d ID:%02d GR:%02d CM:%02d\033[1m\033[0m",remoteIP, remotePort ,smiId,smiGrp,smiCmd);
+	syslog(LOG_INFO, "INFO: >\033[36m%s:%d ID:%02d GR:%02d CM:%02d\033[1m\033[0m",remoteIP, remotePort ,smiId,smiGrp,smiCmd);
 	// printf("\n\033[1m%6d.%03d SMI: ",loop/2000,(loop/2)%1000);
 	// fflush(stdout);
 	return EXIT_SUCCESS;

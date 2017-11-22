@@ -29,5 +29,11 @@ typedef struct {
     int automatic;
 } BUTTON;
 
+typedef struct {
+    int id;
+    int group;
+    int command;
+} COMMAND;
+
 
 #endif /* typesdef.h */
