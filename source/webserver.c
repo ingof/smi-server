@@ -112,7 +112,8 @@ void handleWebserver(int socket) {
     setNonblocking(socket);
     clientAddrLen = sizeof( (struct sockaddr_in *) &clientAddress);
 
-    if ((newSocket = accept(socket, (struct sockaddr_in *) &clientAddress, &clientAddrLen)) < 0) {
+//    if ((newSocket = accept(socket, (struct sockaddr_in *) &clientAddress, &clientAddrLen)) < 0) {
+    if ((newSocket = accept(socket, (struct sockaddr *) &tmpAddr, &tmpLen)) < 0) {
         if (errno == EAGAIN) { // no data available
         } else {
             syslog(LOG_NOTICE, "NOTICE: webserver accept %d / (%s)", newSocket, inet_ntoa(clientAddress.sin_addr));
