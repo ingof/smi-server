@@ -43,16 +43,20 @@
 
 // #include <unistd.h>			/* getpwd() */
 
+// char serialSmi0[40];
 // char serialSmi1[40];
 // char serialSmi2[40];
-// char serialSmi3[40];
-// char serialSwb[40];
+// char serialSwb0[40];
+// int fd_serialSMI0;
+// int fd_serialSMI1;
+// int fd_serialSMI2;
+// int fd_serialSWB0;
 
 DRIVE drive[16];
 BUTTON button[32];
 COMMAND command[1];
 int tcpControl=8088;
-char serialSmi[MAX_SMI_PORTS][40];
+char serialSMI[MAX_SMI_PORTS][40];
 char serialSWB[MAX_SWB_PORTS][40];
 int fdSMI[MAX_SMI_PORTS];
 int fdSWB[MAX_SWB_PORTS];
