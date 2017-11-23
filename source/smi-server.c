@@ -54,7 +54,7 @@ COMMAND command[1];
 int tcpControl=8088;
 char serialSmi[MAX_SMI_PORTS][40];
 char serialSWB[MAX_SWB_PORTS][40];
-int fdSMI[MAX_SMI_PORTS]
+int fdSMI[MAX_SMI_PORTS];
 int fdSWB[MAX_SWB_PORTS];
 
 
