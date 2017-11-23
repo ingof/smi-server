@@ -106,16 +106,16 @@ int setInterface(char* name, char* value) {
     // TODO combine smi interface
     if (strncmp(name, "smi:0", SECT_MAX_CHAR) == 0) {
         // strncpy(serialSmi1, value, 29);
-        strncpy(serialSMI[0], value, 29);
+        strncpy(serialSMI[0][0], value, 29);
         syslog(LOG_DEBUG, "DEBUG: %3d: interface.%s = \'%s\'", lineCnt, name, value );
     } else if (strncmp(name, "smi:1", SECT_MAX_CHAR) == 0) {
-        strncpy(serialSMI[1], value, 29);
+        strncpy(serialSMI[1][0], value, 29);
         syslog(LOG_DEBUG, "DEBUG: %3d: interface.%s = \'%s\'", lineCnt, name, value );
     } else if (strncmp(name, "smi:2", SECT_MAX_CHAR) == 0) {
-        strncpy(serialSMI[2], value, 29);
+        strncpy(serialSMI[2][0], value, 29);
         syslog(LOG_DEBUG, "DEBUG: %3d: interface.%s = \'%s\'", lineCnt, name, value );
     } else if (strncmp(name, "swb:0", SECT_MAX_CHAR) == 0) {
-        strncpy(serialSWB[0], value, 29);
+        strncpy(serialSWB[0][0], value, 29);
         syslog(LOG_DEBUG, "DEBUG: %3d: interface.%s = \'%s\'", lineCnt, name, value );
     } else {
         syslog(LOG_NOTICE, "NOTICE: %3d: unknown interface type: \'%s\'", lineCnt, name );
