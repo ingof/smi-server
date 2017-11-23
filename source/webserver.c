@@ -11,9 +11,9 @@
 #include <sys/time.h>		/* ?? */
 #include <linux/serial.h>	/* custom divisor */
 
-#include "typesdef.h"	/* own funcions */
+#include "typesdef.h"       /* type definitions and include of global configuration */
 #include "webserver.h"
-#include "smi-server.h"	/* own funcions */
+#include "smi-server.h"	    /* own funcions */
 #include "ownfunctions.h"
 
 /* web server */
@@ -28,10 +28,6 @@
 //char* remoteIp="";
 char remoteIP[INET6_ADDRSTRLEN];
 int remotePort;
-
-// int smiCmd=0;
-// int smiId=0;
-// int smiGrp=0;
 
 // TODO use syslog for logs
 
@@ -94,12 +90,9 @@ void handleWebserver(int socket) {
 	int bufSize = 1024;
 	struct sockaddr_in clientAddress;
 	int tmpListen;
-    // char* remoteIp;
     int loop;
 
 
-    //char remoteIP[INET6_ADDRSTRLEN];
-    //int clientPort;
     struct sockaddr_storage tmpAddr;
     socklen_t tmpLen;
     tmpLen = sizeof(tmpAddr);
@@ -198,17 +191,6 @@ int getPostData(unsigned char *buffer, int size, int count) {
 	/* find start of header */
 	postStart = strstr((char*) buffer,word)+6;
 
-	/* remove "end of header" marker */
-	// token=strsep(&postStart,"\n");
-	// token=strsep(&postStart,"\n");
-	// printf("\nTOKENS:");
-	// printf("Size: (%d) PostStart:{%s}\n",size,&postStart[0]);
-
-	/* clear old values */
-	smiCmd=NULL;
-	smiId=NULL;
-	smiGrp=NULL;
-
     /* clear old values */
     command[0].id = -1;
     command[0].group = -1;
@@ -218,49 +200,28 @@ int getPostData(unsigned char *buffer, int size, int count) {
 	while ((token=strsep(&postStart,"&?")) != NULL) {
 		tokenName=strsep(&token,"=");
 		tokenValue=strsep(&token,"=");
-		// printf("Parameter \"%s\" is \"%s\"\n",tokenName,tokenValue);
-		// printf(".");
 		if ((tokenName != NULL) && (tokenValue != NULL)) {
 		// if ((tokenName != "") && (tokenValue != "")) {
-			// printf("\n1");
-			if (strcmp(tokenName,"cmd")==0) {
-                // // printf(".");
-				// smiCmd=atoi(tokenValue);
-				// // printf(".");
-				// if (smiCmd>16) smiCmd=16;
-				// // printf(".");
-				// if (smiCmd<0) smiCmd=0;
-				// // printf(".");
+			if (strcmp(tokenName,"cmd") == 0) {
 				command[0].command=atoi(tokenValue);
-				if (command[0].command>16) command[0].command=16;
-				if (command[0].command<0) command[0].command=0;
+				if (command[0].command > 16) command[0].command = 16;
+				if (command[0].command < 0) command[0].command = 0;
 			}
-			// printf("\n2");
-			if (strcmp(tokenName,"id")==0) {
-                // smiId=atoi(tokenValue);
-				// if (smiId>16) smiId=16;
-				// if (smiId<0) smiId=0;
+			if (strcmp(tokenName,"id") == 0) {
                 command[0].id=atoi(tokenValue);
-				if (command[0].id>16) command[0].id=16;
-				if (command[0].id<0) command[0].id=0;
+				if (command[0].id > 16) command[0].id = 16;
+				if (command[0].id < 0) command[0].id = 0;
 			}
-			// printf("\n3");
 			if (strcmp(tokenName,"grp")==0) {
-                // smiGrp=atoi(tokenValue);
-				// smiGrp &=0xffff;
-				// if (smiGrp<0) smiGrp=0;
                 command[0].group=atoi(tokenValue);
-				command[0].group &=0xffff;
+				command[0].group &=0x7fff;
 				if (command[0].group<0) command[0].group=0;
 			}
-			// printf("\n4\n\n");
 		// } else {
 		// 	syslog(LOG_NOTICE, "NOTICE: no token found");
 		}
 	}
-	syslog(LOG_INFO, "INFO: >\033[36m%s:%d ID:%02d GR:%02d CM:%02d\033[1m\033[0m",remoteIP, remotePort ,smiId,smiGrp,smiCmd);
-	// printf("\n\033[1m%6d.%03d SMI: ",loop/2000,(loop/2)%1000);
-	// fflush(stdout);
+	syslog(LOG_INFO, "INFO: >\033[36m%s:%d ID:%02d GR:%02d CM:%02d\033[1m\033[0m",remoteIP, remotePort ,command[0].id,command[0].group,command[0].command);
 	return EXIT_SUCCESS;
 }
 

@@ -27,29 +27,36 @@
 #include <sys/ioctl.h>
 
 
-#include "typesdef.h"		/* type definitions */
+#include "typesdef.h"		/* type definitions and include of global configuration */
 #include "webserver.h"
 #include "parseconf.h"		/* config parser */
+#include "ownfunctions.h"
+#include "command.h"
 #include "swb-serial.h"		/* swb-bus functions */
 #include "smi-serial.h"		/* swb-bus functions */
 #include "smi-server.h"		/* own funcions */
-#include "ownfunctions.h"
 
-#include "ownfunctions.c"
-#include "parseconf.c"
 #include "webserver.c"
-
+#include "parseconf.c"
+#include "ownfunctions.c"
+#include "command.c"
 
 // #include <unistd.h>			/* getpwd() */
+
+// char serialSmi1[40];
+// char serialSmi2[40];
+// char serialSmi3[40];
+// char serialSwb[40];
 
 DRIVE drive[16];
 BUTTON button[32];
 COMMAND command[1];
 int tcpControl=8088;
-char serialSmi1[40];
-char serialSmi2[40];
-char serialSmi3[40];
-char serialSwb[40];
+char serialSmi[MAX_SMI_PORTS][40];
+char serialSWB[MAX_SWB_PORTS][40];
+int fdSMI[MAX_SMI_PORTS]
+int fdSWB[MAX_SWB_PORTS];
+
 
 
 
@@ -120,6 +127,9 @@ int main(int argc, char *argv[]) {
 
 	/* Do some task here ... */
 	mySocket=initWebserver(tcpControl);
+	command[0].id = -1;
+	command[0].group = -1;
+	command[0].command = -1;
 
 	/* endless-loop */
 	int loop;
@@ -127,12 +137,11 @@ int main(int argc, char *argv[]) {
 		if (loop>=0x80000000) {
 			loop=0;
 		}
-		command[0].id = -1;
-		command[0].group = -1;
-		command[0].command = -1;
 		handleWebserver(mySocket);
 		if ((command[0].id != -1) || (command[0].group != -1) || (command[0].command != -1)) {
-			syslog(LOG_INFO, "INFO: ID=%2d Group=%2d Command=%2d ", command[0].id, command[0].group, command[0].command);
+			syslog(LOG_DEBUG, "DEBUG: ID=%02d Group=%02d Command=%1d ", command[0].id, command[0].group, command[0].command);
+			// create thread to handle this and wait for success
+			handleCommand(command[0]);
 		}
 
 		/* wait 0,5ms */

@@ -4,7 +4,7 @@
 #include <sys/ioctl.h>		/* ioctl() */
 #include <linux/serial.h>	/* custom divisor */
 
-#include "typesdef.h"		/* own type definitions */
+#include "typesdef.h"		/* type definitions and include of global configuration */
 #include "swb-serial.h"		/* own functions */
 
 /* creates SWB crc16 */

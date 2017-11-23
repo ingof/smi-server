@@ -4,7 +4,7 @@
 #include <string.h>
 
 #include "parseconf.h"
-#include "typesdef.h"       /* type definitions */
+#include "typesdef.h"           /* type definitions and include of global configuration */
 
 
 // char itoh(int integer) {
