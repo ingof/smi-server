@@ -7,6 +7,8 @@
 #define FALSE 0
 #define NO 0
 
+#include "configuration.h"	/* global configuration headder */
+
 typedef unsigned char uint8_t;
 typedef unsigned int  unint16_t;
 
@@ -28,6 +30,12 @@ typedef struct {
     unsigned int addr;
     int automatic;
 } BUTTON;
+
+typedef struct {
+    int id;
+    int group;
+    int command;
+} COMMAND;
 
 
 #endif /* typesdef.h */

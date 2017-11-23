@@ -2,7 +2,7 @@
 #ifndef SWB_SERIAL_H
 #define SWB_SERIAL_H
 
-#include "typesdef.h"
+#include "typesdef.h"           /* type definitions and include of global configuration */
 
 /* print buffer to stdio */
 void printSwbBuffer(unsigned char *buffer, int size);

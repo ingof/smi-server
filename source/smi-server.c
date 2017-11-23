@@ -1,52 +1,74 @@
 /* smi-server */
-//#include <stdio.h>		/* Standard input/output definitions */
-//#include <string.h>		/* String function definitions */
-//#include <unistd.h>		/* UNIX standard function definitions */
-//#include <fcntl.h>		/* File control definitions */
-//#include <errno.h>		/* Error number definitions */
-//#include <termios.h>		/* POSIX terminal control definitions */
-//#include <stdlib.h>		/* converting functions */
-//#include <sys/ioctl.h>	/* ioctl() */
-//#include <sys/types.h>	/* ?? */
-//#include <sys/stat.h>		/* ?? */
-//#include <sys/time.h>		/* ?? */
-//#include <linux/serial.h>	/* custom divisor */
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <stdio.h>
+// #include <string.h>		/* String function definitions */
+// #include <unistd.h>		/* UNIX standard function definitions */
+// #include <fcntl.h>		/* File control definitions */
+// #include <errno.h>		/* Error number definitions */
+// #include <termios.h>		/* POSIX terminal control definitions */
+// #include <stdlib.h>		/* converting functions */
+// #include <sys/ioctl.h>	/* ioctl() */
+// #include <sys/types.h>	/* ?? */
+// #include <sys/stat.h>		/* ?? */
+// #include <sys/time.h>		/* ?? */
+// #include <linux/serial.h>	/* custom divisor */
+
 #include <stdlib.h>
 #include <fcntl.h>
 #include <errno.h>
-#include <unistd.h>
-#include <syslog.h>
 #include <string.h>
+#include <netinet/in.h>		/* web server */
+#include <sys/socket.h>		/* web server */
+#include <sys/stat.h>		/* web server */
+#include <sys/types.h>		/* web server */
+#include <unistd.h>			/* web server */
+#include <arpa/inet.h>
+#include <syslog.h>			/* syslog */
+#include <stdio.h>			/* Standard input/output definitions */
+#include <termios.h>
+#include <sys/ioctl.h>
 
-#include "typesdef.h"		/* type definitions */
+
+#include "typesdef.h"		/* type definitions and include of global configuration */
+#include "webserver.h"
 #include "parseconf.h"		/* config parser */
+#include "ownfunctions.h"
+#include "command.h"
 #include "swb-serial.h"		/* swb-bus functions */
 #include "smi-serial.h"		/* swb-bus functions */
 #include "smi-server.h"		/* own funcions */
-#include "parseconf.c"
 
-#include<netinet/in.h>		/* web server */
-#include<sys/socket.h>		/* web server */
-#include<sys/stat.h>		/* web server */
-#include<sys/types.h>		/* web server */
-#include<unistd.h>			/* web server */
-#include <syslog.h>			/* syslog */
-#include <stdio.h>			/* syslog */
-#include <unistd.h>			/* getpwd() */
+#include "webserver.c"
+#include "parseconf.c"
+#include "ownfunctions.c"
+#include "command.c"
+
+// #include <unistd.h>			/* getpwd() */
+
+// char serialSmi0[40];
+// char serialSmi1[40];
+// char serialSmi2[40];
+// char serialSwb0[40];
+// int fd_serialSMI0;
+// int fd_serialSMI1;
+// int fd_serialSMI2;
+// int fd_serialSWB0;
 
 DRIVE drive[16];
 BUTTON button[32];
-int tcpWEB=8088;
-char serialSmi1[40];
-char serialSmi2[40];
-char serialSmi3[40];
-char serialSwb[40];
+COMMAND command[1];
+int tcpControl=8088;
+char serialSMI[MAX_SMI_PORTS][40];
+char serialSWB[MAX_SWB_PORTS][40];
+int fdSMI[MAX_SMI_PORTS];
+int fdSWB[MAX_SWB_PORTS];
+
+
+
 
 int main(int argc, char *argv[]) {
+	int mySocket;
 
+/* damonize */
+{
 	/* my process ID and Session ID */
 	pid_t pid, sid;
 
@@ -89,23 +111,14 @@ int main(int argc, char *argv[]) {
 	close(STDOUT_FILENO);
 	close(STDERR_FILENO);
 	syslog(LOG_DEBUG, "DEBUG: server damonized and start working");
-
+}  /* damonize */
 
 	/* Daemon-specific initialization goes here */
 
 	char puffer[200];
 
-	if(getcwd(puffer,sizeof(puffer)) == NULL) {
-		//    fprintf(stderr, "Fehler bei getcwd ...\n");
-		syslog(LOG_ERR, "ERROR: can not get PWD! [%m]");
-		// return EXIT_FAILURE;
-	} else {
-		syslog(LOG_DEBUG, "DEBUG: the actual working directory: %s", puffer);
-	}
-
 	int tmp;
 	tmp=parseConfFile();
-
 
 	// syslog(LOG_EMERG,   "EMERG  : A panic condition. This is normally broadcast to all users.");
 	// syslog(LOG_ALERT,   "ALERT  : A condition that should be corrected immediately, such as a corrupted system database.");
@@ -116,9 +129,29 @@ int main(int argc, char *argv[]) {
 	// syslog(LOG_INFO,    "INFO   : Informational messages.");
 	// syslog(LOG_DEBUG,   "DEBUG  : Messages that contain information normally of use only when debugging a program.");
 
-
 	/* Do some task here ... */
+	mySocket=initWebserver(tcpControl);
+	command[0].id = -1;
+	command[0].group = -1;
+	command[0].command = -1;
 
+	/* endless-loop */
+	int loop;
+	for (loop=0; ;loop++) {
+		if (loop>=0x80000000) {
+			loop=0;
+		}
+		handleWebserver(mySocket);
+		if ((command[0].id != -1) || (command[0].group != -1) || (command[0].command != -1)) {
+			syslog(LOG_DEBUG, "DEBUG: ID=%02d Group=%02d Command=%1d ", command[0].id, command[0].group, command[0].command);
+			// create thread to handle this and wait for success
+			handleCommand();
+		}
+
+		/* wait 0,5ms */
+		usleep(500);
+	}
+	closeWebserver(mySocket);
 
 	syslog(LOG_DEBUG, "DEBUG: SMI-Server closing");
 	closelog();

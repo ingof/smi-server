@@ -84,7 +84,7 @@ postinst ()
 
     ### activate new configuration files
     /usr/syno/sbin/synopkghelper update smi-server port-config
-    synoservice -restart syslog-ng
+    sudo synoservice -restart syslog-ng
 
     exit 0
 }
