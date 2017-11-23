@@ -7,6 +7,6 @@ int fdSMI[MAX_SMI_PORTS];
 int fdSWB[MAX_SWB_PORTS];
 
 /* functions */
-int handleCommand(COMMAND command);
+int handleCommand(void);
 
 #endif /* command.h */

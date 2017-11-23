@@ -141,7 +141,7 @@ int main(int argc, char *argv[]) {
 		if ((command[0].id != -1) || (command[0].group != -1) || (command[0].command != -1)) {
 			syslog(LOG_DEBUG, "DEBUG: ID=%02d Group=%02d Command=%1d ", command[0].id, command[0].group, command[0].command);
 			// create thread to handle this and wait for success
-			handleCommand(command[0]);
+			handleCommand();
 		}
 
 		/* wait 0,5ms */

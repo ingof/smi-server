@@ -10,7 +10,7 @@
 #include "swb-serial.h"		   /* swb-bus functions */
 #include "smi-serial.h"		   /* swb-bus functions */
 
-int handleCommand(COMMAND command) {
+int handleCommand(void) {
 
 
     // clear command-buffer
