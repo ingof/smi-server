@@ -5,6 +5,7 @@
 
 #include "parseconf.h"
 #include "typesdef.h"          /* type definitions and include of global configuration */
+#include "command.h"
 
 #include "swb-serial.h"		   /* swb-bus functions */
 #include "smi-serial.h"		   /* swb-bus functions */
