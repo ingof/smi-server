@@ -1,7 +1,7 @@
 {
 	".url"
 	{
-		"net.thefischer.smi-server":
+		"SYNO.SDS.SMI.smi-server":
 			"type": "url",
 			"allUsers": true,
 			"title": "SMI-Server",

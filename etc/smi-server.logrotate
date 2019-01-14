@@ -1,0 +1,10 @@
+/var/log/smi-server.log /var/log/smi-server_error.log {
+    rotate 9
+    daily
+    nocompress
+    missingok
+    sharedscripts
+    postrotate
+        /usr/syno/sbin/synoservice --reload syslog-ng || true
+    endscript
+}

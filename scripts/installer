@@ -10,7 +10,14 @@ RUNAS="root"
 
 preinst ()
 {
-    echo "$(date) $line PREINST()" >> $SYNOPKG_PKGDEST_VOL/public/InstallLog.txt
+    # echo "$(date) $line PREINST()" >> $SYNOPKG_PKGDEST_VOL/public/InstallLog.txt
+    echo "$(date) $line PREINST()" >> /volume1/public/InstallLog.txt
+    exit 0
+}
+preuninst ()
+{
+    echo "$(date) $line PREUNINST()" >> $SYNOPKG_PKGDEST_VOL/public/InstallLog.txt
+
     exit 0
 }
 
@@ -30,6 +37,7 @@ postinst ()
     #### copy paket configuration files
     cp $SYNOPKG_PKGDEST/etc/smi-server.sc /usr/local/etc/services.d/smi-server.sc
     cp $SYNOPKG_PKGDEST/etc/smi-server.conf.patterndb /usr/local/etc/syslog-ng/patterndb.d/smi-server.conf
+    cp $SYNOPKG_PKGDEST/etc/smi-server.logrotate /usr/local/etc/logrotate.d/smi-server
 
     ### copy server configuration
 
@@ -38,7 +46,7 @@ postinst ()
 #    check_return=$?
 #    if [ $check_return -ne 0 ]; then
 #        echo "$(date) $line Share does not exist. ->> creating share now. (code: $check_return)" >> /volume1/public/InstallLog.txt
-        synoshare --add "SMI" "SMI-Server shared folder" "$SYNOPKG_PKGDEST_VOL/SMI" "" "root, admin" "" 1 "" >> /volume1/public/InstallLog.txt
+        synoshare --add "SMI" "SMI-Server shared folder" "$SYNOPKG_PKGDEST_VOL/SmartHome/SMI" "" "root, admin" "" 1 "" >> /volume1/public/InstallLog.txt
 #        create_return=$?
 #        if [ $create_return -eq 0 ]; then
 #            echo "$(date) $line Share successfull created! (code: $check_return|$create_return)" >> /volume1/public/InstallLog.txt
@@ -51,8 +59,8 @@ postinst ()
 #
 #    fi
 
-    sudo ln -sf $SYNOPKG_PKGDEST_VOL/SMI/ $SYNOPKG_PKGDEST/share
-    cp $SYNOPKG_PKGDEST/etc/smi-server.conf $SYNOPKG_PKGDEST_VOL/SMI/smi-server.conf.template
+    sudo ln -sf $SYNOPKG_PKGDEST_VOL/SmartHome/SMI/ $SYNOPKG_PKGDEST/share
+    cp $SYNOPKG_PKGDEST/etc/smi-server.conf $SYNOPKG_PKGDEST_VOL/SmartHome/SMI/smi-server.conf.template
 
     ### create poor config file
     echo ${pkgwizard_smi_server_port} >> /var/packages/smi-server/port      # config file ?!
@@ -63,8 +71,8 @@ postinst ()
 
     ### add syslog config to resource file
     echo -n ",\"syslog-config\":{" >> /var/packages/smi-server/conf/resource
-    echo -n "\"patterndb-relpath\":\"etc/smi-server.conf\"}" >> /var/packages/smi-server/conf/resource
-
+    echo -n "\"patterndb-relpath\":\"etc/smi-server.conf\"," >> /var/packages/smi-server/conf/resource
+    echo -n "\"logrotate-relpath\":\"etc/logrotate.d/smi-server\"}" >> /var/packages/smi-server/conf/resource
     ### add data-share
     echo -n ",\"data-share\":{" >> /var/packages/smi-server/conf/resource
     echo -n "\"shares\":[{" >> /var/packages/smi-server/conf/resource
@@ -75,8 +83,8 @@ postinst ()
     echo -n "}]" >> /var/packages/smi-server/conf/resource
     echo -n "}" >> /var/packages/smi-server/conf/resource
 
-    # echo "$SYNOPKG_PKGDEST_VOL/SMI" >> /var/packages/smi-server/conf/share
-    # echo "${SYNOPKG_PKGDEST_VOL}/SMI" >> /var/packages/smi-server/conf/share
+    # echo "$SYNOPKG_PKGDEST_VOL/SmartHome/SMI" >> /var/packages/smi-server/conf/share
+    # echo "${SYNOPKG_PKGDEST_VOL}/SmartHome/SMI" >> /var/packages/smi-server/conf/share
     # echo $SYNOPKG_PKGDEST_VOL >> /var/packages/smi-server/conf/share
     # echo ${SYNOPKG_PKGDEST_VOL} >> /var/packages/smi-server/conf/share
     # echo "--------------------------------" >> /var/packages/smi-server/conf/share
@@ -91,14 +99,14 @@ postinst ()
 
 preuninst ()
 {
-    echo "$(date) $line PREUNINST()" >> /volume1/public/InstallLog.txt
+    echo "$(date) $line PREUNINST()" >> $SYNOPKG_PKGDEST_VOL/public/InstallLog.txt
 
     exit 0
 }
 
 postuninst ()
 {
-    echo "$(date) $line POSTUNINST()" >> /volume1/public/InstallLog.txt
+    echo "$(date) $line POSTUNINST()" >> $SYNOPKG_PKGDEST_VOL/public/InstallLog.txt
     rm -f /usr/bin/smi-server
     rm -f /usr/local/etc/services.d/smi-server.sc
 
@@ -107,12 +115,24 @@ postuninst ()
 
 preupgrade ()
 {
-    echo "$(date) $line PREUPGRADE()" >> /volume1/public/InstallLog.txt
+    echo "$(date) $line PREUPGRADE()" >> $SYNOPKG_PKGDEST_VOL/public/InstallLog.txt
     exit 0
 }
 
 postupgrade ()
 {
     echo "$(date) $line POSTUPGRADE()" >> /volume1/public/InstallLog.txt
+    exit 0
+}
+
+prestart ()
+{
+    echo "$(date) $line PRESTART()" >> /volume1/public/InstallLog.txt
+    exit 0
+}
+
+prestop ()
+{
+    echo "$(date) $line PRESTOP()" >> /volume1/public/InstallLog.txt
     exit 0
 }

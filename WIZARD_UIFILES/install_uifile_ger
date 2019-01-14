@@ -3,13 +3,22 @@
 	"items":
 	[{
 		"type": "textfield",
-		"defaultValue": "8086",
-		"emptyText": "webserver port",
-		"desc": "Bitte den Port des Webserver für den SMI-Server auswählen.",
+		"desc": "Bitte den HTTP-Port für den SMI-Server auswählen.",
 		"subitems":
 		[{
 			"key": "pkgwizard_smi_server_port",
-			"desc": "Webserver port"
+			"desc": "Webserver port",
+			"defaultValue": "8088",
+			"emptyText": "8088",
+			"validator": {
+				"allowBlank": false,
+				"minLength": 4,
+				"maxLength": 5,
+				"regex": {
+					"expr": "/[0-9]{4,5}/i",
+					"errorText": "Fehler: HTTP Port muss aus 4 bis 5 Ziffern bestehen."
+				}
+			}
 		}]
 	}]
 }]

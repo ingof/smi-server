@@ -1,9 +1,9 @@
 [{
-	"step_title": "Uninstall SMI-Monitor",
+	"step_title": "Uninstall SMI-Server",
 	"items":
 	[{
 		"type": "multiselect",
-		"desc": "Do you want to remove SMI-monitor's configuration folder?",
+		"desc": "Do you want to remove SMI-server's configuration folder?",
 		"subitems":
 		[{
 			"key": "pkgwizard_remove_config",

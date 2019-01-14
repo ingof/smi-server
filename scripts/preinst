@@ -10,10 +10,10 @@ PATH=/bin:/usr/bin
 # Create the shared folder with SMI-Config
 
 #synoshare {--add} sharename share_desc share_path user_list_na user_list_rw user_list_ro share_browsable adv_privilege
-#synoshare --add "SMI" "Freigabe des SMI-Server" "/volume1/SMI" "" "root, admin" "" 1 ""
+#synoshare --add "SMI" "Freigabe des SMI-Server" "/volume1/SmartHome/SMI" "" "root, admin" "" 1 ""
 # mkdir -p /var/packages/smi-server/conf/
-# echo "$SYNOPKG_PKGDEST_VOL/SMI" >> /var/packages/smi-server/conf/share
-# echo "${SYNOPKG_PKGDEST_VOL}/SMI" >> /var/packages/smi-server/conf/share
+# echo "$SYNOPKG_PKGDEST_VOL/SmartHome/SMI" >> /var/packages/smi-server/conf/share
+# echo "${SYNOPKG_PKGDEST_VOL}/SmartHome/SMI" >> /var/packages/smi-server/conf/share
 # echo $SYNOPKG_PKGDEST_VOL >> /var/packages/smi-server/conf/share
 # echo ${SYNOPKG_PKGDEST_VOL} >> /var/packages/smi-server/conf/share
 # sudo /usr/syno/sbin/synoshare --add "SmiPre" "SMI-Server shared folder" "/volume1/SmiPre" "" "admin" "" 1 ""

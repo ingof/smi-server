@@ -3,7 +3,7 @@
 	"items":
 	[{
 		"type": "multiselect",
-		"desc": "Möchten sie den Konfigurationsordner des SMI-monitor's entfernen?",
+		"desc": "Möchten sie den Konfigurationsordner des SMI-Servers's entfernen?",
 		"subitems":
 		[{
 			"key": "pkgwizard_remove_config",

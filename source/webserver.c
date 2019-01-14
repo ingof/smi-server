@@ -17,12 +17,12 @@
 #include "ownfunctions.h"
 
 /* web server */
-
 #include <netinet/in.h>
+
+/* web client */
 #include <sys/socket.h>
-#include <sys/stat.h>
-#include <sys/types.h>
-#include <unistd.h>
+#include <netdb.h>
+
 
 // socklen_t clientAddrLen;
 //char* remoteIp="";
@@ -56,18 +56,22 @@ int setNonblocking(int fd) {
 // int tmpListen;
 
 
-void closeWebserver(int socket) {
-    close(socket);
+int closeWebserver(int socket) {
+    return close(socket);
 }
 
 int initWebserver(int port) {
     /* webserver */
+    //TODO: fix webserver init. add debug-messages via syslog
+
     int webSocket;
     int tmpBind;
     struct sockaddr_in address;
 
-    if ((webSocket = socket(AF_INET, SOCK_STREAM, 0)) > 0) {
-        syslog(LOG_DEBUG, "DEBUG: The socket was created:\n");
+    if ((webSocket = socket(AF_INET, SOCK_STREAM, 0)) >= 0) {
+        syslog(LOG_DEBUG, "DEBUG: The socket was created:");
+    } else {
+        syslog(LOG_WARNING, "WARNING: socket creation error (%d)", errno);
     }
 
     // TODO: allow only one or two ip-addresses
@@ -79,32 +83,41 @@ int initWebserver(int port) {
     if (tmpBind== 0) {
         syslog(LOG_DEBUG, "DEBUG: Binding Socket %d\n",tmpBind);
     } else {
-        syslog(LOG_NOTICE, "NOTICE: webserver bind");
+        syslog(LOG_WARNING, "WARNING: Can not bind webserver (bind:%d)", tmpBind);
+        syslog(LOG_DEBUG, "DEBUG: Can not bind webserver (bind:%d)", tmpBind);
+        //TODO: Return EXIT_FAILURE instead of websocket at binding error????
+        // close socket on error?? SO_EXCLUSIVEADDRUSE in bind???
     }
+    int tmpListen;
+
+    tmpListen = listen(webSocket, 10);
+    if (tmpListen < 0) {
+        syslog(LOG_NOTICE, "NOTICE: webserver listen: %d", tmpListen);
+        exit(1);
+    }
+
+    // /* nake socket reusable */
+    // tmpListen=setsockopt(webSocket, SOL_SOCKET, SO_REUSEADDR,);
+    int optval = 1;
+    tmpListen = setsockopt(webSocket, SOL_SOCKET, SO_REUSEADDR, &optval, sizeof(optval));
+
+    setNonblocking(webSocket);
+
     return webSocket;
 }
 
 void handleWebserver(int socket) {
     int newSocket;
     socklen_t clientAddrLen;
-	int bufSize = 1024;
-	struct sockaddr_in clientAddress;
-	int tmpListen;
+	  int bufSize = 1024;
+	  struct sockaddr_in clientAddress;
     int loop;
-
 
     struct sockaddr_storage tmpAddr;
     socklen_t tmpLen;
     tmpLen = sizeof(tmpAddr);
 
 
-    tmpListen=listen(socket, 10);
-    if (tmpListen < 0) {
-        syslog(LOG_NOTICE, "NOTICE: webserver listen: %d", tmpListen);
-        exit(1);
-    }
-
-    setNonblocking(socket);
     clientAddrLen = sizeof( (struct sockaddr_in *) &clientAddress);
 
 //    if ((newSocket = accept(socket, (struct sockaddr_in *) &clientAddress, &clientAddrLen)) < 0) {
@@ -146,18 +159,56 @@ void handleWebserver(int socket) {
         }
         free(bufferHTTP);
 
-        /* send response */
-        write(newSocket, "HTTP/1.1 200 OK\r\n", 17);
-        write(newSocket, "Content-length: 111\r\n", 21);
-        write(newSocket, "Content-Type: text/html\r\n\r\n", 27);
-        write(newSocket, "<html>\r\n",8);
-        write(newSocket, " <body>\r\n",9);
-        write(newSocket, "  <h1>Found</h1>\r\n",18);
-        write(newSocket, "  <p>The requested URL was found on this server ;-)</p>\r\n",57);
-        write(newSocket, " </body>\r\n",10);
-        write(newSocket, "</html>\r\n",9);
+        // TODO: move string generation to smi-server.c or smi-serial.c ???!!!
 
-        /* TODO: in PHP post-data will be send only after
+        char ctrlBuff[MAX_DRIVES][700];
+        char ctrlTmpStr[80];
+        int ctrlLength = 148;
+        int ctrlCount = 0;
+        for (loop = 0; loop < MAX_DRIVES; loop ++) {
+          if ((drive[loop].id != -1) && (drive[loop].name[0] != 0)) {
+            strcpy(ctrlBuff[ctrlCount], "<form action=\"http://192.168.1.211:8088/SmiControl\" method=\"post\">\r\n");
+            sprintf(ctrlTmpStr, "<input type=\"hidden\" name=\"id\" value=\"%d\">\r\n", loop);
+            strcat(ctrlBuff[ctrlCount], ctrlTmpStr);
+            // strcat(ctrlBuff[ctrlCount], "<input type=\"hidden\" name=\"grp\" value=\"-1\">\r\n");
+            strcat(ctrlBuff[ctrlCount], "<button type=\"submit\" name=\"cmd\" value=\"1\">&uArr;</button>\r\n");
+            strcat(ctrlBuff[ctrlCount], "<button type=\"submit\" name=\"cmd\" value=\"0\">&#9632;</button>\r\n");
+            strcat(ctrlBuff[ctrlCount], "<button type=\"submit\" name=\"cmd\" value=\"2\">&dArr;</button>\r\n");
+            strcat(ctrlBuff[ctrlCount], "<button type=\"submit\" name=\"cmd\" value=\"3\">&#x1F31E;</button>\r\n");
+            strcat(ctrlBuff[ctrlCount], "<button type=\"submit\" name=\"cmd\" value=\"4\">&#x1F453;</button>\r\n");
+            sprintf(ctrlTmpStr, "&nbsp;%3d%% &nbsp; %s\r\n", (int)(( drive[loop].actualPos / 655.35)+0.5), drive[loop].name);
+            strcat(ctrlBuff[ctrlCount], ctrlTmpStr);
+            strcat(ctrlBuff[ctrlCount], "</form>\r\n");
+            ctrlLength += strlen(ctrlBuff[ctrlCount]);
+            ctrlCount ++;
+          }
+        }
+        int writtenBytes=0;
+        /* send response */
+        writtenBytes += (write(newSocket, "HTTP/1.1 200 OK\r\n", 17));
+        char tmpStr[30];
+        sprintf(tmpStr, "Content-length: %d\r\n", ctrlLength); // 22
+        writtenBytes += (write(newSocket, tmpStr, (strlen(tmpStr))));
+        writtenBytes += (write(newSocket, "Content-Type: text/html\r\n\r\n", 27));
+        /* end of Header, start of html data */
+        writtenBytes += (write(newSocket, "<!DOCTYPE html>\r\n",17));
+        writtenBytes += (write(newSocket, "<html lang=\"de\">\r\n", 18));
+        writtenBytes += (write(newSocket, "<head><meta charset=\"utf-8\"/>", 29));
+        writtenBytes += (write(newSocket, "<title>SMI-Server</title></head>\r\n", 34));
+        writtenBytes += (write(newSocket, " <body>\r\n",9));
+        writtenBytes += (write(newSocket, "  <h1>SMI Control</h1>\r\n",22));
+        for (loop = 0; loop < ctrlCount; loop ++) {
+          writtenBytes += (write(newSocket, ctrlBuff[loop], (strlen(ctrlBuff[loop]))));
+        }
+
+        writtenBytes += (write(newSocket, " </body>\r\n",10));
+        writtenBytes += (write(newSocket, "</html>\r\n",9));
+
+        // syslog(LOG_DEBUG, "WEBSERVER: Bytes: %d - written: %d = header: %d", ctrlLength, writtenBytes, (ctrlLength - writtenBytes) );
+
+
+
+/* TODO: in PHP post-data will be send only after
         receiving the 200-OK-Header. Add or use the second buffer only!
         */
         // /* receive posted data */
@@ -172,15 +223,18 @@ void handleWebserver(int socket) {
 }
 
 int getPostData(unsigned char *buffer, int size, int count) {
-    int smiCmd;
-    int smiId;
-    int smiGrp;
-    char *token;
+  int smiCmd;
+  int smiId;
+  int smiGrp;
+  struct timeval tmpTime;
+  char *token;
 	char *tokenName;
 	char *tokenValue;
 	// char *word="\r\n\r\n";
-	char *word="GET";
-    char *word0="SmiControl";
+  char *word0="SmiControl";
+  char *word="GET";
+  char *word2="POST";
+  char *word3="\r\n\r\n";
 	char *postStart;
 
 	//TODO check header
@@ -188,41 +242,147 @@ int getPostData(unsigned char *buffer, int size, int count) {
     if (strstr((char*) buffer,word0) ==NULL) {
         return EXIT_FAILURE;
     }
-	/* find start of header */
-	postStart = strstr((char*) buffer,word)+6;
 
     /* clear old values */
     command[0].id = -1;
     command[0].group = -1;
     command[0].command = -1;
 
-	/* extract each posted data pair */
-	while ((token=strsep(&postStart,"&?")) != NULL) {
-		tokenName=strsep(&token,"=");
-		tokenValue=strsep(&token,"=");
-		if ((tokenName != NULL) && (tokenValue != NULL)) {
-		// if ((tokenName != "") && (tokenValue != "")) {
-			if (strcmp(tokenName,"cmd") == 0) {
-				command[0].command=atoi(tokenValue);
-				if (command[0].command > 16) command[0].command = 16;
-				if (command[0].command < 0) command[0].command = 0;
-			}
-			if (strcmp(tokenName,"id") == 0) {
-                command[0].id=atoi(tokenValue);
-				if (command[0].id > 16) command[0].id = 16;
-				if (command[0].id < 0) command[0].id = 0;
-			}
-			if (strcmp(tokenName,"grp")==0) {
-                command[0].group=atoi(tokenValue);
-				command[0].group &=0x7fff;
-				if (command[0].group<0) command[0].group=0;
-			}
-		// } else {
-		// 	syslog(LOG_NOTICE, "NOTICE: no token found");
-		}
-	}
-	syslog(LOG_INFO, "INFO: >\033[36m%s:%d ID:%02d GR:%02d CM:%02d\033[1m\033[0m",remoteIP, remotePort ,command[0].id,command[0].group,command[0].command);
+    // GET request
+    if (strstr((char*) buffer,word)) {
+      /* find start of header */
+      postStart = strstr((char*) buffer,word)+6;
+      token=strsep(&postStart,"?");
+      /* extract first posted data pair */
+      tokenName=strsep(&token,"=");
+      tokenValue=strsep(&token,"=");
+      if ((tokenName != NULL) && (tokenValue != NULL)) {
+        extractData(tokenName, tokenValue);
+      }
+    }
+
+    // POST request
+    if (strstr((char*) buffer,word2)) {
+      /* find start of Data */
+      // syslog(LOG_DEBUG, "Token= %s\r\nName=%s\r\nValue=%s", token, tokenName, tokenValue);
+      postStart = strstr((char*) buffer,word3)+2;
+      token=strsep(&postStart,"\n");
+      // syslog(LOG_DEBUG, "Token= %s\r\nName=%s\r\nValue=%s", token, tokenName, tokenValue);
+      /* extract first posted data pair */
+      tokenName=strsep(&token,"=");
+      tokenValue=strsep(&token,"=");
+      // syslog(LOG_DEBUG, "Token= %s", &token);
+      if ((tokenName != NULL) && (tokenValue != NULL)) {
+        // syslog(LOG_DEBUG, " extract P  ID:%02d GR:%02d CM:%02d", command[0].id, command[0].group, command[0].command);
+        extractData(tokenName, tokenValue);
+      }
+    }
+
+    /* extract each posted data pair */
+    while ((token=strsep(&postStart,"&")) != NULL) {
+      tokenName=strsep(&token,"=");
+      tokenValue=strsep(&token,"=");
+      if ((tokenName != NULL) && (tokenValue != NULL)) {
+        extractData(tokenName, tokenValue);
+      }
+    }
+  gettimeofday( &tmpTime, (struct timezone *) 0 );
+  syslog(LOG_INFO, "INFO:  %03d WEB:  <- \e[36m%s:%d ID:%02d GR:%02d CM:%02d\e[1m\e[0m", (tmpTime.tv_usec/1000), remoteIP, remotePort ,command[0].id,command[0].group,command[0].command);
 	return EXIT_SUCCESS;
+}
+
+void extractData(char *name, char *value) {
+  if (strcmp(name,"cmd") == 0) {
+    command[0].command=atoi(value);
+    if (command[0].command > 5) command[0].command = 0;
+    if (command[0].command < 0) command[0].command = 0;
+    // return;
+  }
+  if (strcmp(name,"id") == 0) {
+    command[0].id=atoi(value);
+    if (command[0].id > 31) command[0].id = -1;
+    if (command[0].id < 0) command[0].id = 0;
+    // return;
+  }
+  if (strcmp(name,"grp")==0) {
+    command[0].group=atoi(value);
+    command[0].group &=0x7fff;
+    if (command[0].group<0) command[0].group=0;
+    // return;
+  }
+  // syslog(LOG_DEBUG, " status: ID=%02d GR=%02d CM=%02d", command[0].id,command[0].group,command[0].command);
+}
+
+int sendGetRequest(char * host, int * port, char * url) {
+  // TODO freeze after DEBUG: Error Connecting
+  int responseCode=0;
+  char request[1000];
+  struct timeval tmpTime;
+  struct hostent *server;
+  struct sockaddr_in serveraddr;
+  // TODO: check the replacement of 'bzero' and 'bcopy'
+  int tcpSocket = socket(AF_INET, SOCK_STREAM, 0);
+  if (tcpSocket < 0) {
+    gettimeofday( &tmpTime, (struct timezone *) 0 );
+    syslog(LOG_DEBUG, "DEBUG: %03d Error opening socket\e[0m",(tmpTime.tv_usec/1000));
+    return EXIT_FAILURE;
+  } else {
+    gettimeofday( &tmpTime, (struct timezone *) 0 );
+    syslog(LOG_DEBUG, "DEBUG: %03d Successfully opened socket\e[0m",(tmpTime.tv_usec/1000));
+  }
+  server = gethostbyname(host);
+  if (server == NULL) {
+    gettimeofday( &tmpTime, (struct timezone *) 0 );
+    syslog(LOG_DEBUG, "DEBUG: %03d gethostbyname() failed\e[0m",(tmpTime.tv_usec/1000));
+  } else {
+      unsigned int j = 0;
+      while (server -> h_addr_list[j] != NULL)
+      {
+          gettimeofday( &tmpTime, (struct timezone *) 0 );
+          syslog(LOG_DEBUG, "DEBUG: %03d %s => %s\e[0m",(tmpTime.tv_usec/1000) ,server->h_name , inet_ntoa(*(struct in_addr*)(server -> h_addr_list[j])));
+          j++;
+      }
+  }
+  bzero((char *) &serveraddr, sizeof(serveraddr));
+  serveraddr.sin_family = AF_INET;
+  bcopy((char *)server->h_addr, (char *)&serveraddr.sin_addr.s_addr, server->h_length);
+  serveraddr.sin_port = htons(port);
+  if (connect(tcpSocket, (struct sockaddr *) &serveraddr, sizeof(serveraddr)) < 0) {
+      gettimeofday( &tmpTime, (struct timezone *) 0 );
+      syslog(LOG_DEBUG, "DEBUG: %03d Error Connecting\e[0m",(tmpTime.tv_usec/1000));
+      return EXIT_FAILURE;
+  } else {
+      gettimeofday( &tmpTime, (struct timezone *) 0 );
+      syslog(LOG_DEBUG, "DEBUG: %03d Successfully Connected\e[0m",(tmpTime.tv_usec/1000));
+  }
+  bzero(request, 1000);
+  sprintf(request, "GET %s HTTP/1.1\r\nHost: %s\r\n\r\n", url, host);
+  // syslog(LOG_DEBUG, "DEBUG:\n%s", request);
+  if (send(tcpSocket, request, strlen(request), 0) < 0) {
+      gettimeofday( &tmpTime, (struct timezone *) 0 );
+      syslog(LOG_DEBUG, "DEBUG: %03d Error with send()\e[0m",(tmpTime.tv_usec/1000));
+  } else {
+      gettimeofday( &tmpTime, (struct timezone *) 0 );
+      syslog(LOG_DEBUG, "DEBUG: %03d Successfully sent html fetch request\e[0m",(tmpTime.tv_usec/1000));
+  }
+  bzero(request, 1000);
+  recv(tcpSocket, request, 999, 0);
+  // syslog(LOG_DEBUG, "DEBUG:\n %s", request);
+  char *ptr;
+  ptr= strtok(request, " ");
+  if (strstr(request, "HTTP/1.")) {
+    ptr= strtok(NULL, " ");
+    responseCode=atoi(ptr);
+    gettimeofday( &tmpTime, (struct timezone *) 0 );
+    syslog(LOG_DEBUG, "DEBUG: %03d HTTP-header gefunden\e[0m",(tmpTime.tv_usec/1000));
+  } else {
+    gettimeofday( &tmpTime, (struct timezone *) 0 );
+    syslog(LOG_DEBUG, "DEBUG: %03d kein HTTP-header gefunden\e[0m",(tmpTime.tv_usec/1000));
+  }
+  gettimeofday( &tmpTime, (struct timezone *) 0 );
+  syslog(LOG_DEBUG, "DEBUG: %03d Status=\'%d\'\e[0m",(tmpTime.tv_usec/1000), responseCode);
+  close(tcpSocket);
+  return responseCode;
 }
 
 // next function...
