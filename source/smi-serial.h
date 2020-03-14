@@ -4,6 +4,9 @@
 
 extern DRIVE drive[MAX_DRIVES];
 extern GROUP group[MAX_GROUPS];
+extern char openHABHost[30];
+extern int openHABPort;
+
 
 /* open port to smi-bus */
 int openSmiPort(char *port);
@@ -23,9 +26,15 @@ int handleSMI(int handle, int port);
 void checkSMI(int port);
 
 /* parse smi buffer */
-int parseSMI(unsigned char * buffer, int * length, int port);
+int parseSMI(unsigned char * buffer, int length, int port);
+/* */
+void setDrivePos (int bus, int id, unsigned int pos);
 
 /* send smi command to one drive */
 int sendSmi(int port, int id, int cmd);
+int sendSmiGetPos(int port, int id);
+
+/* send smi command to a group of drives */
+int sendSmiGrp(int groupID, int smiCmd);
 
 #endif /* smi-serial.h */

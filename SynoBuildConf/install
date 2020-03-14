@@ -54,7 +54,7 @@ create_spk(){
   ### Copy package ui files
   mkdir -p $ui_dir
   cp -av ui/PACKAGE_ICON*.PNG $PKG_DIR
-  cp -av ui/config $ui_dir/ui/
+  cp -av ui/config $ui_dir
 
   ### Generate INFO file
   ./INFO.sh > INFO

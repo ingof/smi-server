@@ -3,7 +3,7 @@
 source /pkgscripts/include/pkg_util.sh
 
 package="smi-server"
-version="0.1.0"
+version="0.1.0-$(cat /source/smi-server/build)"
 beta="yes"
 os_min_ver=""
 description="An server for the SMI-Bus. It allows to control sun blinds and roller shutter for the Standard-Motor-Interface. "

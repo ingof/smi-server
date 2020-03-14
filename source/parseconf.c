@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+// #include <math.h>
 
 #include "ownfunctions.h"
 #include "parseconf.h"
@@ -28,9 +29,7 @@ int lineCnt;
 
 
 void initData(void) {
-  int i;
-  int j;
-  int k;
+  int i, j, k;
   for (i = 0; i < MAX_DRIVES; i++) {
     drive[i].bus = -1;
     drive[i].id = -1;
@@ -81,6 +80,7 @@ int parseConfFile(void) {
   }
   // syslog(LOG_DEBUG, "DEBUG: line: |%s|",line);
   fclose(fp);
+  createGroupMask();
   return 0;
 }
 
@@ -111,6 +111,44 @@ int parseConfLine(char* line) {
     tmp=setValue(ptr, ptr2);
     return(EXIT_SUCCESS);
   }
+  return(EXIT_SUCCESS);
+}
+
+void displayCreatedGroupMask(void) {
+  int i;
+  for (i = 0; i < MAX_GROUPS; i++) {
+    if (strcmp(group[i].name, "") != 0) {
+      syslog(LOG_DEBUG, "DEBUG: Group%02d SMI0:%04X SMI1:%04X Name:\"%s\" openHAB2:\"%s\" ", i, group[i].smiID[0], group[i].smiID[1], group[i].name, group[i].openHABItem);
+    }
+  }
+}
+
+int createGroupMask(void) {
+  unsigned int i, j, k;
+  // displayGroup();
+  syslog(LOG_DEBUG, "DEBUG: create smi id mask for Groups");
+  for (i = 0; i < MAX_GROUPS; i++) {
+    // only for configured groups
+    if (strcmp(group[i].name, "") != 0) {
+      // check if drive IDs are set
+      for (j = 0; j < MAX_DRIVES / 16; j++) {
+        for (k = 0; k < 16; k++) {
+          // check for aktivated driveID
+          // TODO: check if drive id exists
+          // x = (group[i].driveID[j]);
+          // myPow(2, k, v);
+          // v= 1 << k;
+          if (( ((1 << k) & (group[i].driveID[j])) != 0) && (drive[j * 16 + k].bus >=0)) {
+            // TODO: check if smi bus exists
+            // myPow(2, drive[j * 16 + k].id, v );
+            // v = 1 << (drive[j * 16 + k].id);
+            group[i].smiID[drive[j * 16 + k].bus] |= 1 << (drive[j * 16 + k].id);
+          }
+        }
+      }
+    }
+  }
+  displayCreatedGroupMask();
   return(EXIT_SUCCESS);
 }
 
@@ -256,6 +294,10 @@ int setDrive(char* name, char* value) {
     drive[confSectionNumber].switchAddr.Addr = htoi(value);
     syslog(LOG_DEBUG, "DEBUG: %3d: drive%02d.%s = %04x ", lineCnt, confSectionNumber, tmpName, drive[confSectionNumber].switchAddr.Addr);
   }
+  else if (strncmp(tmpName, "switchAddress2", SECT_MAX_CHAR) == 0) {
+    drive[confSectionNumber].switchAddr2.Addr = htoi(value);
+    syslog(LOG_DEBUG, "DEBUG: %3d: drive%02d.%s = %04x ", lineCnt, confSectionNumber, tmpName, drive[confSectionNumber].switchAddr2.Addr);
+  }
   else if (strncmp(tmpName, "direction", SECT_MAX_CHAR) == 0) {
     drive[confSectionNumber].direction = atoi(value);
     syslog(LOG_DEBUG, "DEBUG: %3d: drive%02d.%s = %s", lineCnt, confSectionNumber, tmpName, value);
@@ -316,23 +358,39 @@ int setGroup(char* name, char* value) {
     strncpy(group[confSectionNumber].openHABItem, value, STRING_MAX_CHAR);
     syslog(LOG_DEBUG, "DEBUG: %3d: group%02d.%s = \'%s\'", lineCnt, confSectionNumber, tmpName, group[confSectionNumber].openHABItem);
   }
-  else if (strncmp(tmpName, "smiID", SECT_MAX_CHAR) == 0) {
-    if (atoi(tmpNumber) >= MAX_SMI_PORTS) {
-      syslog(LOG_NOTICE, "NOTICE: smiPort \'%d\' of \'%s\' is out of range (0..%d)", tmpNumber, tmpName, MAX_SMI_PORTS);
+
+  else if (strncmp(tmpName, "switchAddress", SECT_MAX_CHAR) == 0) {
+    group[confSectionNumber].switchAddr.Addr = htoi(value);
+    syslog(LOG_DEBUG, "DEBUG: %3d: group%02d.%s = %04x ", lineCnt, confSectionNumber, tmpName, group[confSectionNumber].switchAddr.Addr);
+  }
+  else if (strncmp(tmpName, "switchAddress2", SECT_MAX_CHAR) == 0) {
+    group[confSectionNumber].switchAddr2.Addr = htoi(value);
+    syslog(LOG_DEBUG, "DEBUG: %3d: group%02d.%s = %04x ", lineCnt, confSectionNumber, tmpName, group[confSectionNumber].switchAddr2.Addr);
+  }
+
+  // else if (strncmp(tmpName, "smiID", SECT_MAX_CHAR) == 0) {
+  //   if (atoi(tmpNumber) >= MAX_SMI_PORTS) {
+  //     syslog(LOG_NOTICE, "NOTICE: smiPort \'%d\' of \'%s\' is out of range (0..%d)", tmpNumber, tmpName, MAX_SMI_PORTS);
+  //     return(EXIT_FAILURE);
+  //   }
+  //   group[confSectionNumber].smiID[atoi(tmpNumber)] = 0;
+  //   for (i =strlen(value); i > 0; i--) {
+  //     if (value[strlen(value) - i] == 49) {
+  //       group[confSectionNumber].smiID[atoi(tmpNumber)] |= 1 << i - 1;
+  //       syslog(LOG_DEBUG, "DEBUG: Group[%d] SMI[%d] Count:%2d Value:%5d Result:%5d", confSectionNumber, atoi(tmpNumber), i, 1 << i - 1, group[confSectionNumber].smiID[atoi(tmpNumber)]);
+  //     }
+  //   }
+  //   syslog(LOG_DEBUG, "DEBUG: %3d: group%02d.%s:%s = %u", lineCnt, confSectionNumber, tmpName, tmpNumber, group[confSectionNumber].smiID[atoi(tmpNumber)]);
+  // }
+  else if (strncmp(tmpName, "driveID", SECT_MAX_CHAR) == 0) {
+    if (atoi(tmpNumber) >= MAX_DRIVES / 16) {
+      syslog(LOG_NOTICE, "NOTICE: driveID \'%d\' of \'%s\' is out of range (0..%d)", tmpNumber, tmpName, MAX_DRIVES / 16);
       return(EXIT_FAILURE);
     }
-    group[confSectionNumber].smiID[atoi(tmpNumber)]=0;
-    for (i =strlen(value); i>0; i--) {
-      if (value[strlen(value)-i]==49) {
-        group[confSectionNumber].smiID[atoi(tmpNumber)] |= 1<<i-1;
-      }
-    }
-    syslog(LOG_DEBUG, "DEBUG: %3d: group%02d.%s:%s = %u", lineCnt, confSectionNumber, tmpName, tmpNumber, group[confSectionNumber].smiID[atoi(tmpNumber)]);
-  }
-  else if (strncmp(tmpName, "driveID", SECT_MAX_CHAR) == 0) {
-    for (i =strlen(value); i>0; i--) {
-      if (value[strlen(value)-i]==49) {
-        group[confSectionNumber].driveID[atoi(tmpNumber)] |= 1<<i-1;
+    group[confSectionNumber].driveID[atoi(tmpNumber)] = 0;
+    for (i =strlen(value); i > 0; i--) {
+      if (value[strlen(value) - i] == 49) {
+        group[confSectionNumber].driveID[atoi(tmpNumber)] |= 1 << i - 1;
       }
     }
     syslog(LOG_DEBUG, "DEBUG: %3d: group%02d.%s:%s = %u", lineCnt, confSectionNumber, tmpName, tmpNumber, group[confSectionNumber].driveID[atoi(tmpNumber)]);

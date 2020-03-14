@@ -12,7 +12,8 @@ esac
 #${CC} ${CFLAGS} source/smi-server.c -o smi-server
 #all:	 source/swb-serial.c source/smi-serial.c source/webserver.c source/smi-server.c
 ## ${CC} ${CFLAGS} -o smi-server source/swb-serial.c source/smi-serial.c source/smi-server.c
-${CC} ${CFLAGS} -o smi-server source/smi-server.c
+${CC} ${CFLAGS} -o smi-server source/smi-server.c -lm
+echo "${CC} ${CFLAGS} -o smi-server source/smi-server.c -lm"
 
 
 # Or you can use Makefile to genarate executable.

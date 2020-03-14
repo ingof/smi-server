@@ -155,7 +155,7 @@ void handleWebserver(int socket) {
         recv(newSocket, bufferHTTP, bufSize, 0);
         // logBufferAscii(bufferHTTP,bufSize);
         if (getPostData(bufferHTTP,bufSize,loop)!=0) {
-            syslog(LOG_DEBUG, "DEBUG: can not get post-data (%s:%d)", remoteIP, remotePort);
+            syslog(LOG_DEBUG, "DEBUG: does not contain control data (%s:%d)", remoteIP, remotePort);
         }
         free(bufferHTTP);
 
@@ -182,6 +182,25 @@ void handleWebserver(int socket) {
             ctrlLength += strlen(ctrlBuff[ctrlCount]);
             ctrlCount ++;
           }
+        }
+        for (loop = 0; loop < 5; loop ++) {
+          // if ((group[loop].smiID[0] > 0) & (group[loop].smiID[1] > 0)) {
+          // if (true) {
+            strcpy(ctrlBuff[ctrlCount], "<form action=\"http://192.168.1.211:8088/SmiControl\" method=\"post\">\r\n");
+            sprintf(ctrlTmpStr, "<input type=\"hidden\" name=\"grp\" value=\"%d\">\r\n", loop);
+            strcat(ctrlBuff[ctrlCount], ctrlTmpStr);
+            // strcat(ctrlBuff[ctrlCount], "<input type=\"hidden\" name=\"grp\" value=\"-1\">\r\n");
+            strcat(ctrlBuff[ctrlCount], "<button type=\"submit\" name=\"cmd\" value=\"1\">&uArr;</button>\r\n");
+            strcat(ctrlBuff[ctrlCount], "<button type=\"submit\" name=\"cmd\" value=\"0\">&#9632;</button>\r\n");
+            strcat(ctrlBuff[ctrlCount], "<button type=\"submit\" name=\"cmd\" value=\"2\">&dArr;</button>\r\n");
+            strcat(ctrlBuff[ctrlCount], "<button type=\"submit\" name=\"cmd\" value=\"3\">&#x1F31E;</button>\r\n");
+            strcat(ctrlBuff[ctrlCount], "<button type=\"submit\" name=\"cmd\" value=\"4\">&#x1F453;</button>\r\n");
+            sprintf(ctrlTmpStr, "&nbsp;...%% &nbsp; %s\r\n", group[loop].name);
+            strcat(ctrlBuff[ctrlCount], ctrlTmpStr);
+            strcat(ctrlBuff[ctrlCount], "</form>\r\n");
+            ctrlLength += strlen(ctrlBuff[ctrlCount]);
+            ctrlCount ++;
+          // }
         }
         int writtenBytes=0;
         /* send response */
@@ -231,38 +250,45 @@ int getPostData(unsigned char *buffer, int size, int count) {
 	char *tokenName;
 	char *tokenValue;
 	// char *word="\r\n\r\n";
-  char *word0="SmiControl";
+  char *word0="SmiControl?";
+  char *word1="GET /SmiControl?";
   char *word="GET";
   char *word2="POST";
+  char *word4="POST /SmiControl";
   char *word3="\r\n\r\n";
 	char *postStart;
 
-	//TODO check header
-    // exit if get does not contain 'SmiControl'
-    if (strstr((char*) buffer,word0) ==NULL) {
-        return EXIT_FAILURE;
-    }
+  // TODO: check header
+  /* clear old values */
+  command[0].id = -1;
+  command[0].group = -1;
+  command[0].command = -1;
 
-    /* clear old values */
-    command[0].id = -1;
-    command[0].group = -1;
-    command[0].command = -1;
+    // // display header
+    // syslog(LOG_DEBUG,"DEBUG: Header:--------------------------------------------\n%s\n-------------------------------------------------------------------------------------------------------------", buffer);
 
     // GET request
     if (strstr((char*) buffer,word)) {
+      if (strstr((char*) buffer,word1) == NULL) {
+        return EXIT_FAILURE;
+      }
       /* find start of header */
       postStart = strstr((char*) buffer,word)+6;
       token=strsep(&postStart,"?");
       /* extract first posted data pair */
       tokenName=strsep(&token,"=");
-      tokenValue=strsep(&token,"=");
+      tokenValue=strsep(&token," =");
       if ((tokenName != NULL) && (tokenValue != NULL)) {
+        // syslog(LOG_DEBUG," DEBUG: .GET-Request Name=\"%s\" Value=\"%s\"", tokenName, tokenValue);
         extractData(tokenName, tokenValue);
       }
     }
 
     // POST request
     if (strstr((char*) buffer,word2)) {
+      if (strstr((char*) buffer,word4) == NULL) {
+        return EXIT_FAILURE;
+      }
       /* find start of Data */
       // syslog(LOG_DEBUG, "Token= %s\r\nName=%s\r\nValue=%s", token, tokenName, tokenValue);
       postStart = strstr((char*) buffer,word3)+2;
@@ -270,10 +296,11 @@ int getPostData(unsigned char *buffer, int size, int count) {
       // syslog(LOG_DEBUG, "Token= %s\r\nName=%s\r\nValue=%s", token, tokenName, tokenValue);
       /* extract first posted data pair */
       tokenName=strsep(&token,"=");
-      tokenValue=strsep(&token,"=");
+      tokenValue=strsep(&token," =");
       // syslog(LOG_DEBUG, "Token= %s", &token);
       if ((tokenName != NULL) && (tokenValue != NULL)) {
         // syslog(LOG_DEBUG, " extract P  ID:%02d GR:%02d CM:%02d", command[0].id, command[0].group, command[0].command);
+        // syslog(LOG_DEBUG," DEBUG: POST-Request Name=\"%s\" Value=\"%s\"", tokenName, tokenValue);
         extractData(tokenName, tokenValue);
       }
     }
@@ -281,8 +308,9 @@ int getPostData(unsigned char *buffer, int size, int count) {
     /* extract each posted data pair */
     while ((token=strsep(&postStart,"&")) != NULL) {
       tokenName=strsep(&token,"=");
-      tokenValue=strsep(&token,"=");
+      tokenValue=strsep(&token," =");
       if ((tokenName != NULL) && (tokenValue != NULL)) {
+        // syslog(LOG_DEBUG," DEBUG: ....-Request Name=\"%s\" Value=\"%s\"", tokenName, tokenValue);
         extractData(tokenName, tokenValue);
       }
     }
@@ -292,20 +320,70 @@ int getPostData(unsigned char *buffer, int size, int count) {
 }
 
 void extractData(char *name, char *value) {
-  if (strcmp(name,"cmd") == 0) {
+  if (strncmp(name, "cmd", 3) == 0) {
     command[0].command=atoi(value);
+    // stop drive
+    if (strncmp(value, "stop", 4) == 0) {
+      command[0].command=0;
+    }
+    // direction up
+    if (strncmp(value, "auf", 3) == 0) {
+      command[0].command=1;
+    }
+    if (strncmp(value, "hoch", 4) == 0) {
+      command[0].command=1;
+    }
+    if (strncmp(value, "up", 2) == 0) {
+      command[0].command=1;
+    }
+    // direction down
+    if (strncmp(value, "ab", 2) == 0) {
+      command[0].command=2;
+    }
+    if (strncmp(value, "runter", 6) == 0) {
+      command[0].command=2;
+    }
+    if (strncmp(value, "down", 4) == 0) {
+      command[0].command=2;
+    }
+    // position commands
+    if (strncmp(value, "pos1", 4) == 0) {
+      command[0].command=3;
+    }
+    if (strncmp(value, "sun", 3) == 0) {
+      command[0].command=3;
+    }
+    if (strncmp(value, "sonne", 5) == 0) {
+      command[0].command=3;
+    }
+    if (strncmp(value, "pos2", 4) == 0) {
+      command[0].command=4;
+    }
+    if (strncmp(value, "eye", 3) == 0) {
+      command[0].command=4;
+    }
+    if (strncmp(value, "auge", 4) == 0) {
+      command[0].command=4;
+    }
+    if (strncmp(value, "getpos", 6) == 0) {
+      command[0].command=5;
+    }
+
+    // check and correct data
     if (command[0].command > 5) command[0].command = 0;
     if (command[0].command < 0) command[0].command = 0;
     // return;
   }
   if (strcmp(name,"id") == 0) {
     command[0].id=atoi(value);
+    // check and correct data
     if (command[0].id > 31) command[0].id = -1;
     if (command[0].id < 0) command[0].id = 0;
     // return;
   }
   if (strcmp(name,"grp")==0) {
     command[0].group=atoi(value);
+    // check and correct data
     command[0].group &=0x7fff;
     if (command[0].group<0) command[0].group=0;
     // return;
@@ -313,7 +391,7 @@ void extractData(char *name, char *value) {
   // syslog(LOG_DEBUG, " status: ID=%02d GR=%02d CM=%02d", command[0].id,command[0].group,command[0].command);
 }
 
-int sendGetRequest(char * host, int * port, char * url) {
+int sendGetRequest(char * host, int port, char * url) {
   // TODO freeze after DEBUG: Error Connecting
   int responseCode=0;
   char request[1000];
@@ -324,22 +402,23 @@ int sendGetRequest(char * host, int * port, char * url) {
   int tcpSocket = socket(AF_INET, SOCK_STREAM, 0);
   if (tcpSocket < 0) {
     gettimeofday( &tmpTime, (struct timezone *) 0 );
-    syslog(LOG_DEBUG, "DEBUG: %03d Error opening socket\e[0m",(tmpTime.tv_usec/1000));
+    syslog(LOG_ERR, "ERROR: %03d Error opening socket\e[0m",(tmpTime.tv_usec/1000));
     return EXIT_FAILURE;
   } else {
     gettimeofday( &tmpTime, (struct timezone *) 0 );
-    syslog(LOG_DEBUG, "DEBUG: %03d Successfully opened socket\e[0m",(tmpTime.tv_usec/1000));
+    //syslog(LOG_DEBUG, "DEBUG: %03d Successfully opened socket\e[0m",(tmpTime.tv_usec/1000));
   }
   server = gethostbyname(host);
   if (server == NULL) {
     gettimeofday( &tmpTime, (struct timezone *) 0 );
-    syslog(LOG_DEBUG, "DEBUG: %03d gethostbyname() failed\e[0m",(tmpTime.tv_usec/1000));
+    syslog(LOG_ERR, "ERROR: %03d gethostbyname() failed\e[0m",(tmpTime.tv_usec/1000));
+    return EXIT_FAILURE;
   } else {
       unsigned int j = 0;
       while (server -> h_addr_list[j] != NULL)
       {
           gettimeofday( &tmpTime, (struct timezone *) 0 );
-          syslog(LOG_DEBUG, "DEBUG: %03d %s => %s\e[0m",(tmpTime.tv_usec/1000) ,server->h_name , inet_ntoa(*(struct in_addr*)(server -> h_addr_list[j])));
+          // syslog(LOG_DEBUG, "DEBUG: %03d %s => %s\e[0m",(tmpTime.tv_usec/1000) ,server->h_name , inet_ntoa(*(struct in_addr*)(server -> h_addr_list[j])));
           j++;
       }
   }
@@ -349,21 +428,22 @@ int sendGetRequest(char * host, int * port, char * url) {
   serveraddr.sin_port = htons(port);
   if (connect(tcpSocket, (struct sockaddr *) &serveraddr, sizeof(serveraddr)) < 0) {
       gettimeofday( &tmpTime, (struct timezone *) 0 );
-      syslog(LOG_DEBUG, "DEBUG: %03d Error Connecting\e[0m",(tmpTime.tv_usec/1000));
+      syslog(LOG_ERR, "ERROR: %03d Error Connecting\e[0m",(tmpTime.tv_usec/1000));
       return EXIT_FAILURE;
   } else {
       gettimeofday( &tmpTime, (struct timezone *) 0 );
-      syslog(LOG_DEBUG, "DEBUG: %03d Successfully Connected\e[0m",(tmpTime.tv_usec/1000));
+      // syslog(LOG_DEBUG, "DEBUG: %03d Successfully Connected\e[0m",(tmpTime.tv_usec/1000));
   }
   bzero(request, 1000);
   sprintf(request, "GET %s HTTP/1.1\r\nHost: %s\r\n\r\n", url, host);
   // syslog(LOG_DEBUG, "DEBUG:\n%s", request);
   if (send(tcpSocket, request, strlen(request), 0) < 0) {
       gettimeofday( &tmpTime, (struct timezone *) 0 );
-      syslog(LOG_DEBUG, "DEBUG: %03d Error with send()\e[0m",(tmpTime.tv_usec/1000));
+      syslog(LOG_ERR, "ERROR: %03d Error with send()\e[0m",(tmpTime.tv_usec/1000));
+      return EXIT_FAILURE;
   } else {
       gettimeofday( &tmpTime, (struct timezone *) 0 );
-      syslog(LOG_DEBUG, "DEBUG: %03d Successfully sent html fetch request\e[0m",(tmpTime.tv_usec/1000));
+      // syslog(LOG_DEBUG, "DEBUG: %03d Successfully sent html fetch request\e[0m",(tmpTime.tv_usec/1000));
   }
   bzero(request, 1000);
   recv(tcpSocket, request, 999, 0);
@@ -374,10 +454,10 @@ int sendGetRequest(char * host, int * port, char * url) {
     ptr= strtok(NULL, " ");
     responseCode=atoi(ptr);
     gettimeofday( &tmpTime, (struct timezone *) 0 );
-    syslog(LOG_DEBUG, "DEBUG: %03d HTTP-header gefunden\e[0m",(tmpTime.tv_usec/1000));
+    // syslog(LOG_DEBUG, "DEBUG: %03d HTTP-header gefunden\e[0m",(tmpTime.tv_usec/1000));
   } else {
     gettimeofday( &tmpTime, (struct timezone *) 0 );
-    syslog(LOG_DEBUG, "DEBUG: %03d kein HTTP-header gefunden\e[0m",(tmpTime.tv_usec/1000));
+    syslog(LOG_ERR, "ERROR: %03d kein HTTP-header gefunden\e[0m",(tmpTime.tv_usec/1000));
   }
   gettimeofday( &tmpTime, (struct timezone *) 0 );
   syslog(LOG_DEBUG, "DEBUG: %03d Status=\'%d\'\e[0m",(tmpTime.tv_usec/1000), responseCode);

@@ -23,6 +23,8 @@ void initData(void);
 
 int parseConfFile(void);
 int parseConfLine(char* line);
+int createGroupMask(void);
+void displayCreatedGroupMask(void);
 
 int setSection(char* section);
 int setValue(char* name, char* value);

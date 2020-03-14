@@ -44,10 +44,21 @@ typedef struct {
         //     unsigned char high; //drive[x].switchAddr.Byte[1] ?????
         // } Byte[2];
         struct {
-            unsigned char Low;  //drive[x].switchAddr.Byte.Low
-            unsigned char High; //drive[x].switchAddr.Byte.High
+            unsigned char Low;    // drive[x].switchAddr.Byte.Low
+            unsigned char High;   // drive[x].switchAddr.Byte.High
         } Byte;
     } switchAddr;
+    union {
+        unsigned int Addr;      //drive[x].switchAddr2.Addr
+        // struct {
+        //     unsigned char low;  //drive[x].switchAddr2.Byte[0] ?????
+        //     unsigned char high; //drive[x].switchAddr2.Byte[1] ?????
+        // } Byte[2];
+        struct {
+            unsigned char Low;    // drive[x].switchAddr2.Byte.Low
+            unsigned char High;   // drive[x].switchAddr2.Byte.High
+        } Byte;
+    } switchAddr2;
     unsigned int direction;  // cardinal direction of window
     int controlSwb;     // TRUE if communikation via SWB-Bus
     unsigned int actualPos;
@@ -56,7 +67,21 @@ typedef struct {
 
 typedef struct {
     char name[MAX_ITEMS];
-    char openHABItem[MAX_ITEMS];        // openHAB2 items
+    char openHABItem[MAX_ITEMS];  // openHAB2 items
+    union {
+        unsigned int Addr;        // group[x].switchAddr.Addr
+        struct {
+            unsigned char Low;    // group[x].switchAddr.Byte.Low
+            unsigned char High;   // group[x].switchAddr.Byte.High
+        } Byte;
+    } switchAddr;
+    union {
+        unsigned int Addr;        // group[x].switchAddr2.Addr
+        struct {
+            unsigned char Low;    // group[x].switchAddr2.Byte.Low
+            unsigned char High;   // group[x].switchAddr2.Byte.High
+        } Byte;
+    } switchAddr2;
     unsigned int smiID[MAX_SMI_PORTS];
     unsigned int driveID[MAX_DRIVES / 16];
 } GROUP;

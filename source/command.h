@@ -16,8 +16,11 @@ extern unsigned char smiRxBuffer[MAX_SWB_PORTS][50];
 extern unsigned char smiTxBuffer[50];
 extern unsigned char smiTxSize;
 extern unsigned char buffer[12];
+
 /* functions */
 int handleCommand(void);
 int sendSmiCmd(int swbAddr, int smiCmd);
+int getGrpPositons(int grpID);
+int getDrvPosition(int drvId);
 
 #endif /* command.h */

@@ -15,6 +15,6 @@ int closeWebserver(int socket);
 void handleWebserver(int socket);
 int getPostData(unsigned char *buffer, int size, int count);
 void extractData(char *name, char *value);
-int sendGetRequest(char * host, int * port, char * url);
+int sendGetRequest(char * host, int port, char * url);
 
 #endif /* webserver.h */

@@ -92,6 +92,8 @@ int main(int argc, char *argv[]) {
 
 	openlog(argv[0], LOG_PID | LOG_NDELAY, LOG_LOCAL7);
 	syslog(LOG_DEBUG, "DEBUG: SMI server starting (%s)", argv[1]);
+	syslog(LOG_DEBUG, "DEBUG: Version %s Build %s Date %s", BUILD_VERSION, BUILD_COUNT, BUILD_DATE);
+	// syslog(LOG_DEBUG, "DEBUG: Version %s Build %s", VersionStr, BuildCnt);
 
 	/* fork of the parent process */
 	pid = fork();

@@ -64,63 +64,78 @@ unsigned int htoi(char* hex) {
     return hexInt;
 }
 
-char itoh(int value, int digits) {
+void itoh(int value, int digits, char* result) {
   // TODO: check for overflow
   // int digits=3;
-
+  int v;
   int tmpValue = value;
   char zeichen[digits +1];
   zeichen[digits]=0;
   int i;
   for (i=digits; i>0; i--) {
     printf("i=%2d",i);
-    if (tmpValue<myPow(16,i-1)) {
+    myPow(16, i - 1, v);
+    if (tmpValue<v) {
         zeichen[digits-i]='0';
     } else {
-        zeichen[digits-i]=0x30 + tmpValue / myPow(16,i-1);
+        myPow(16, i - 1, v);
+        zeichen[digits-i]=0x30 + tmpValue / v;
         if (zeichen[digits-i]>0x39) {
             zeichen[digits-i] += 0x27;
         }
-        tmpValue = tmpValue % (int) myPow(16,i-1);
+        myPow(16, i - 1, v);
+        tmpValue = tmpValue % (int) v;
     }
     printf(" => %2x %s\n",tmpValue, zeichen );
   }
-  return zeichen;
+  result = zeichen;
+  return;
 }
 
-char itoa(int value, int digits) {
+void itoa(int value, int digits, char* result) {
   // TODO: check for overflow
   // int digits=3;
-
+  int v;
   int tmpValue = value;
   char zeichen[digits +1];
   zeichen[digits]=0;
   int i;
   for (i=digits; i>0; i--) {
     printf("i=%2d",i);
-    if (tmpValue<myPow(10,i-1)) {
+    myPow(10, i - 1, v);
+    if (tmpValue <v) {
         zeichen[digits-i]='0';
     } else {
-        zeichen[digits-i]=0x30 + tmpValue / myPow(10,i-1);
+        myPow(10, i - 1, v);
+        zeichen[digits-i]=0x30 + tmpValue / v;
         if (zeichen[digits-i]>0x39) {
             zeichen[digits-i] += 0x27;
         }
-        tmpValue = tmpValue % (int) myPow(10,i-1);
+        myPow(10, i - 1, v);
+        tmpValue = tmpValue % (int) v;
     }
-    printf(" => %2x %s\n",tmpValue, zeichen );
+    printf(" => %2x %s\n",tmpValue, result );
   }
-  return zeichen;
+  // //is the following possible to surpress "warning: function returns address of local variable [-Wreturn-local-addr]"???
+  // // don't forget "int * digits"
+  // digits = zeichen;
+  // return digits;
+  result = zeichen;
+  return;
 }
 
-int myPow(int base, int value ) {
+void myPow(int base, int value , int result) {
   int i;
   if (value==0) {
-    return 1;
+    result = 1;
+    return;
   }
-  int tmpValue=base;
+  int retval=1;
   for(i = 0;i < value; i++) {
-    tmpValue *= base;
+    retval *= base;
   }
+  result = retval;
+  return;
 }
 
 /* Subtract the ‘struct timeval’ values X and Y,

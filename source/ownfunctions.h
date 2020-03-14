@@ -6,11 +6,11 @@
 /* functions */
 //char itoh(int integer);
 unsigned int htoi(char* hex);
-char itoh(int value, int digits);
 void printBufferAscii(unsigned char *buffer, int size);
 void logBufferAscii(unsigned char *buffer, int size);
-char itoa(int value, int digits);
-int myPow(int base, int value );
+void itoh(int value, int digits, char* result);
+void itoa(int value, int digits, char* result);
+void myPow(int base, int value, int result);
 /* Subtract the ‘struct timeval’ values X and Y,
    storing the result in RESULT.
    Return 1 if the difference is negative, otherwise 0. */

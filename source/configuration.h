@@ -9,7 +9,9 @@
 #define MAX_DRIVES 32
 #define MAX_GROUPS 16
 #define MAX_BUTTONS 24
-
+#define BUILD_VERSION "0.1.0"
+#define BUILD_COUNT "77"
+#define BUILD_DATE "Mo 06. Mai 2019 12:55:41"
 
 
 #endif /* configuration.h */

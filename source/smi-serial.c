@@ -78,10 +78,10 @@ if (smiRxCount[port] > 0) {
 }
 
 
-int parseSMI(unsigned char * buffer, int * length, int port) {
+int parseSMI(unsigned char * buffer, int length, int port) {
 		int tmpID = 0;
 		int tmpMask = 0;
-		int tmpPosition = 0;
+		unsigned int tmpPosition = 0;
 		struct timeval tmpTime;
 
 		//////int LOG_DEBUG = 0;
@@ -313,7 +313,7 @@ void setDrivePos (int bus, int id, unsigned int pos) {
 				 char tmpUrl[50];
 				 sprintf(tmpUrl, "%s%s=%03d",openHABGet,drive[i].openHABItem, (int)(( drive[i].actualPos / 655.35)+0.5));
 				 gettimeofday( &tmpTime, (struct timezone *) 0 );
-				 syslog(LOG_INFO,"INFO:  %03d \e[1;35mupdate \'%s\': \t\t%s:%d%s [<-%d]\e[0m", (tmpTime.tv_usec/1000), drive[i].name, tmpHost, tmpPort, tmpUrl, sendGetRequest(openHABHost, openHABPort, tmpUrl) );
+				 syslog(LOG_INFO,"INFO:  %03d \e[1;35mupdate \'%s\': \t\t%s:%d%s [<-%d]\e[0m", (tmpTime.tv_usec/1000), drive[i].name, tmpHost, tmpPort, tmpUrl, sendGetRequest(sendSmi, openHABPort, tmpUrl) );
 				 break;
 			 }
 		 } else {
@@ -453,17 +453,17 @@ int openSmiPort(char *port) {
 }
 
 int sendSmi(int port, int id, int cmd) {
-	if (port==0) {
-		return EXIT_FAILURE;
-	}
+// 	// if (port==0) {
+// 	// 	return EXIT_FAILURE;
+// 	// }
 	// syslog(LOG_INFO, "INFO : port=%d id=%d cmd=%d",port ,id ,cmd );
-	// TODO check if bus is controlled by "smi-server"
+	// TODO: check if bus is controlled by "smi-server"
 	// build and send smi telegramm
 	smiTxBuffer[0] = 0x50 + (id & 0x0f);
 	smiTxBuffer[1] = cmd & 0x07;
-	addSmiCrc(smiTxBuffer, 2);
 	smiTxSize = 3;
-	write(fdSMI[port], &smiTxBuffer,smiTxSize);
+	addSmiCrc(smiTxBuffer, smiTxSize - 1);
+	write(fdSMI[port], &smiTxBuffer, smiTxSize);
 	// // wait for sending telegram (50ms)
 	// usleep(50000);
 	// // TODO: check ocho of sent bytes
@@ -475,5 +475,59 @@ int sendSmi(int port, int id, int cmd) {
 	// /* ignore response */
 	// readSmiByte(port);
 	// // TODO: repeat if response or timeout
+	return EXIT_SUCCESS;
+}
+int sendSmiGetPos(int port, int id) {
+	struct timeval tmpTime;
+	smiTxBuffer[0] = 0x70 + (id & 0x0f);
+	smiTxBuffer[1] = 0x05;
+	smiTxSize = 3;
+	addSmiCrc(smiTxBuffer, smiTxSize - 1);
+	write(fdSMI[port], &smiTxBuffer, smiTxSize);
+	gettimeofday( &tmpTime, (struct timezone *) 0 );
+	syslog(LOG_DEBUG, "DEBUG: %03d SMI:  -> %02x %02x %02x ", (tmpTime.tv_usec/1000), smiTxBuffer[0], smiTxBuffer[1], smiTxBuffer[2]);
+return EXIT_SUCCESS;
+}
+
+int sendSmiGrp(int groupID, int cmd) {
+	int port;
+	// TODO: check what happens if one smi-bus is out of order;
+	// TODO: check positions after STOP-command
+	for (port = 0; port < MAX_SMI_PORTS; port++) {
+		if (group[groupID].smiID[port] != 00) {
+			// prepare smi telegram
+			smiTxBuffer[0] = 0x40;
+			smiTxBuffer[1] = 0xC0;
+			smiTxBuffer[2] = group[groupID].smiID[port] >> 8;
+			smiTxBuffer[3] = group[groupID].smiID[port] & 0xff;
+			smiTxBuffer[4] = cmd & 0x07;
+			smiTxSize = 6;
+			// complete smi telegramm
+			switch (cmd) {
+				case 1:		// up
+									smiTxBuffer[4] |= 0x80;
+									smiTxBuffer[5] = 0x22;
+									smiTxBuffer[6] = 0x00;
+									smiTxSize += 2;
+									break;
+				case 0: 	// stop
+				case 2:		// down
+									break;
+				case 3: 	// pos1: sun protection
+				case 4:		// pos2: privacy shield
+									smiTxBuffer[4] |= 0x80;
+									smiTxBuffer[5] = 0x21;
+									smiTxBuffer[6] = 0x00;
+									smiTxSize += 2;
+									break;
+				default:	// stop, down
+									return EXIT_FAILURE;
+									break; // normally not used
+			}
+			addSmiCrc(smiTxBuffer, smiTxSize - 1);
+			write(fdSMI[port], &smiTxBuffer, smiTxSize);
+			usleep(500);
+		}
+	}
 	return EXIT_SUCCESS;
 }

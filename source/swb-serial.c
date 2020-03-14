@@ -51,6 +51,9 @@ void printSwbBuffer(unsigned char *buffer, int size) {
 void createSwbAck(unsigned char *buffer, int size) {
 	// fix for short messages:
 	if (size==6) size++;
+	// correct status-byte
+	buffer[size-4]&= 0x80;
+	buffer[size-4]|= 0x01;
 	// clear switch-byte
 	buffer[size-3]=0;
 	// clear old crc
@@ -74,13 +77,13 @@ void calcSwbCrc(unsigned char *buffer, int size) {
 	buffer[size-1]=(uint8_t) (crc>>8);
 	// printBuffer(buffer, size+2);
 	//size += 2;
-	// syslog(LOG_DEBUG, "DEBUG: CRC %02X %02X %02X %02X %02X %02X %02X", buffer[0], buffer[1], buffer[2], buffer[3], buffer[4], buffer[5], buffer[6]);
+	 // syslog(LOG_DEBUG, "DEBUG: CRC %02X %02X %02X %02X %02X %02X %02X", buffer[0], buffer[1], buffer[2], buffer[3], buffer[4], buffer[5], buffer[6]);
 }
 
 /* check SwitchBus crc-16 */
 int  checkSwbCrc(unsigned char *buffer, int size) {
 	int crc=createSwbCrc(buffer, size);
-	// syslog(LOG_DEBUG, "DEBUG: CRC 0x%04X (<- %d %02x %02x %02x %02x %02x %02X%02X)", crc, size, buffer[0], buffer[1], buffer[2], buffer[3], buffer[4], buffer[size-2], buffer[size-1]);
+	 // syslog(LOG_DEBUG, "DEBUG: CRC 0x%04X (<- %d %02x %02x %02x %02x %02x %02X%02X)", crc, size, buffer[0], buffer[1], buffer[2], buffer[3], buffer[4], buffer[size-2], buffer[size-1]);
 	if (buffer[size-2]!=(uint8_t) crc) {
 		return EXIT_FAILURE;
 	}
@@ -137,8 +140,9 @@ int handleSWB(int handle, int port) {
 			gettimeofday( &tmpTime, (struct timezone *) 0 );
 			crcStat = checkSwbCrc(swbRxBuffer[port], 7);
 			if (crcStat==EXIT_SUCCESS) {
+				// check if (1) {
 				// TODO: only on first message (swb telegram counter 0x80)
-				syslog(LOG_DEBUG, "DEBUG: %03d SWB:%d <- %02X %02X %02X %02X %02X %02X %02X \e[32m(OK)\e[0m", (tmpTime.tv_usec/1000), port, swbRxBuffer[port][0], swbRxBuffer[port][1], swbRxBuffer[port][2], swbRxBuffer[port][3], swbRxBuffer[port][4], swbRxBuffer[port][5], swbRxBuffer[port][6] );
+				syslog(LOG_DEBUG, "DEBUG: %03d SWB:%d <- %02X %02X %02X %02X %02X %02X %02X \e[32m( OK)\e[0m", (tmpTime.tv_usec/1000), port, swbRxBuffer[port][0], swbRxBuffer[port][1], swbRxBuffer[port][2], swbRxBuffer[port][3], swbRxBuffer[port][4], swbRxBuffer[port][5], swbRxBuffer[port][6]);
 				if ((swbRxBuffer[port][4] & 0x0D) !=0) {
 					char tmpName[30];
 					char tmpAction[25];
@@ -198,6 +202,10 @@ int handleSWB(int handle, int port) {
 						//TODO: serch for drive and handle SMI-Command
 					}
 					sendSmiCmd(tmpAddr, smiCmd);
+					if (smiCmd == 0) {
+						// // TODO: send SmiGetPosition message
+						// sendSmiDiag(tmpAddr, smiCmd);
+					}
 				}
 				// TODO: only reply one time (swb telegramm counter 0x80)
 				if ((serialSwbAck[port] == TRUE) && (swbRxBuffer[port][4] != 0x00)) {
@@ -206,7 +214,14 @@ int handleSWB(int handle, int port) {
 					syslog(LOG_DEBUG, "DEBUG: %03d SWB:%d -> %02X %02X %02X %02X %02X %02X %02X \e[1m\e[32m(ACK)\e[0m", (tmpTime.tv_usec/1000), port, swbRxBuffer[port][0], swbRxBuffer[port][1], swbRxBuffer[port][2], swbRxBuffer[port][3], swbRxBuffer[port][4], swbRxBuffer[port][5], swbRxBuffer[port][6] );
 				}
 			} else {
-				syslog(LOG_DEBUG, "DEBUG: %03d SWB:%d <- %02X %02X %02X %02X %02X %02X %02X \e[31m(**)\e[0m", (tmpTime.tv_usec/1000), port, swbRxBuffer[port][0], swbRxBuffer[port][1], swbRxBuffer[port][2], swbRxBuffer[port][3], swbRxBuffer[port][4], swbRxBuffer[port][5], swbRxBuffer[port][6] );
+				syslog(LOG_DEBUG, "DEBUG: %03d SWB:%d <- %02X %02X %02X %02X %02X %02X %02X \e[31m(***)\e[0m", (tmpTime.tv_usec/1000), port, swbRxBuffer[port][0], swbRxBuffer[port][1], swbRxBuffer[port][2], swbRxBuffer[port][3], swbRxBuffer[port][4], swbRxBuffer[port][5], swbRxBuffer[port][6] );
+				// CHECK
+				if ((serialSwbAck[port] == TRUE) && (swbRxBuffer[port][4] != 0x00)) {
+					createSwbAck(swbRxBuffer[port], 7);
+					write(handle,swbRxBuffer[port],7);
+					syslog(LOG_DEBUG, "DEBUG: %03d SWB:%d -> %02X %02X %02X %02X %02X %02X %02X \e[1m\e[31m(ACK)\e[0m", (tmpTime.tv_usec/1000), port, swbRxBuffer[port][0], swbRxBuffer[port][1], swbRxBuffer[port][2], swbRxBuffer[port][3], swbRxBuffer[port][4], swbRxBuffer[port][5], swbRxBuffer[port][6] );
+				}
+				// CHECK
 			}
 		}
 		if (bytesSwb < 0) {

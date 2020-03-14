@@ -41,6 +41,7 @@ int handleCommand(void) {
       return EXIT_FAILURE;
     }
 
+    // syslog(LOG_DEBUG, "DEBUG: (1) I:%d G:%d C:%d", command[0].id, command[0].group, command[0].command);
 
     if (command[0].group >= 0) {
       //syslog(LOG_DEBUG, "DEBUG: ... Gruppen werden noch nicht unterstützt", command[0].id);
@@ -49,10 +50,14 @@ int handleCommand(void) {
       char tmpMsg[60];
       int flagResponse = 0;
       int smiPort;
+      // syslog(LOG_DEBUG, "DEBUG: (2) I:%d G:%d C:%d", command[0].id, command[0].group, command[0].command);
 
       if (command[0].command >= 0) {
+        // syslog(LOG_DEBUG, "DEBUG: (3) I:%d G:%d C:%d", command[0].id, command[0].group, command[0].command);
         for (smiPort = 0; smiPort < MAX_SMI_PORTS; smiPort++) {
+          // syslog(LOG_DEBUG, "DEBUG: 1.S:%d=%d I:%d G:%d C:%d", smiPort, group[command[0].group].smiID[smiPort], command[0].id, command[0].group, command[0].command);
           if (group[command[0].group].smiID[smiPort] > 0) {
+            // syslog(LOG_DEBUG, "DEBUG: 2.S:%d=%d I:%d G:%d C:%d", smiPort, group[command[0].group].smiID[smiPort], command[0].id, command[0].group, command[0].command);
             smiTxBuffer[0] = 0x40 ;
             smiTxBuffer[1] = 0xC0 ;
             smiTxBuffer[2] = ((group[command[0].group].smiID[smiPort] / 256) & 0xff);
@@ -89,7 +94,7 @@ int handleCommand(void) {
                     case 0xFF:
                                 strcat(tmpMsg, "\e[32m(ACK)\e[0m ");
                                 break;
-                    default:    strcat(tmpMsg, "\e[90m(???)\e[0m ");
+                    default:    strcat(tmpMsg, "\e[90m(?\?\?)\e[0m ");
                                 break;
 
                   }
@@ -230,7 +235,7 @@ int handleCommand(void) {
                   case 0xFF:
                               strcat(tmpMsg, "\e[32m(ACK)\e[0m ");
                               break;
-                  default:    strcat(tmpMsg, "\e[90m(???)\e[0m ");
+                  default:    strcat(tmpMsg, "\e[90m(?\?\?)\e[0m ");
                               break;
 
                 }
@@ -269,22 +274,44 @@ int handleCommand(void) {
 }
 
 int sendSmiCmd(int swbAddr, int smiCmd) {
+  struct timeval tmpTime;
   int loop;
   // search assigned drive(s) for given swb-address
   // search for smi bus id for assigned drive(s)
   for (loop = 0; loop <= MAX_DRIVES; loop++) {
-    if (drive[loop].switchAddr.Addr== swbAddr) {
+    if ((drive[loop].switchAddr.Addr == swbAddr) || (drive[loop].switchAddr2.Addr == swbAddr)) {
       sendSmi(drive[loop].bus, drive[loop].id , smiCmd);
+      // if (smiCmd == 0) {
+      //   usleep(40000);
+      //   gettimeofday( &tmpTime, (struct timezone *) 0 );
+      //   syslog(LOG_INFO, "INFO : %03d SMI:  getPos %d,%d ", (tmpTime.tv_usec/1000), drive[loop].bus, drive[loop].id );
+      //   sendSmiGetPos(drive[loop].bus, drive[loop].id);
+      // }
+      break;
+    }
+
+  // search assigned group(s) for given swb-address
+  }
+  // for (loop = 0; loop <= MAX_GROUPS; loop++) {
+  for (loop = 0; loop <= 5; loop++) {
+    if ((group[loop].switchAddr.Addr == swbAddr) || (group[loop].switchAddr2.Addr == swbAddr)) {
+      sendSmiGrp(loop, smiCmd);
+      // TODO: Loop for every send command to get Positions
       break;
     }
   }
   return EXIT_SUCCESS;
 }
 
-int getPositons(void) {
+int getGrpPositons(int grpID) {
   //SMI bus 0
   // Loop for all ids on smi bus 0
     // send "Get Position"
     // wait for response
     // set PositionsArray
+  return EXIT_SUCCESS;
+}
+
+int getDrvPosition(int drvId) {
+  return EXIT_SUCCESS;
 }
