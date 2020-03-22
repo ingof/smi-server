@@ -10,6 +10,19 @@
 #include "configuration.h" /* configuration */
 
 
+extern DRIVE drive[MAX_DRIVES];
+extern GROUP group[MAX_GROUPS];
+extern char openHABHost[30];
+extern char openHABGet[30];
+extern int openHABPort;
+
+extern COMMAND command[0];
+extern COMMAND smiCmdBuf[32];
+extern int smiCmdBufCount;
+extern int smiCmdBufStart;
+extern int smiCmdBufLock;
+
+
 // TODO: handle only in config-file defined Ports
 unsigned char smiRxBuff[MAX_SMI_PORTS][64];
 unsigned char smiRxCount[MAX_SMI_PORTS];
@@ -58,7 +71,7 @@ struct timeval lapsedTime;
 if (smiRxCount[port] > 0) {
 	gettimeofday(&actualTime, (struct timezone *) 0 );
 	timeval_subtract(&lapsedTime, &actualTime, &smiRxStart[port]);
-	//syslog(LOG_DEBUG, "DEBUG: S:%u,%06u a:%u,%06u l:%u,%06u SMI <- (%2d)", (smiRxStart[port].tv_sec), (smiRxStart[port].tv_usec), (actualTime.tv_sec), (actualTime.tv_usec), (lapsedTime.tv_sec), (lapsedTime.tv_usec),   smiRxCount[port]  );
+	//syslog(LOG_DEBUG, "D S:%u,%06u a:%u,%06u l:%u,%06u SMI <- (%2d)", (smiRxStart[port].tv_sec), (smiRxStart[port].tv_usec), (actualTime.tv_sec), (actualTime.tv_usec), (lapsedTime.tv_sec), (lapsedTime.tv_usec),   smiRxCount[port]  );
 	// 5ms lapsed since last received data ???
 	if (lapsedTime.tv_usec > timeoutSMI) {
 		parseSMI(smiRxBuff[port], smiRxCount[port], port);
@@ -69,7 +82,7 @@ if (smiRxCount[port] > 0) {
 	   sprintf(tmpBufMsg, "%02X ", smiRxBuff[port][i]);
 		 strcat(bufMsg,tmpBufMsg);
 		}
-		syslog(LOG_DEBUG, "DEBUG: %03u SMI:%d <- (%02d) %s", (actualTime.tv_usec)/1000,port , smiRxCount[port] , bufMsg);
+		syslog(LOG_DEBUG, "D %03u SMI:%d <- (%02d) %s", (actualTime.tv_usec)/1000,port , smiRxCount[port] , bufMsg);
 		// parseSMI();
 		smiRxCount[port] = 0;
 	}
@@ -185,7 +198,7 @@ int parseSMI(unsigned char * buffer, int length, int port) {
                 }
                 strcat(message, tmpStr);
                 gettimeofday( &tmpTime, (struct timezone *) 0 );
-								syslog(LOG_INFO,"INFO:  %03d \e[1mSMI:%d <- %s\e[0m",(tmpTime.tv_usec/1000) ,port , message);
+								syslog(LOG_INFO,"I  %03d \e[1mSMI:%d <- %s\e[0m",(tmpTime.tv_usec/1000) ,port , message);
                 strcpy(message,"");
                 i+=1; // CRC ignorieren
             }
@@ -282,14 +295,14 @@ int parseSMI(unsigned char * buffer, int length, int port) {
                         sprintf(message, "Frame Fehler! \e[31m(%02X)\e[0m",tmpCRC);
                     }
                     // gettimeofday( &tmpTime, (struct timezone *) 0 );
-										// syslog(LOG_DEBUG,"DEBUG: %03d \e[1mSMI:%d <- %s\e[0m", (tmpTime.tv_usec/1000), port, message);
+										// syslog(LOG_DEBUG,"D %03d \e[1mSMI:%d <- %s\e[0m", (tmpTime.tv_usec/1000), port, message);
                     posFlag[port] = 0;
 										diagFlag[port] = 0;
                     tmpID = 0;
                 }
             }
 						gettimeofday( &tmpTime, (struct timezone *) 0 );
-						syslog(LOG_INFO, "INFO:  %03d \e[1mSMI:%d <- %s\e[0m", (tmpTime.tv_usec/1000), port, message);
+						syslog(LOG_INFO, "I  %03d \e[1mSMI:%d <- %s\e[0m", (tmpTime.tv_usec/1000), port, message);
         }
     }
     return EXIT_SUCCESS;
@@ -306,14 +319,15 @@ void setDrivePos (int bus, int id, unsigned int pos) {
 			 if (drive[i].id == id) {
 				 drive[i].actualPos = pos;
 				 gettimeofday( &tmpTime, (struct timezone *) 0 );
-				 syslog(LOG_DEBUG, "DEBUG: %03d \e[1mDRIVE:%2d Bus:%2d ID:%3d, Pos=%04X\e[0m", (tmpTime.tv_usec/1000), i, drive[i].bus, drive[i].id ,drive[i].actualPos);
+				 syslog(LOG_DEBUG, "D %03d \e[1mDRIVE:%2d Bus:%2d ID:%3d, Pos=%04X\e[0m", (tmpTime.tv_usec/1000), i, drive[i].bus, drive[i].id ,drive[i].actualPos);
 				 // TODO: enable update if server present
 				 char tmpHost[30]="192.168.1.218";
 				 int tmpPort=8080;
 				 char tmpUrl[50];
 				 sprintf(tmpUrl, "%s%s=%03d",openHABGet,drive[i].openHABItem, (int)(( drive[i].actualPos / 655.35)+0.5));
 				 gettimeofday( &tmpTime, (struct timezone *) 0 );
-				 syslog(LOG_INFO,"INFO:  %03d \e[1;35mupdate \'%s\': \t\t%s:%d%s [<-%d]\e[0m", (tmpTime.tv_usec/1000), drive[i].name, tmpHost, tmpPort, tmpUrl, sendGetRequest(sendSmi, openHABPort, tmpUrl) );
+				 //syslog(LOG_INFO,"I  %03d \e[1;35mupdate \'%s\': \t\t%s:%d%s [<-%d]\e[0m", (tmpTime.tv_usec/1000), drive[i].name, tmpHost, tmpPort, tmpUrl, sendGetRequest(sendSmi, openHABPort, tmpUrl) );
+				 syslog(LOG_INFO,"I  %03d \e[1;35mupdate \'%s\': \t\t%s:%d%s [<-%d]\e[0m", (tmpTime.tv_usec/1000), drive[i].name, tmpHost, tmpPort, tmpUrl, sendGetRequest(openHABHost, openHABPort, tmpUrl) );
 				 break;
 			 }
 		 } else {
@@ -340,21 +354,21 @@ int handleSMI(int handle, int port) {
 	// struct timeval tmpTime;
 	IOReturn=ioctl(handle, FIONREAD, &serialBytes);
 	if (IOReturn<0) {
-		syslog(LOG_DEBUG, "DEBUG: IOReturn=%d (h:%d)", IOReturn, handle);
+		syslog(LOG_DEBUG, "D IOReturn=%d (h:%d)", IOReturn, handle);
 	}
 	if (serialBytes>=1) {
 		bytesSmi = read(handle, &rxBuff, serialBytes);
 		serialBytes=-1;
 
 		if (bytesSmi == 0) {
-			syslog(LOG_DEBUG, "DEBUG: data available but no data received (%d)", bytesSmi);
+			syslog(LOG_DEBUG, "D data available but no data received (%d)", bytesSmi);
 		}
 		if (bytesSmi > 0) {
-			//syslog(LOG_DEBUG, "DEBUG: (%2d) started: %d",smiRxCount[port] ,smiRxStart[port].tv_usec/1000);
+			//syslog(LOG_DEBUG, "D (%2d) started: %d",smiRxCount[port] ,smiRxStart[port].tv_usec/1000);
 			gettimeofday(&actualTime, (struct timezone *) 0 );
 			smiRxStart[port] = actualTime;
 			timeval_subtract(&lapsedTime, &actualTime, &smiRxStart[port]);
-			// syslog(LOG_DEBUG, "DEBUG: SMI:%d (%2d) start:%3d actual:%3d lapsed:%3d\n", port, smiRxCount[port] ,smiRxStart[port].tv_usec/1000, actualTime.tv_usec/1000, lapsedTime.tv_usec/1000);
+			// syslog(LOG_DEBUG, "D SMI:%d (%2d) start:%3d actual:%3d lapsed:%3d\n", port, smiRxCount[port] ,smiRxStart[port].tv_usec/1000, actualTime.tv_usec/1000, lapsedTime.tv_usec/1000);
 			int i;
 			for (i = 0; i < bytesSmi; i++) {
 				smiRxBuff[port][smiRxCount[port]] = rxBuff[i];
@@ -370,12 +384,12 @@ int handleSMI(int handle, int port) {
 			// 	strcat(byteStr,  tmpByte);
 			// 	strcat(byteStr, " ");
 			// }
-			//syslog(LOG_DEBUG, "DEBUG: %03d SMI <- %s", (tmpTime.tv_usec/1000),  byteStr );
+			//syslog(LOG_DEBUG, "D %03d SMI <- %s", (tmpTime.tv_usec/1000),  byteStr );
 
-			//syslog(LOG_DEBUG, "DEBUG: %03d ... <- %02X %02X %02X %02X %02X %02X %02X %02X %02X %02X %02X", (tmpTime.tv_usec/1000),  rxBuff[0], rxBuff[1], rxBuff[2], rxBuff[3], rxBuff[4], rxBuff[5], rxBuff[6], rxBuff[7], rxBuff[8], rxBuff[9], rxBuff[10] );
+			//syslog(LOG_DEBUG, "D %03d ... <- %02X %02X %02X %02X %02X %02X %02X %02X %02X %02X %02X", (tmpTime.tv_usec/1000),  rxBuff[0], rxBuff[1], rxBuff[2], rxBuff[3], rxBuff[4], rxBuff[5], rxBuff[6], rxBuff[7], rxBuff[8], rxBuff[9], rxBuff[10] );
 		}
 		if (bytesSmi < 0) {
-			syslog(LOG_DEBUG, "DEBUG: error reading smi-port");
+			syslog(LOG_DEBUG, "D error reading smi-port");
 		}
 
 	} else {
@@ -415,13 +429,13 @@ int readSmiByte(int port) {
 int openSmiPort(char *port) {
 	int fd;
 	fd = open(port, O_RDWR | O_NOCTTY | O_NDELAY | O_NONBLOCK);
-	syslog(LOG_DEBUG, "DEBUG: SMI-Port-FD:%d", fd);
+	syslog(LOG_DEBUG, "D SMI-Port-FD:%d", fd);
 	if (fd == -1) {
 		return(-1);
-		syslog(LOG_WARNING, "WARNING: Unable to open serial SMI-port (fd:%d)", fd);
+		syslog(LOG_WARNING, "W Unable to open serial SMI-port (fd:%d)", fd);
 	} else {
 		fcntl(fd, F_SETFL, 0);
-		syslog(LOG_DEBUG, "DEBUG: SMI:  2.400 8N1 (fd:%d)", fd);
+		syslog(LOG_DEBUG, "D SMI:  2.400 8N1 (fd:%d)", fd);
 	}
 	struct termios options;
 	/* Get the current options for the SMI-port... */
@@ -456,7 +470,7 @@ int sendSmi(int port, int id, int cmd) {
 // 	// if (port==0) {
 // 	// 	return EXIT_FAILURE;
 // 	// }
-	// syslog(LOG_INFO, "INFO : port=%d id=%d cmd=%d",port ,id ,cmd );
+	// syslog(LOG_INFO, "I port=%d id=%d cmd=%d",port ,id ,cmd );
 	// TODO: check if bus is controlled by "smi-server"
 	// build and send smi telegramm
 	smiTxBuffer[0] = 0x50 + (id & 0x0f);
@@ -485,7 +499,7 @@ int sendSmiGetPos(int port, int id) {
 	addSmiCrc(smiTxBuffer, smiTxSize - 1);
 	write(fdSMI[port], &smiTxBuffer, smiTxSize);
 	gettimeofday( &tmpTime, (struct timezone *) 0 );
-	syslog(LOG_DEBUG, "DEBUG: %03d SMI:  -> %02x %02x %02x ", (tmpTime.tv_usec/1000), smiTxBuffer[0], smiTxBuffer[1], smiTxBuffer[2]);
+	syslog(LOG_DEBUG, "D %03d SMI:  -> %02x %02x %02x ", (tmpTime.tv_usec/1000), smiTxBuffer[0], smiTxBuffer[1], smiTxBuffer[2]);
 return EXIT_SUCCESS;
 }
 
@@ -530,4 +544,32 @@ int sendSmiGrp(int groupID, int cmd) {
 		}
 	}
 	return EXIT_SUCCESS;
+}
+
+// extern COMMAND smiCmdBuf[32];
+// extern int smiCmdBufCount;
+// extern int smiCmdBufStart;
+// extern int smiCmdBufLock;
+
+/* check if  smi command in buffer is available */
+int isSmiCmdAvailable( void ) {
+	if (smiCmdBufCount>=1) {
+		return 1;
+	}
+	return 0;
+}
+/* check if buffer for smi command is available */
+int isSmiBufAvailable( void ) {
+	if (smiCmdBufCount<=30) {
+		return 1;
+	}
+	return 0;
+}
+/* add an smi command to the buffer */
+int addSmiCmd( void ) {
+	return 0;
+}
+/* get next smi command in buffer*/
+int getSmiCmd (void ) {
+	return 0;
 }

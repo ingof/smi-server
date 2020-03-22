@@ -16,7 +16,7 @@
 				"maxLength": 5,
 				"regex": {
 					"expr": "/[0-9]{4,5}/i",
-					"errorText": "Error: HTTP Port must consist of 4 to 5 numbers."
+					"errorText": "E HTTP Port must consist of 4 to 5 numbers."
 				}
 			}
 		}]

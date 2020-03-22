@@ -17,7 +17,8 @@ int handleCommand(void) {
     // TODO: transfer TX-Part to smi-serial.c or swb-serial.c
     int loop;
     struct timeval tmpTime;
-    // syslog(LOG_DEBUG, "DEBUG: handle command (ID=%02d Group=%04d Command=%02d)", command[0].id, command[0].group, command[0].command);
+    int smiPort = drive[command[0].id].bus;
+    // syslog(LOG_DEBUG, "D handle command (ID=%02d Group=%04d Command=%02d)", command[0].id, command[0].group, command[0].command);
     //TODO avoid using flush rx buffer
     // flushSwb(fdSWB[0]);
     //TODO: get configuration of swb id
@@ -29,43 +30,96 @@ int handleCommand(void) {
     // TODO: log message to syslog with send command
 
     if ((command[0].id < 0) && (command[0].group < 0)) {
-      syslog(LOG_DEBUG, "DEBUG: ... keine gültige Adresse übergeben", command[0].id);
+      syslog(LOG_DEBUG, "D ... keine gültige Adresse übergeben", command[0].id);
+      command[0].id = -1;
+      command[0].group = -1;
+      command[0].command = -1;
+      command[0].degree = -1;
+      command[0].position = -1;
       return EXIT_FAILURE;
     }
     if (command[0].id > MAX_DRIVES) {
-      syslog(LOG_DEBUG, "DEBUG: ... Motor ID %d ist zu groß", command[0].id);
+      syslog(LOG_DEBUG, "D ... Motor ID %d ist zu groß", command[0].id);
+      command[0].id = -1;
+      command[0].group = -1;
+      command[0].command = -1;
+      command[0].degree = -1;
+      command[0].position = -1;
       return EXIT_FAILURE;
     }
     if (command[0].group > MAX_GROUPS) {
-      syslog(LOG_DEBUG, "DEBUG: ... Motor Gruppe %d ist zu groß", command[0].group);
+      syslog(LOG_DEBUG, "D ... Motor Gruppe %d ist zu groß", command[0].group);
+      command[0].id = -1;
+      command[0].group = -1;
+      command[0].command = -1;
+      command[0].degree = -1;
+      command[0].position = -1;
+      return EXIT_FAILURE;
+    }
+    if (command[0].degree > 511) {
+      syslog(LOG_DEBUG, "D ... Winkel %d ist zu groß", command[0].group);
+      command[0].id = -1;
+      command[0].group = -1;
+      command[0].command = -1;
+      command[0].degree = -1;
+      command[0].position = -1;
+      return EXIT_FAILURE;
+    }
+    if (command[0].position > 65535) {
+      syslog(LOG_DEBUG, "D ... Position %d ist zu groß", command[0].group);
+      command[0].id = -1;
+      command[0].group = -1;
+      command[0].command = -1;
+      command[0].degree = -1;
+      command[0].position = -1;
+      return EXIT_FAILURE;
+    }
+    if ( (command[0].command == 5) && (command[0].position == -1) ) {
+      syslog(LOG_DEBUG, "D ... Positionangabe fehlt", command[0].group);
+      command[0].id = -1;
+      command[0].group = -1;
+      command[0].command = -1;
+      command[0].degree = -1;
+      command[0].position = -1;
       return EXIT_FAILURE;
     }
 
-    // syslog(LOG_DEBUG, "DEBUG: (1) I:%d G:%d C:%d", command[0].id, command[0].group, command[0].command);
+    //syslog(LOG_DEBUG, "D (#) I:%d G:%d C:%d D:%d P:%d", command[0].id, command[0].group, command[0].command, command[0].degree, command[0].position);
 
     if (command[0].group >= 0) {
-      //syslog(LOG_DEBUG, "DEBUG: ... Gruppen werden noch nicht unterstützt", command[0].id);
+      //syslog(LOG_DEBUG, "D ... Gruppen werden noch nicht unterstützt", command[0].id);
       // TODO: add support of Groups
       int tmpReturn;
       char tmpMsg[60];
       int flagResponse = 0;
-      int smiPort;
-      // syslog(LOG_DEBUG, "DEBUG: (2) I:%d G:%d C:%d", command[0].id, command[0].group, command[0].command);
-
+      // int smiPort = drive[command[0].id].bus;
+      int smiTxCount;
+      // syslog(LOG_DEBUG, "D (2) I:%d G:%d C:%d", command[0].id, command[0].group, command[0].command);
       if (command[0].command >= 0) {
-        // syslog(LOG_DEBUG, "DEBUG: (3) I:%d G:%d C:%d", command[0].id, command[0].group, command[0].command);
         for (smiPort = 0; smiPort < MAX_SMI_PORTS; smiPort++) {
-          // syslog(LOG_DEBUG, "DEBUG: 1.S:%d=%d I:%d G:%d C:%d", smiPort, group[command[0].group].smiID[smiPort], command[0].id, command[0].group, command[0].command);
           if (group[command[0].group].smiID[smiPort] > 0) {
-            // syslog(LOG_DEBUG, "DEBUG: 2.S:%d=%d I:%d G:%d C:%d", smiPort, group[command[0].group].smiID[smiPort], command[0].id, command[0].group, command[0].command);
             smiTxBuffer[0] = 0x40 ;
             smiTxBuffer[1] = 0xC0 ;
             smiTxBuffer[2] = ((group[command[0].group].smiID[smiPort] / 256) & 0xff);
             smiTxBuffer[3] = (group[command[0].group].smiID[smiPort] & 0xff);
             smiTxBuffer[4] = command[0].command & 0x07;
-            addSmiCrc(smiTxBuffer, 5);
-            smiTxSize = 6;
-            write(fdSMI[smiPort], &smiTxBuffer,smiTxSize);
+            smiTxCount = 5;
+            /* 8 bit degree onla in up/down commands */
+            if ( (command[0].command >= 1 ) && (command[0].command <= 2) && (command[0].degree >= 0) && (command[0].position = -1) ) {
+              smiTxBuffer[4] += 0x20;
+              smiTxBuffer[5] = (command[0].degree & 0x1ff) >> 1;
+              smiTxCount = 6;
+            }
+            /* 16 bit Positon only in position commands */
+            if ( (command[0].command >= 5 ) && (command[0].command <= 5) && (command[0].degree = -1)  && (command[0].position >= 0) ) {
+              smiTxBuffer[4] += 0x40;
+              smiTxBuffer[5] = (command[0].position & 0xff00) >> 8;
+              smiTxBuffer[6] = command[0].position & 0x00ff;
+              smiTxCount = 7;
+            }
+            addSmiCrc(smiTxBuffer, smiTxCount);
+            smiTxSize = smiTxCount + 1;
+            write(fdSMI[smiPort], &smiTxBuffer, smiTxSize);
             usleep(50000);
             // TODO: check ocho of sent bytes
             /* ignore sent bytes */
@@ -75,11 +129,18 @@ int handleCommand(void) {
             readSmiByte(smiPort);
             readSmiByte(smiPort);
             readSmiByte(smiPort);
+            if ( (command[0].command >= 1 ) && (command[0].command <= 2) && (command[0].degree >= 0) && (command[0].position = -1) ) {
+              readSmiByte(smiPort);
+            }
+            if ( (command[0].command >= 5 ) && (command[0].command <= 5) && (command[0].degree = -1)  && (command[0].position >= 0) ) {
+              readSmiByte(smiPort);
+              readSmiByte(smiPort);
+            }
             // readSmiByte(drive[command[0].id].bus);
             for (loop = 0; loop < 10; loop++) {
                 gettimeofday( &tmpTime, (struct timezone *) 0 );
                 // write(fdSMI[drive[command[0].id].bus], &smiTxBuffer,smiTxSize);
-                sprintf(tmpMsg, "DEBUG: %03d \e[1mSMI:%d -> %02x %02x %02x %02x %02x %02x ", (tmpTime.tv_usec/1000), smiPort, smiTxBuffer[0], smiTxBuffer[1], smiTxBuffer[2], smiTxBuffer[3], smiTxBuffer[4], smiTxBuffer[5] );
+                sprintf(tmpMsg, "D %03d \e[1mSMI:%d -> %02x %02x %02x %02x %02x %02x ", (tmpTime.tv_usec/1000), smiPort, smiTxBuffer[0], smiTxBuffer[1], smiTxBuffer[2], smiTxBuffer[3], smiTxBuffer[4], smiTxBuffer[5] );
                 usleep(5000);
                 // TODO: check if response is ok
                 tmpReturn = readSmiByte(smiPort);
@@ -115,6 +176,8 @@ int handleCommand(void) {
       command[0].id = -1;
       command[0].group = -1;
       command[0].command = -1;
+      command[0].degree = -1;
+      command[0].position = -1;
       return(EXIT_FAILURE);
     }
 
@@ -140,7 +203,7 @@ int handleCommand(void) {
           for (loop = 0; loop < 5; loop++) {
               gettimeofday( &tmpTime, (struct timezone *) 0 );
               write(fdSWB[0],&swbTxBuffer,swbTxSize);
-              syslog(LOG_DEBUG, "DEBUG: %03d CMD:  -> %02x %02x %02x %02x %02x %02x %02x", (tmpTime.tv_usec/1000), swbTxBuffer[0], swbTxBuffer[1], swbTxBuffer[2], swbTxBuffer[3], swbTxBuffer[4], swbTxBuffer[5], swbTxBuffer[6]);
+              syslog(LOG_DEBUG, "D %03d CMD:  -> %02x %02x %02x %02x %02x %02x %02x", (tmpTime.tv_usec/1000), swbTxBuffer[0], swbTxBuffer[1], swbTxBuffer[2], swbTxBuffer[3], swbTxBuffer[4], swbTxBuffer[5], swbTxBuffer[6]);
               usleep(20000);          // wait 15ms for response
               // TODO: check if response is right!!!
               if (readSwb(fdSWB[0],0) == EXIT_SUCCESS) {
@@ -148,7 +211,7 @@ int handleCommand(void) {
               }
           }
 
-          // syslog(LOG_DEBUG, "DEBUG: readSwb returned" );
+          // syslog(LOG_DEBUG, "D readSwb returned" );
           swbTxBuffer[0]= 0xF0;
           swbTxBuffer[1]= drive[command[0].id].switchAddr.Byte.High;  // swbTxBuffer[1]= 0x24;
           swbTxBuffer[2]= drive[command[0].id].switchAddr.Byte.Low;   // swbTxBuffer[2]= 0x6B;
@@ -173,7 +236,7 @@ int handleCommand(void) {
           for (loop = 0; loop < 5; loop++) {
               gettimeofday( &tmpTime, (struct timezone *) 0 );
               write(fdSWB[0],&swbTxBuffer,swbTxSize);
-              syslog(LOG_DEBUG, "DEBUG: %03d CMD:  -> %02x %02x %02x %02x %02x %02x %02x", (tmpTime.tv_usec/1000), swbTxBuffer[0], swbTxBuffer[1], swbTxBuffer[2], swbTxBuffer[3], swbTxBuffer[4], swbTxBuffer[5], swbTxBuffer[6]);
+              syslog(LOG_DEBUG, "D %03d CMD:  -> %02x %02x %02x %02x %02x %02x %02x", (tmpTime.tv_usec/1000), swbTxBuffer[0], swbTxBuffer[1], swbTxBuffer[2], swbTxBuffer[3], swbTxBuffer[4], swbTxBuffer[5], swbTxBuffer[6]);
               usleep(20000);          // wait 15ms for response
               // TODO: check if response is right
               if (readSwb(fdSWB[0],0) == EXIT_SUCCESS) {
@@ -187,28 +250,41 @@ int handleCommand(void) {
         // TODO: use configured SMI-Bus
         // TODO: log message to syslog with send command
         // if ((command[0].id < 0) && (command[0].group < 0)) {
-        //   syslog(LOG_DEBUG, "DEBUG: ... keine gültige Adresse übergeben", command[0].id);
+        //   syslog(LOG_DEBUG, "D ... keine gültige Adresse übergeben", command[0].id);
         //   return EXIT_FAILURE;
         // }
         // if (command[0].id > MAX_DRIVES) {
-        //   syslog(LOG_DEBUG, "DEBUG: ... Motor ID %d ist zu groß", command[0].id);
+        //   syslog(LOG_DEBUG, "D ... Motor ID %d ist zu groß", command[0].id);
         //   return EXIT_FAILURE;
         // }
         // if (command[0].group > MAX_GROUPS) {
-        //   syslog(LOG_DEBUG, "DEBUG: ... Motor Gruppe %d ist zu groß", command[0].group);
+        //   syslog(LOG_DEBUG, "D ... Motor Gruppe %d ist zu groß", command[0].group);
         //   return EXIT_FAILURE;
         // }
         // if (command[0].group >= 0) {
-        //   syslog(LOG_DEBUG, "DEBUG: ... Gruppen werden noch nicht unterstützt", command[0].id);
+        //   syslog(LOG_DEBUG, "D ... Gruppen werden noch nicht unterstützt", command[0].id);
         //   // TODO: add support of Groups
         //   return EXIT_FAILURE;
         // }
+        smiTxSize=2;
         if (command[0].command >= 0) {
           smiTxBuffer[0] = 0x50 + (drive[command[0].id].id & 0x0f);
           smiTxBuffer[1] = command[0].command & 0x07;
-          addSmiCrc(smiTxBuffer, 2);
-          // smiTxSize = 4;
-          smiTxSize = 3;
+          smiTxSize = 2;
+          if ( (command[0].command >= 1 ) && (command[0].command <= 2) && (command[0].degree >= 0) && (command[0].position = -1) ) {
+            /* step degree */
+            smiTxBuffer[1] += 0x20;
+            smiTxBuffer[2] = (command[0].degree & 0x1ff) >> 1;
+            smiTxSize = 3;
+          } else if ( (command[0].command >= 5 ) && (command[0].command <= 5) && (command[0].degree = -1)  && (command[0].position >= 0) ) {
+            /* absolute position */
+            smiTxBuffer[1] += 0x40;
+            smiTxBuffer[2] = (command[0].position & 0xff00) >> 8;
+            smiTxBuffer[3] = command[0].position & 0x00ff;
+            smiTxSize = 4;
+          }
+          addSmiCrc(smiTxBuffer, smiTxSize);
+          smiTxSize ++;
           write(fdSMI[drive[command[0].id].bus], &smiTxBuffer,smiTxSize);
           usleep(50000);
           // TODO: check ocho of sent bytes
@@ -216,11 +292,28 @@ int handleCommand(void) {
           readSmiByte(drive[command[0].id].bus);
           readSmiByte(drive[command[0].id].bus);
           readSmiByte(drive[command[0].id].bus);
+          if ( (command[0].command >= 1 ) && (command[0].command <= 2) && (command[0].degree >= 0) && (command[0].position = -1) ) {
+            /* step degree */
+            readSmiByte(drive[command[0].id].bus);
+          }
+          if ( (command[0].command >= 5 ) && (command[0].command <= 5) && (command[0].degree = -1)  && (command[0].position >= 0) ) {
+            /* absolute position */
+            readSmiByte(drive[command[0].id].bus);
+            readSmiByte(drive[command[0].id].bus);
+          }
           // readSmiByte(drive[command[0].id].bus);
           for (loop = 0; loop < 10; loop++) {
               gettimeofday( &tmpTime, (struct timezone *) 0 );
               // write(fdSMI[drive[command[0].id].bus], &smiTxBuffer,smiTxSize);
-              sprintf(tmpMsg, "DEBUG: %03d \e[1mSMI:%d -> %02x %02x %02x %02x ", (tmpTime.tv_usec/1000), drive[command[0].id].bus, smiTxBuffer[0], smiTxBuffer[1], smiTxBuffer[2], smiTxBuffer[3] );
+              sprintf(tmpMsg, "D %03d \e[1mSMI:%d -> %02x %02x %02x ", (tmpTime.tv_usec/1000), drive[command[0].id].bus, smiTxBuffer[0], smiTxBuffer[1], smiTxBuffer[2] );
+              if ( (command[0].command >=1 ) && (command[0].command <= 2) && (command[0].degree >= 0) && (command[0].position = -1) ) {
+                /* step degree */
+                sprintf(tmpMsg, "D %03d \e[1mSMI:%d -> %02x %02x %02x %02x ", (tmpTime.tv_usec/1000), drive[command[0].id].bus, smiTxBuffer[0], smiTxBuffer[1], smiTxBuffer[2], smiTxBuffer[3] );
+              }
+              if ( (command[0].command >=3 ) && (command[0].command <= 5) && (command[0].degree = -1)  && (command[0].position >= 0) ) {
+                /* absolute position */
+                sprintf(tmpMsg, "D %03d \e[1mSMI:%d -> %02x %02x %02x %02x %02x ", (tmpTime.tv_usec/1000), drive[command[0].id].bus, smiTxBuffer[0], smiTxBuffer[1], smiTxBuffer[2], smiTxBuffer[3], smiTxBuffer[4] );
+              }
               usleep(5000);
               // TODO: check if response is ok
               tmpReturn = readSmiByte(drive[command[0].id].bus);
@@ -262,6 +355,9 @@ int handleCommand(void) {
         command[0].id = -1;
         command[0].group = -1;
         command[0].command = -1;
+        command[0].degree = -1;
+        command[0].position = -1;
+
         return(EXIT_FAILURE);
       }
     }
@@ -270,6 +366,8 @@ int handleCommand(void) {
     command[0].id = -1;
     command[0].group = -1;
     command[0].command = -1;
+    command[0].degree = -1;
+    command[0].position = -1;
     return(EXIT_SUCCESS);
 }
 
@@ -284,7 +382,7 @@ int sendSmiCmd(int swbAddr, int smiCmd) {
       // if (smiCmd == 0) {
       //   usleep(40000);
       //   gettimeofday( &tmpTime, (struct timezone *) 0 );
-      //   syslog(LOG_INFO, "INFO : %03d SMI:  getPos %d,%d ", (tmpTime.tv_usec/1000), drive[loop].bus, drive[loop].id );
+      //   syslog(LOG_INFO, "I %03d SMI:  getPos %d,%d ", (tmpTime.tv_usec/1000), drive[loop].bus, drive[loop].id );
       //   sendSmiGetPos(drive[loop].bus, drive[loop].id);
       // }
       break;

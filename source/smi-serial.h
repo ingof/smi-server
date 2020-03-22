@@ -2,10 +2,6 @@
 #ifndef SMI_SERIAL_H
 #define SMI_SERIAL_H
 
-extern DRIVE drive[MAX_DRIVES];
-extern GROUP group[MAX_GROUPS];
-extern char openHABHost[30];
-extern int openHABPort;
 
 
 /* open port to smi-bus */
@@ -36,5 +32,16 @@ int sendSmiGetPos(int port, int id);
 
 /* send smi command to a group of drives */
 int sendSmiGrp(int groupID, int smiCmd);
+
+
+/* check if  smi command in buffer is available */
+int isSmiCmdAvailable( void );
+/* check if buffer for smi command is available */
+int isSmiBufAvailable( void );
+/* add an smi command to the buffer */
+int addSmiCmd( void );
+/* get next smi command in buffer*/
+int getSmiCmd (void );
+
 
 #endif /* smi-serial.h */

@@ -77,13 +77,13 @@ void calcSwbCrc(unsigned char *buffer, int size) {
 	buffer[size-1]=(uint8_t) (crc>>8);
 	// printBuffer(buffer, size+2);
 	//size += 2;
-	 // syslog(LOG_DEBUG, "DEBUG: CRC %02X %02X %02X %02X %02X %02X %02X", buffer[0], buffer[1], buffer[2], buffer[3], buffer[4], buffer[5], buffer[6]);
+	 // syslog(LOG_DEBUG, "D CRC %02X %02X %02X %02X %02X %02X %02X", buffer[0], buffer[1], buffer[2], buffer[3], buffer[4], buffer[5], buffer[6]);
 }
 
 /* check SwitchBus crc-16 */
 int  checkSwbCrc(unsigned char *buffer, int size) {
 	int crc=createSwbCrc(buffer, size);
-	 // syslog(LOG_DEBUG, "DEBUG: CRC 0x%04X (<- %d %02x %02x %02x %02x %02x %02X%02X)", crc, size, buffer[0], buffer[1], buffer[2], buffer[3], buffer[4], buffer[size-2], buffer[size-1]);
+	 // syslog(LOG_DEBUG, "D CRC 0x%04X (<- %d %02x %02x %02x %02x %02x %02X%02X)", crc, size, buffer[0], buffer[1], buffer[2], buffer[3], buffer[4], buffer[size-2], buffer[size-1]);
 	if (buffer[size-2]!=(uint8_t) crc) {
 		return EXIT_FAILURE;
 	}
@@ -104,7 +104,7 @@ int handleSWB(int handle, int port) {
 	struct timeval tmpTime;
 	IOReturn=ioctl(handle, FIONREAD, &serialBytes);
 	if (IOReturn<0) {
-		syslog(LOG_DEBUG, "DEBUG: IOReturn:2=%d", IOReturn);
+		syslog(LOG_DEBUG, "D IOReturn:2=%d", IOReturn);
 	}
 	// if (serialBytes>0) {
 	if (serialBytes>=7) {
@@ -133,7 +133,7 @@ int handleSWB(int handle, int port) {
 
 
 		if (bytesSwb == 0) {
-			syslog(LOG_DEBUG, "DEBUG: data available but no data received (%d)", bytesSwb);
+			syslog(LOG_DEBUG, "D data available but no data received (%d)", bytesSwb);
 		}
 		if (bytesSwb > 0) {
 			// crcStat = checkSwbCrc(rxBuff, bytesSwb);
@@ -142,7 +142,7 @@ int handleSWB(int handle, int port) {
 			if (crcStat==EXIT_SUCCESS) {
 				// check if (1) {
 				// TODO: only on first message (swb telegram counter 0x80)
-				syslog(LOG_DEBUG, "DEBUG: %03d SWB:%d <- %02X %02X %02X %02X %02X %02X %02X \e[32m( OK)\e[0m", (tmpTime.tv_usec/1000), port, swbRxBuffer[port][0], swbRxBuffer[port][1], swbRxBuffer[port][2], swbRxBuffer[port][3], swbRxBuffer[port][4], swbRxBuffer[port][5], swbRxBuffer[port][6]);
+				syslog(LOG_DEBUG, "D %03d SWB:%d <- %02X %02X %02X %02X %02X %02X %02X \e[32m( OK)\e[0m", (tmpTime.tv_usec/1000), port, swbRxBuffer[port][0], swbRxBuffer[port][1], swbRxBuffer[port][2], swbRxBuffer[port][3], swbRxBuffer[port][4], swbRxBuffer[port][5], swbRxBuffer[port][6]);
 				if ((swbRxBuffer[port][4] & 0x0D) !=0) {
 					char tmpName[30];
 					char tmpAction[25];
@@ -196,7 +196,7 @@ int handleSWB(int handle, int port) {
 							break;
 						}
 					}
-					syslog(LOG_INFO, "INFO:  %03d \e[1mSWB:%d <- Switch %04X '%s -> %s'\e[0m ", (tmpTime.tv_usec/1000), port, tmpAddr, tmpName, tmpAction);
+					syslog(LOG_INFO, "I  %03d \e[1mSWB:%d <- Switch %04X '%s -> %s'\e[0m ", (tmpTime.tv_usec/1000), port, tmpAddr, tmpName, tmpAction);
 					if (smiCmd >= 0) {
 						//TODO: handle more than one drive
 						//TODO: serch for drive and handle SMI-Command
@@ -211,21 +211,21 @@ int handleSWB(int handle, int port) {
 				if ((serialSwbAck[port] == TRUE) && (swbRxBuffer[port][4] != 0x00)) {
 					createSwbAck(swbRxBuffer[port], 7);
 					write(handle,swbRxBuffer[port],7);
-					syslog(LOG_DEBUG, "DEBUG: %03d SWB:%d -> %02X %02X %02X %02X %02X %02X %02X \e[1m\e[32m(ACK)\e[0m", (tmpTime.tv_usec/1000), port, swbRxBuffer[port][0], swbRxBuffer[port][1], swbRxBuffer[port][2], swbRxBuffer[port][3], swbRxBuffer[port][4], swbRxBuffer[port][5], swbRxBuffer[port][6] );
+					syslog(LOG_DEBUG, "D %03d SWB:%d -> %02X %02X %02X %02X %02X %02X %02X \e[1m\e[32m(ACK)\e[0m", (tmpTime.tv_usec/1000), port, swbRxBuffer[port][0], swbRxBuffer[port][1], swbRxBuffer[port][2], swbRxBuffer[port][3], swbRxBuffer[port][4], swbRxBuffer[port][5], swbRxBuffer[port][6] );
 				}
 			} else {
-				syslog(LOG_DEBUG, "DEBUG: %03d SWB:%d <- %02X %02X %02X %02X %02X %02X %02X \e[31m(***)\e[0m", (tmpTime.tv_usec/1000), port, swbRxBuffer[port][0], swbRxBuffer[port][1], swbRxBuffer[port][2], swbRxBuffer[port][3], swbRxBuffer[port][4], swbRxBuffer[port][5], swbRxBuffer[port][6] );
+				syslog(LOG_DEBUG, "D %03d SWB:%d <- %02X %02X %02X %02X %02X %02X %02X \e[31m(***)\e[0m", (tmpTime.tv_usec/1000), port, swbRxBuffer[port][0], swbRxBuffer[port][1], swbRxBuffer[port][2], swbRxBuffer[port][3], swbRxBuffer[port][4], swbRxBuffer[port][5], swbRxBuffer[port][6] );
 				// CHECK
 				if ((serialSwbAck[port] == TRUE) && (swbRxBuffer[port][4] != 0x00)) {
 					createSwbAck(swbRxBuffer[port], 7);
 					write(handle,swbRxBuffer[port],7);
-					syslog(LOG_DEBUG, "DEBUG: %03d SWB:%d -> %02X %02X %02X %02X %02X %02X %02X \e[1m\e[31m(ACK)\e[0m", (tmpTime.tv_usec/1000), port, swbRxBuffer[port][0], swbRxBuffer[port][1], swbRxBuffer[port][2], swbRxBuffer[port][3], swbRxBuffer[port][4], swbRxBuffer[port][5], swbRxBuffer[port][6] );
+					syslog(LOG_DEBUG, "D %03d SWB:%d -> %02X %02X %02X %02X %02X %02X %02X \e[1m\e[31m(ACK)\e[0m", (tmpTime.tv_usec/1000), port, swbRxBuffer[port][0], swbRxBuffer[port][1], swbRxBuffer[port][2], swbRxBuffer[port][3], swbRxBuffer[port][4], swbRxBuffer[port][5], swbRxBuffer[port][6] );
 				}
 				// CHECK
 			}
 		}
 		if (bytesSwb < 0) {
-			syslog(LOG_DEBUG, "DEBUG: error reading swb-port");
+			syslog(LOG_DEBUG, "D error reading swb-port");
 		}
 
 	} else {
@@ -241,16 +241,16 @@ int closeSwbPort(int handle) {
 
 
 int flushSwb(int fd) {
-	// syslog(LOG_DEBUG, "DEBUG: flushing swb rx buffer");
+	// syslog(LOG_DEBUG, "D flushing swb rx buffer");
 	// return tcflush(fd, TCIFLUSH);
 	int IOReturn=-1;
 	int serialBytes=-1;
 	IOReturn=ioctl(fd, FIONREAD, &serialBytes);
 	if (IOReturn<0) {
-		syslog(LOG_DEBUG, "DEBUG: IOReturn:3=%d", IOReturn);
+		syslog(LOG_DEBUG, "D IOReturn:3=%d", IOReturn);
 	}
 	if (serialBytes>0) {
-		syslog(LOG_DEBUG, "DEBUG: %d swb bytes flushed", serialBytes);
+		syslog(LOG_DEBUG, "D %d swb bytes flushed", serialBytes);
 	}
 	return tcflush(fd, TCIFLUSH);
 }
@@ -268,7 +268,7 @@ int readSwb(int fd, int port) {
 	//usleep(700000);
 	IOReturn=ioctl(fd, FIONREAD, &serialBytes);
 	if (IOReturn<0) {
-		syslog(LOG_DEBUG, "DEBUG: IOReturn:4=%d", IOReturn);
+		syslog(LOG_DEBUG, "D IOReturn:4=%d", IOReturn);
 		// if (actualSwbTimeout>0) actualSwbTimeout--;
 	}
     //
@@ -283,32 +283,32 @@ int readSwb(int fd, int port) {
 		// 	actualSwbTimeout=serialSwbWait;
 		// }
 		/* create temporary buffer for received Bytes */
-		// syslog(LOG_DEBUG, "DEBUG: serialBytes=%d bytesSwb=%d", serialBytes, bytesSwb);
+		// syslog(LOG_DEBUG, "D serialBytes=%d bytesSwb=%d", serialBytes, bytesSwb);
 		bytesSwb = read(fd, &swbRxBuffer[port], serialBytes);
 		serialBytes=-1;
-		// syslog(LOG_DEBUG, "DEBUG: serialBytes=%d bytesSwb=%d", serialBytes, bytesSwb);
+		// syslog(LOG_DEBUG, "D serialBytes=%d bytesSwb=%d", serialBytes, bytesSwb);
 		if (bytesSwb == 0) {
-			syslog(LOG_DEBUG, "DEBUG: data available but no data received (%d)", bytesSwb);
+			syslog(LOG_DEBUG, "D data available but no data received (%d)", bytesSwb);
 		}
 		if (bytesSwb > 0) {
 			// // memcpy(bufferSwb+bufferSwbCount, tmpBuffer, bytesSwb);
 			// // strncpy(bufferSwb+bufferSwbCount, tmpBuffer, bytesSwb);
 			// for (loop=0;loop<bytesSwb;loop++) {
 			// 	rxBuffer[bytesSwb+loop]=tmpBuffer[loop];
-			// syslog(LOG_DEBUG, "DEBUG: <- %02X %02X %02X %02X %02X %02X %02X", swbRxBuffer[port][0], swbRxBuffer[port][1], swbRxBuffer[port][2], swbRxBuffer[port][3], swbRxBuffer[port][4], swbRxBuffer[port][5], swbRxBuffer[port][6] );
+			// syslog(LOG_DEBUG, "D <- %02X %02X %02X %02X %02X %02X %02X", swbRxBuffer[port][0], swbRxBuffer[port][1], swbRxBuffer[port][2], swbRxBuffer[port][3], swbRxBuffer[port][4], swbRxBuffer[port][5], swbRxBuffer[port][6] );
 
 			gettimeofday( &tmpTime, (struct timezone *) 0 );
 			crcStat = checkSwbCrc(swbRxBuffer[port], bytesSwb);
 			if (crcStat==EXIT_SUCCESS) {
-				syslog(LOG_DEBUG, "DEBUG: %03d CMD:  <- %02X %02X %02X %02X %02X %02X %02X \e[32m(OK)\e[0m", (tmpTime.tv_usec/1000), swbRxBuffer[port][0], swbRxBuffer[port][1], swbRxBuffer[port][2], swbRxBuffer[port][3], swbRxBuffer[port][4], swbRxBuffer[port][5], swbRxBuffer[port][6] );
+				syslog(LOG_DEBUG, "D %03d CMD:  <- %02X %02X %02X %02X %02X %02X %02X \e[32m(OK)\e[0m", (tmpTime.tv_usec/1000), swbRxBuffer[port][0], swbRxBuffer[port][1], swbRxBuffer[port][2], swbRxBuffer[port][3], swbRxBuffer[port][4], swbRxBuffer[port][5], swbRxBuffer[port][6] );
 			} else {
-				syslog(LOG_DEBUG, "DEBUG: %03d CMD:  <- %02X %02X %02X %02X %02X %02X %02X \e[31m(**)\e[0m", (tmpTime.tv_usec/1000), swbRxBuffer[port][0], swbRxBuffer[port][1], swbRxBuffer[port][2], swbRxBuffer[port][3], swbRxBuffer[port][4], swbRxBuffer[port][5], swbRxBuffer[port][6] );
+				syslog(LOG_DEBUG, "D %03d CMD:  <- %02X %02X %02X %02X %02X %02X %02X \e[31m(**)\e[0m", (tmpTime.tv_usec/1000), swbRxBuffer[port][0], swbRxBuffer[port][1], swbRxBuffer[port][2], swbRxBuffer[port][3], swbRxBuffer[port][4], swbRxBuffer[port][5], swbRxBuffer[port][6] );
 			}
 
 		}
 
 		if (bytesSwb < 0) {
-			syslog(LOG_DEBUG, "DEBUG: error reading swb-port");
+			syslog(LOG_DEBUG, "D error reading swb-port");
 		}
 		// if (bytesSwb<=0) {
 		// 	actualSwbTimeout--;
@@ -318,9 +318,9 @@ int readSwb(int fd, int port) {
 		// // TODO: check received frame
 		// crcStat = checkSwbCrc(swbRxBuffer, bytesSwb);
 		// if (crcStat == EXIT_SUCCESS)  {
-		// 	syslog(LOG_DEBUG, "DEBUG: SWB CRC is OK");
+		// 	syslog(LOG_DEBUG, "D SWB CRC is OK");
 		// } else {
-		// 	syslog(LOG_NOTICE, "NOTICE: SWB CRC check has failed");
+		// 	syslog(LOG_NOTICE, "N SWB CRC check has failed");
 		// }
 		// return EXIT_SUCCESS;
 	} else {
@@ -338,18 +338,18 @@ int openSwbPort (char *port) {
 int openSwbPortDiv (char *port, int divisor) {
 	int fd; /* File descriptor for the port */
 	fd = open(port, O_RDWR | O_NOCTTY | O_NDELAY | O_NONBLOCK);
-	syslog(LOG_DEBUG, "DEBUG: SWB-Port-FD:%d", fd);
+	syslog(LOG_DEBUG, "D SWB-Port-FD:%d", fd);
 	if (fd == -1) {
 		return(-1);
-		syslog(LOG_WARNING, "WARNING: Unable to open serial SWB-port (fd:%d)", fd);
+		syslog(LOG_WARNING, "W Unable to open serial SWB-port (fd:%d)", fd);
 	} else {
 		fcntl(fd, F_SETFL, 0);
-		syslog(LOG_DEBUG, "DEBUG: SWB: 19.200 8N2 (fd:%d)", fd);
+		syslog(LOG_DEBUG, "D SWB: 19.200 8N2 (fd:%d)", fd);
 	}
 	struct termios options;
 	/* Get the current options for the SWB-port... */
 	if (tcgetattr(fd, &options)<0) {
-		syslog(LOG_WARNING, "WARNING: tcGetattr");
+		syslog(LOG_WARNING, "W tcGetattr");
 	}
 	if (divisor==0) {
 		/* Set the baud rates to 19200... */
@@ -362,12 +362,12 @@ int openSwbPortDiv (char *port, int divisor) {
 		cfsetospeed(&options, B38400);
 		/* Set the custom_divisor for special baudrates */
 		if (ioctl(fd, TIOCGSERIAL, &ser)<0) {
-			syslog(LOG_WARNING, "WARNING: tiocgSerial");
+			syslog(LOG_WARNING, "W tiocgSerial");
 		}
 		ser.flags |= ASYNC_SPD_CUST;
 		ser.custom_divisor=divisor;
 		if (ioctl(fd, TIOCSSERIAL, &ser)<0) {
-			syslog(LOG_WARNING, "WARNING: tiocsSerial");
+			syslog(LOG_WARNING, "W tiocsSerial");
 		}
 	}
 	/* Enable the receiver and set local mode... */

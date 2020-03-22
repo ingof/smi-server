@@ -23,7 +23,6 @@
 #include <sys/socket.h>
 #include <netdb.h>
 
-
 // socklen_t clientAddrLen;
 //char* remoteIp="";
 char remoteIP[INET6_ADDRSTRLEN];
@@ -69,9 +68,9 @@ int initWebserver(int port) {
     struct sockaddr_in address;
 
     if ((webSocket = socket(AF_INET, SOCK_STREAM, 0)) >= 0) {
-        syslog(LOG_DEBUG, "DEBUG: The socket was created:");
+        syslog(LOG_DEBUG, "D The socket was created:");
     } else {
-        syslog(LOG_WARNING, "WARNING: socket creation error (%d)", errno);
+        syslog(LOG_WARNING, "W socket creation error (%d)", errno);
     }
 
     // TODO: allow only one or two ip-addresses
@@ -81,10 +80,10 @@ int initWebserver(int port) {
 
     tmpBind=bind(webSocket, (struct sockaddr *) &address, sizeof(address)) ;
     if (tmpBind== 0) {
-        syslog(LOG_DEBUG, "DEBUG: Binding Socket %d\n",tmpBind);
+        syslog(LOG_DEBUG, "D Binding Socket %d\n",tmpBind);
     } else {
-        syslog(LOG_WARNING, "WARNING: Can not bind webserver (bind:%d)", tmpBind);
-        syslog(LOG_DEBUG, "DEBUG: Can not bind webserver (bind:%d)", tmpBind);
+        syslog(LOG_WARNING, "W Can not bind webserver (bind:%d)", tmpBind);
+        syslog(LOG_DEBUG, "D Can not bind webserver (bind:%d)", tmpBind);
         //TODO: Return EXIT_FAILURE instead of websocket at binding error????
         // close socket on error?? SO_EXCLUSIVEADDRUSE in bind???
     }
@@ -92,7 +91,7 @@ int initWebserver(int port) {
 
     tmpListen = listen(webSocket, 10);
     if (tmpListen < 0) {
-        syslog(LOG_NOTICE, "NOTICE: webserver listen: %d", tmpListen);
+        syslog(LOG_NOTICE, "N webserver listen: %d", tmpListen);
         exit(1);
     }
 
@@ -124,7 +123,7 @@ void handleWebserver(int socket) {
     if ((newSocket = accept(socket, (struct sockaddr *) &tmpAddr, &tmpLen)) < 0) {
         if (errno == EAGAIN) { // no data available
         } else {
-            syslog(LOG_NOTICE, "NOTICE: webserver accept %d / (%s)", newSocket, inet_ntoa(clientAddress.sin_addr));
+            syslog(LOG_NOTICE, "N webserver accept %d / (%s)", newSocket, inet_ntoa(clientAddress.sin_addr));
             exit(1);
         }
     } else { // data available
@@ -142,7 +141,7 @@ void handleWebserver(int socket) {
 
 
         if (newSocket <= 0){
-            syslog(LOG_DEBUG, "DEBUG: webserver connected (%s:%d)", remoteIP, remotePort);
+            syslog(LOG_DEBUG, "D webserver connected (%s:%d)", remoteIP, remotePort);
         }
         /* receive header */
         unsigned char *bufferHTTP = calloc(bufSize,sizeof(char));
@@ -155,7 +154,7 @@ void handleWebserver(int socket) {
         recv(newSocket, bufferHTTP, bufSize, 0);
         // logBufferAscii(bufferHTTP,bufSize);
         if (getPostData(bufferHTTP,bufSize,loop)!=0) {
-            syslog(LOG_DEBUG, "DEBUG: does not contain control data (%s:%d)", remoteIP, remotePort);
+            syslog(LOG_DEBUG, "D does not contain control data (%s:%d)", remoteIP, remotePort);
         }
         free(bufferHTTP);
 
@@ -263,9 +262,11 @@ int getPostData(unsigned char *buffer, int size, int count) {
   command[0].id = -1;
   command[0].group = -1;
   command[0].command = -1;
+  command[0].degree = -1;
+  command[0].position = -1;
 
     // // display header
-    // syslog(LOG_DEBUG,"DEBUG: Header:--------------------------------------------\n%s\n-------------------------------------------------------------------------------------------------------------", buffer);
+    // syslog(LOG_DEBUG,"D Header:--------------------------------------------\n%s\n-------------------------------------------------------------------------------------------------------------", buffer);
 
     // GET request
     if (strstr((char*) buffer,word)) {
@@ -315,7 +316,7 @@ int getPostData(unsigned char *buffer, int size, int count) {
       }
     }
   gettimeofday( &tmpTime, (struct timezone *) 0 );
-  syslog(LOG_INFO, "INFO:  %03d WEB:  <- \e[36m%s:%d ID:%02d GR:%02d CM:%02d\e[1m\e[0m", (tmpTime.tv_usec/1000), remoteIP, remotePort ,command[0].id,command[0].group,command[0].command);
+  syslog(LOG_INFO, "I  %03d WEB:  <- \e[36m%s:%d ID:%02d GR:%02d CM:%02d DG:%d PO:%d\e[1m\e[0m", (tmpTime.tv_usec/1000), remoteIP, remotePort, command[0].id, command[0].group, command[0].command, command[0].degree, command[0].position);
 	return EXIT_SUCCESS;
 }
 
@@ -324,49 +325,49 @@ void extractData(char *name, char *value) {
     command[0].command=atoi(value);
     // stop drive
     if (strncmp(value, "stop", 4) == 0) {
-      command[0].command=0;
+      command[0].command = 0;
     }
     // direction up
     if (strncmp(value, "auf", 3) == 0) {
-      command[0].command=1;
+      command[0].command = 1;
     }
     if (strncmp(value, "hoch", 4) == 0) {
-      command[0].command=1;
+      command[0].command = 1;
     }
     if (strncmp(value, "up", 2) == 0) {
-      command[0].command=1;
+      command[0].command = 1;
     }
     // direction down
     if (strncmp(value, "ab", 2) == 0) {
-      command[0].command=2;
+      command[0].command = 2;
     }
     if (strncmp(value, "runter", 6) == 0) {
-      command[0].command=2;
+      command[0].command = 2;
     }
     if (strncmp(value, "down", 4) == 0) {
-      command[0].command=2;
+      command[0].command = 2;
     }
     // position commands
     if (strncmp(value, "pos1", 4) == 0) {
-      command[0].command=3;
+      command[0].command = 3;
     }
     if (strncmp(value, "sun", 3) == 0) {
-      command[0].command=3;
+      command[0].command = 3;
     }
     if (strncmp(value, "sonne", 5) == 0) {
-      command[0].command=3;
+      command[0].command = 3;
     }
     if (strncmp(value, "pos2", 4) == 0) {
-      command[0].command=4;
+      command[0].command = 4;
     }
     if (strncmp(value, "eye", 3) == 0) {
-      command[0].command=4;
+      command[0].command = 4;
     }
     if (strncmp(value, "auge", 4) == 0) {
-      command[0].command=4;
+      command[0].command = 4;
     }
     if (strncmp(value, "getpos", 6) == 0) {
-      command[0].command=5;
+      command[0].command = 5;
     }
 
     // check and correct data
@@ -378,17 +379,33 @@ void extractData(char *name, char *value) {
     command[0].id=atoi(value);
     // check and correct data
     if (command[0].id > 31) command[0].id = -1;
-    if (command[0].id < 0) command[0].id = 0;
+    if (command[0].id < 0) command[0].id = -1;
     // return;
   }
   if (strcmp(name,"grp")==0) {
     command[0].group=atoi(value);
     // check and correct data
     command[0].group &=0x7fff;
-    if (command[0].group<0) command[0].group=0;
+    if (command[0].group < 0) command[0].group=-1;
     // return;
   }
-  // syslog(LOG_DEBUG, " status: ID=%02d GR=%02d CM=%02d", command[0].id,command[0].group,command[0].command);
+  if (strcmp(name,"deg")==0) {
+    command[0].degree=atoi(value);
+    // check and correct data
+    //command[0].degree &=0x01ff;
+    if (command[0].degree > 511) command[0].degree=-1;
+    if (command[0].degree < 1) command[0].degree=-1;
+    // return;
+  }
+  if (strcmp(name,"pos")==0) {
+    command[0].position=atoi(value);
+    // check and correct data
+    //command[0].position &=0xffff;
+    if (command[0].position > 65535) command[0].position=-1;
+    if (command[0].position < 0) command[0].position=-1;
+    // return;
+  }
+   //syslog(LOG_DEBUG, " status: ID=%02d GR=%02d CM=%02d DG=%d PS=%d", command[0].id, command[0].group, command[0].command, command[0].degree, command[0].position);
 }
 
 int sendGetRequest(char * host, int port, char * url) {
@@ -402,25 +419,24 @@ int sendGetRequest(char * host, int port, char * url) {
   int tcpSocket = socket(AF_INET, SOCK_STREAM, 0);
   if (tcpSocket < 0) {
     gettimeofday( &tmpTime, (struct timezone *) 0 );
-    syslog(LOG_ERR, "ERROR: %03d Error opening socket\e[0m",(tmpTime.tv_usec/1000));
+    syslog(LOG_ERR, "E %03d Error opening socket\e[0m",(tmpTime.tv_usec/1000));
     return EXIT_FAILURE;
   } else {
     gettimeofday( &tmpTime, (struct timezone *) 0 );
-    //syslog(LOG_DEBUG, "DEBUG: %03d Successfully opened socket\e[0m",(tmpTime.tv_usec/1000));
+    //syslog(LOG_DEBUG, "D %03d Successfully opened socket\e[0m",(tmpTime.tv_usec/1000));
   }
   server = gethostbyname(host);
   if (server == NULL) {
     gettimeofday( &tmpTime, (struct timezone *) 0 );
-    syslog(LOG_ERR, "ERROR: %03d gethostbyname() failed\e[0m",(tmpTime.tv_usec/1000));
+    syslog(LOG_ERR, "E %03d gethostbyname() failed\e[0m",(tmpTime.tv_usec/1000));
     return EXIT_FAILURE;
-  } else {
-      unsigned int j = 0;
-      while (server -> h_addr_list[j] != NULL)
-      {
-          gettimeofday( &tmpTime, (struct timezone *) 0 );
-          // syslog(LOG_DEBUG, "DEBUG: %03d %s => %s\e[0m",(tmpTime.tv_usec/1000) ,server->h_name , inet_ntoa(*(struct in_addr*)(server -> h_addr_list[j])));
-          j++;
-      }
+  // } else {
+  //     unsigned int j = 0;
+  //     while (server -> h_addr_list[j] != NULL){
+  //         gettimeofday( &tmpTime, (struct timezone *) 0 );
+  //         syslog(LOG_DEBUG, "D %03d %s => %s\e[0m",(tmpTime.tv_usec/1000) ,server->h_name , inet_ntoa(*(struct in_addr*)(server -> h_addr_list[j])));
+  //         j++;
+  //     }
   }
   bzero((char *) &serveraddr, sizeof(serveraddr));
   serveraddr.sin_family = AF_INET;
@@ -428,39 +444,39 @@ int sendGetRequest(char * host, int port, char * url) {
   serveraddr.sin_port = htons(port);
   if (connect(tcpSocket, (struct sockaddr *) &serveraddr, sizeof(serveraddr)) < 0) {
       gettimeofday( &tmpTime, (struct timezone *) 0 );
-      syslog(LOG_ERR, "ERROR: %03d Error Connecting\e[0m",(tmpTime.tv_usec/1000));
+      syslog(LOG_ERR, "E %03d Error Connecting\e[0m",(tmpTime.tv_usec/1000));
       return EXIT_FAILURE;
   } else {
       gettimeofday( &tmpTime, (struct timezone *) 0 );
-      // syslog(LOG_DEBUG, "DEBUG: %03d Successfully Connected\e[0m",(tmpTime.tv_usec/1000));
+      // syslog(LOG_DEBUG, "D %03d Successfully Connected\e[0m",(tmpTime.tv_usec/1000));
   }
   bzero(request, 1000);
   sprintf(request, "GET %s HTTP/1.1\r\nHost: %s\r\n\r\n", url, host);
-  // syslog(LOG_DEBUG, "DEBUG:\n%s", request);
+  // syslog(LOG_DEBUG, "D\n%s", request);
   if (send(tcpSocket, request, strlen(request), 0) < 0) {
       gettimeofday( &tmpTime, (struct timezone *) 0 );
-      syslog(LOG_ERR, "ERROR: %03d Error with send()\e[0m",(tmpTime.tv_usec/1000));
+      syslog(LOG_ERR, "E %03d Error with send()\e[0m",(tmpTime.tv_usec/1000));
       return EXIT_FAILURE;
   } else {
       gettimeofday( &tmpTime, (struct timezone *) 0 );
-      // syslog(LOG_DEBUG, "DEBUG: %03d Successfully sent html fetch request\e[0m",(tmpTime.tv_usec/1000));
+      // syslog(LOG_DEBUG, "D %03d Successfully sent html fetch request\e[0m",(tmpTime.tv_usec/1000));
   }
   bzero(request, 1000);
   recv(tcpSocket, request, 999, 0);
-  // syslog(LOG_DEBUG, "DEBUG:\n %s", request);
+  // syslog(LOG_DEBUG, "D\n %s", request);
   char *ptr;
   ptr= strtok(request, " ");
   if (strstr(request, "HTTP/1.")) {
     ptr= strtok(NULL, " ");
     responseCode=atoi(ptr);
     gettimeofday( &tmpTime, (struct timezone *) 0 );
-    // syslog(LOG_DEBUG, "DEBUG: %03d HTTP-header gefunden\e[0m",(tmpTime.tv_usec/1000));
+    // syslog(LOG_DEBUG, "D %03d HTTP-header gefunden\e[0m",(tmpTime.tv_usec/1000));
   } else {
     gettimeofday( &tmpTime, (struct timezone *) 0 );
-    syslog(LOG_ERR, "ERROR: %03d kein HTTP-header gefunden\e[0m",(tmpTime.tv_usec/1000));
+    syslog(LOG_ERR, "E %03d kein HTTP-header gefunden\e[0m",(tmpTime.tv_usec/1000));
   }
   gettimeofday( &tmpTime, (struct timezone *) 0 );
-  syslog(LOG_DEBUG, "DEBUG: %03d Status=\'%d\'\e[0m",(tmpTime.tv_usec/1000), responseCode);
+  syslog(LOG_DEBUG, "D %03d Status=\'%d\'\e[0m",(tmpTime.tv_usec/1000), responseCode);
   close(tcpSocket);
   return responseCode;
 }

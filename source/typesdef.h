@@ -109,6 +109,8 @@ typedef struct {
     int id;
     int group;
     int command;
+    int degree;
+    int position;
 } COMMAND;
 
 

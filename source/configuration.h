@@ -11,7 +11,7 @@
 #define MAX_BUTTONS 24
 #define BUILD_VERSION "0.1.0"
 #define BUILD_COUNT "77"
-#define BUILD_DATE "Mo 06. Mai 2019 12:55:41"
+#define BUILD_DATE "So 22. Mär 2020 19:55:28"
 
 
 #endif /* configuration.h */

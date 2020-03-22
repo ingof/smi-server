@@ -179,5 +179,5 @@ void printBufferAscii(unsigned char *buffer, int size) {
 }
 
 void logBufferAscii(unsigned char *buffer, int size) {
-    syslog(LOG_DEBUG, "DEBUG: HTTP Buffer(%d):\n %s", size, buffer);
+    syslog(LOG_DEBUG, "D HTTP Buffer(%d):\n %s", size, buffer);
 }

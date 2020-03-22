@@ -4,7 +4,11 @@
 
 // #include "configuration.h"
 
-extern COMMAND command[1];
+extern COMMAND command[0];
+extern COMMAND smiCmdBuf[32];
+extern int smiCmdBufCount;
+extern int smiCmdBufStart;
+extern int smiCmdBufLock;
 extern DRIVE drive[MAX_DRIVES];
 extern GROUP group[MAX_GROUPS];
 extern BUTTON button[MAX_BUTTONS];
