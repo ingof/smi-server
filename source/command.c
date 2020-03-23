@@ -111,7 +111,7 @@ int handleCommand(void) {
               smiTxCount = 6;
             }
             /* 16 bit Positon only in position commands */
-            if ( (command[0].command >= 5 ) && (command[0].command <= 5) && (command[0].degree = -1)  && (command[0].position >= 0) ) {
+            if ( (command[0].command >= 3 ) && (command[0].command <= 5) && (command[0].degree = -1)  && (command[0].position >= 0) ) {
               smiTxBuffer[4] += 0x40;
               smiTxBuffer[5] = (command[0].position & 0xff00) >> 8;
               smiTxBuffer[6] = command[0].position & 0x00ff;
@@ -132,7 +132,7 @@ int handleCommand(void) {
             if ( (command[0].command >= 1 ) && (command[0].command <= 2) && (command[0].degree >= 0) && (command[0].position = -1) ) {
               readSmiByte(smiPort);
             }
-            if ( (command[0].command >= 5 ) && (command[0].command <= 5) && (command[0].degree = -1)  && (command[0].position >= 0) ) {
+            if ( (command[0].command >= 3 ) && (command[0].command <= 5) && (command[0].degree = -1)  && (command[0].position >= 0) ) {
               readSmiByte(smiPort);
               readSmiByte(smiPort);
             }
@@ -276,7 +276,7 @@ int handleCommand(void) {
             smiTxBuffer[1] += 0x20;
             smiTxBuffer[2] = (command[0].degree & 0x1ff) >> 1;
             smiTxSize = 3;
-          } else if ( (command[0].command >= 5 ) && (command[0].command <= 5) && (command[0].degree = -1)  && (command[0].position >= 0) ) {
+          } else if ( (command[0].command >= 3 ) && (command[0].command <= 5) && (command[0].degree = -1)  && (command[0].position >= 0) ) {
             /* absolute position */
             smiTxBuffer[1] += 0x40;
             smiTxBuffer[2] = (command[0].position & 0xff00) >> 8;
@@ -296,7 +296,7 @@ int handleCommand(void) {
             /* step degree */
             readSmiByte(drive[command[0].id].bus);
           }
-          if ( (command[0].command >= 5 ) && (command[0].command <= 5) && (command[0].degree = -1)  && (command[0].position >= 0) ) {
+          if ( (command[0].command >= 3 ) && (command[0].command <= 5) && (command[0].degree = -1)  && (command[0].position >= 0) ) {
             /* absolute position */
             readSmiByte(drive[command[0].id].bus);
             readSmiByte(drive[command[0].id].bus);

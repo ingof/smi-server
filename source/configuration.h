@@ -10,8 +10,8 @@
 #define MAX_GROUPS 16
 #define MAX_BUTTONS 24
 #define BUILD_VERSION "0.1.0"
-#define BUILD_COUNT "77"
-#define BUILD_DATE "So 22. Mär 2020 19:55:28"
+#define BUILD_COUNT "78"
+#define BUILD_DATE "Mo 23. Mär 2020 19:23:43"
 
 
 #endif /* configuration.h */
